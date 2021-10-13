@@ -1,0 +1,63 @@
+.------------------------------------------------------------------------------.
+| ------------   USER DEFINITIONS FOR TABLE-A TABLE-B TABLE D   -------------- |
+|------------------------------------------------------------------------------|
+| MNEMONIC | NUMBER | DESCRIPTION                                              |
+|----------|--------|----------------------------------------------------------|
+|          |        |                                                          |
+| NC012122 | A61156 | M TYPE 012-122  METOP 50 KM ASCAT scatterometer data     |
+|          |        |                                                          |
+| SAID     | 001007 | SATELLITE IDENTIFIER                                     |
+| RPID     | 001198 | REPORT IDENTIFIER                                        |
+|          |        |                                                          |
+| YEAR     | 004001 | YEAR                                                     |
+| MNTH     | 004002 | MONTH                                                    |
+| DAYS     | 004003 | DAY                                                      |
+| HOUR     | 004004 | HOUR                                                     |
+| MINU     | 004005 | MINUTE                                                   |
+| SECO     | 004006 | SECOND                                                   |
+|          |        |                                                          |
+| CLAT     | 005002 | LATITUDE (COARSE ACCURACY)                               |
+|          |        |                                                          |
+| CLON     | 006002 | LONGITUDE (COARSE ACCURACY)                              |
+| CTCN     | 006034 | CROSS TRACK CELL NUMBER                                  |
+|          |        |                                                          |
+| ACAV     | 008022 | TOTAL NUMBER(WITH RESPECT TO ACCUMULATION OR AVERAGE)    |
+|          |        |                                                          |
+| WD10     | 011011 | WIND DIRECTION AT 10 M                                   |
+| WS10     | 011012 | WIND SPEED AT 10 M                                       |
+|          |        |                                                          |
+| LKCS     | 021104 | LIKELIHOOD COMPUTED FOR SOLUTION                         |
+| WVCQ     | 021155 | WIND VECTOR CELL QUALITY                                 |
+| BSCD     | 021156 | BACKSCATTER DISTANCE                                     |
+|          |        |                                                          |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SEQUENCE                                                          |
+|----------|-------------------------------------------------------------------|
+|          |                                                                   |
+| NC012122 | YEAR   MNTH   DAYS   HOUR   MINU   SECO   CLAT   CLON             |
+| NC012122 | CTCN   WD10   WS10   WVCQ   RPID   SAID   ACAV   BSCD             |
+| NC012122 | LKCS                                                              |
+|          |                                                                   |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SCAL | REFERENCE   | BIT | UNITS                    |-------------|
+|----------|------|-------------|-----|--------------------------|-------------|
+|          |      |             |     |                          |-------------|
+| SAID     |    0 |           0 |  10 | CODE TABLE               |-------------|
+| RPID     |    0 |           0 |  64 | CCITT IA5                |-------------|
+| YEAR     |    0 |           0 |  12 | YEAR                     |-------------|
+| MNTH     |    0 |           0 |   4 | MONTH                    |-------------|
+| DAYS     |    0 |           0 |   6 | DAY                      |-------------|
+| HOUR     |    0 |           0 |   5 | HOUR                     |-------------|
+| MINU     |    0 |           0 |   6 | MINUTE                   |-------------|
+| SECO     |    0 |           0 |   6 | SECOND                   |-------------|
+| CLAT     |    2 |       -9000 |  15 | DEGREES                  |-------------|
+| CLON     |    2 |      -18000 |  16 | DEGREES                  |-------------|
+| CTCN     |    0 |           0 |   7 | NUMERIC                  |-------------|
+| ACAV     |    0 |           0 |  16 | NUMERIC                  |-------------|
+| WD10     |    0 |           0 |   9 | DEGREES TRUE             |-------------|
+| WS10     |    1 |           0 |  12 | M/S                      |-------------|
+| LKCS     |    3 |      -30000 |  15 | NUMERIC                  |-------------|
+| WVCQ     |    0 |           0 |  24 | FLAG TABLE               |-------------|
+| BSCD     |    1 |       -4096 |  13 | NUMERIC                  |-------------|
+|          |      |             |     |                          |-------------|
+`------------------------------------------------------------------------------'

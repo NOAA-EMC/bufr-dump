@@ -1,0 +1,30 @@
+#  this will only work well if all codes in package need same version of each lib below
+
+w3nco_ver=v2.0.6
+w3emc_ver=v2.2.0
+bufr_ver=v11.1.0
+bacio_ver=v2.0.1
+sp_ver=v2.0.2
+
+
+
+if [[ "$sys_tp" =~ IBM-p[12] ]]; then
+  export W3NCO_LIB4=/nwprod2/lib/w3nco/${w3nco_ver}/libw3nco_${w3nco_ver}_4.a
+  export W3EMC_LIB4=/nwprod2/lib/w3emc/${w3emc_ver}/libw3emc_${w3emc_ver}_4.a
+  export BUFR_LIB4=/nwprod2/lib/bufr/${bufr_ver}/libbufr_${bufr_ver}_4_64.a
+  export BACIO_LIB4=/nwprod2/lib/bacio/${bacio_ver}/libbacio_${bacio_ver}_4.a
+  export SP_LIB4=/nwprod2/lib/sp/${sp_ver}/libsp_${sp_ver}_4.a
+elif [[ "$sys_tp" =~ Cray-XC40 ]]; then
+  export W3NCO_LIB4=/gpfs/hps/nco/ops/nwprod/lib/w3nco/${w3nco_ver}/${lib_build}/libw3nco_${w3nco_ver}_4.a
+  export W3EMC_LIB4=/gpfs/hps/nco/ops/nwprod/lib/w3emc/${w3emc_ver}/${lib_build}/libw3emc_${w3emc_ver}_4.a
+  export BUFR_LIB4=/gpfs/hps/nco/ops/nwprod/lib/bufr/${bufr_ver}/${lib_build}/libbufr_${bufr_ver}_4_64.a
+  export BACIO_LIB4=/gpfs/hps/nco/ops/nwprod/lib/bacio/${bacio_ver}/${lib_build}/libbacio_${bacio_ver}_4.a
+  export SP_LIB4=/gpfs/hps/nco/ops/nwprod/lib/sp/${sp_ver}/${lib_build}/libsp_${sp_ver}_4.a
+elif [[ -n "$sys_tp" ]]; then
+  echo " **** UNEXEPECTED PLATFORM: $sys_tp ***** "
+  return 9
+else
+  echo " **** variable sys_tp is not set ***** "
+  return 9
+fi
+

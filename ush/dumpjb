@@ -1,0 +1,2412 @@
+#!/bin/ksh
+[ $# -lt 3 -a "$1" != env ] && { cat <<'####'; exit 99; }
+
+####  UNIX Script Documentation Block
+#
+# Script name:   dumpjb      Dump script to get data from BUFR tanks
+#
+# RFC contact:  Melchior    Org: EMC         Date: 2021-08-28
+#
+# Abstract: The dumpjb script is an all-purpose dump utility for time
+#   windowing, geographical filtering, eliminating duplicates, and applying
+#   corrections to, BUFR observation database tank data.  The script is driven
+#   by script parameters which specify the time window and the list of data to
+#   dump.  Data to dump is indicated by either mnemonic references to one or
+#   more individual data types and/or groups of data types (where a data type
+#   is defined as a sequence of one or more BUFR message types/subtypes), or by
+#   a single BUFR message type, optionally followed by one or more BUFR message
+#   subtypes for the BUFR message type.  Several imported script variables
+#   determine other characteristics of the dump, such as geographical
+#   filtering, more selective time windowing, skipping over specific BUFR
+#   message type/subtypes, adding BUFR message type/subtypes, choosing the path
+#   to the database tanks based on the data type, and the final presentation
+#   and form of the dumped datasets.  Each data group requested as a parameter,
+#   generates one or more process threads which each dump one data type.  The
+#   script is setup so all the process threads from all the data groups can be
+#   either: run in parallel under mpmd thus allowing threads to run across
+#   cores or run serially.
+#
+# Script history log:
+# 1996-09-25  J. Woollen  Original version for implementation
+# 1996-10-28  J. Woollen  Added variable DUPC to allow duplicate checking to be
+#     disabled; added additional error checking and modified UCL for DUMPMD
+#     program
+# 1996-11-27  J. Woollen  Records the status of each individual subtype dump,
+#     along with the status of each data group dump; two new executables;
+#     DUPMAR and CHKBFR, added
+# 1996-12-11  J. Woollen  Added GMT dump time to DUMPMD standard input so it
+#     can write this into the BUFR dump file
+# 1997-01-22  J. Woollen  Added new executable DUPAIR to dup-check combinations
+#     of aircraft data; added new executable EDTBFR to process manual SDM
+#     hold/purge flags and data reject list flags in sdmedit text file; added
+#     new executable QUIPC to process marine q.c. information in quips text
+#     file
+# 1997-02-19  J. Woollen  Protect DUPAIR-EDTBFR-QUIPC from zero length inputs 
+# 1998-02-12  D. Keyser   Check for zero-byte tanks that actually exist, if
+#     found sleeps for 30 seconds and checks again - if still empty gives up
+#     (gets around problems that tanks may be momentarily "empty" when tranjb
+#     is writing to them)
+# 1999-02-02  B. Facey    Modified to interface with the Y2K compliant dump
+#     codes, it will accept a date with either a 2 or 4 digit year and will
+#     resolve it to a BUFR database directory name containing a 4 digit year
+# 1999-07-14  L. Sager/D. Keyser Updated to run on IBM; added poe option; added
+#     geographical filtering via new executable GEOFIL
+# 1999-09-22  B. Facey    Updated to dump monthly BATHY data
+# 2000-02-10  D. Keyser   Added option to override the input script positional
+#     parameter "radius of time window" for a particular BUFR type/subtype in
+#     the data group list, here both the earliest and latest requested report
+#     times in the dump are represented by offset values from the center time
+#     (negative value meaning prior to center time and positive value meaning
+#     after center time - note that the magnitudes for these can be different);
+#     added option to skip the dumping of a particular BUFR type/subtype in the
+#     data group list
+# 2000-03-06  D. Keyser   Modified to remove file "fort.20" after BUFR_EDTBFR
+#     program has ended and before BUFR_QUIPC program has begun, both programs
+#     read input text data from unit 20 (sdmedit for BUFR_EDTBFR and quips for
+#     BUFR_QUIPC) and cases have occurred where the sdmedit file was available
+#     but the quips file was missing resulting in BUFR_QUIPC reading the
+#     sdmedit data and generating read error messages missing.
+# 2000-07-25  C. C. Magee Dup-check executable DUPSST will now run for new BUFR
+#     type 012, subtype 012 (NAVY hi-res. SST data)
+# 2000-08-01  D. Keyser   Modified reading of dumplist file to allow lines up
+#     to 500 columns (was 132) and to allow dumplist file to contain comments
+#     (i.e., descriptions of message types/subtypes that used to be in the
+#     docblock of this script)
+# 2000-09-05  D. Keyser   Modified to remove a potential fatal error which
+#     could occur if a BUFR database tank exists but has size zero (either
+#     through some actual occurrence or because a tank is suddenly offline due
+#     to a system glitch), fortunately, this situation has not occurred in
+#     operations since the dump jobs were converted to the IBM SP
+# 2000-09-25  D. Keyser   Modified to correct a problem which will cause an
+#     abort if the parent script exports the variable to override the offset
+#     value from the center time for a particular BUFR type (TTT) and subtype
+#     (SSS)
+# 2000-10-12  D. Keyser   Modified to initialize all output data dump files
+#     (for a particular BUFR type and subtype) in the working directory as null
+#     files prior to any processing, if there is a failure in a particular dump
+#     thread, the empty output file will still be in the list of files read by
+#     BUFR_CHKBUFR (will write out zero reports dumped for that subtype)
+# 2000-12-14  D. Keyser   Modified to add new parameters "DTIM_earliest_@@@@"
+#     and "DTIM_latest_@@@@", where "@@@@" is a valid group name from the
+#     dumplist, this allows the earliest and latest time in the dump window to
+#     be modified for all BUFR types/subtypes in a group; added new script
+#     variables representing each of the programs that are executed by this
+#     script
+# 2001-03-08  D. Keyser   Modified to set the root directory tree for the path
+#     to the script's temporary work files (TMPDIR) to /gpfstmp/$USER, rather
+#     than /nfstmp/$USER, for checkout runs when the parent script has not
+#     modified TMPDIR from its global value (assumed to be either "/nfstmp" or
+#     "/gpfstmp"), this change does not affect production runs, which set
+#     TMPDIR to $DATA, or checkout runs where the parent script modifies TMPDIR
+#     from its global value prior to executing this script (this change is
+#     necessary because quotas placed on /nfstmp have resulted in the failure
+#     of some large data dump checkout jobs due to a lack of disk space on
+#     /nfstmp
+# 2002-01-15  D. Keyser   Dup-check executable BUFR_DUPSAT will now run for new
+#     BUFR type 021, subtype 041 (NESDIS GOES imager clear radiances)
+# 2002-03-19  D. Keyser   Modified to add call to new dup-checking executable
+#     BUFR_DUPS1B for BUFR 1B satellite dumps in BUFR type 021, subtypes 21-25
+#     (for HIRS-2, MSU, AMSU-A, AMSU-B and HIRS-3, respectively); modified to
+#     call new dup-checking executable BUFR_DUPRAD for superobed NEXRAD radial
+#     wind dumps in BUFR type 006, subtype 001; will no longer attempt to
+#     execute BUFR_GEOFIL if user program wishes to dump the entire globe; will
+#     no longer attempt to execute BUFR_DUPAIR if the input dump file(s) is/are
+#     not one of the following types: AIREP, PIREP, AMDAR; passes geographical
+#     filtering parameters into the duplicate checking program via Fortran unit
+#     11 (currently, BUFR_DUPS1B, is the only one which reads this, since
+#     geographical filtering must be performed here rather than in BUFR_GEOFIL
+#     which process these BUFR compressed data dumps); modified to work
+#     properly in CRON job runs where the global variable $TMPDIR is not set -
+#     the script sets it to /nfstmp in this case; added several new imported
+#     script variables to override operational program executables for
+#     duplicate checking, SDM and quips quality mark processing, and file
+#     merging and checking
+# 2002-04-29  D. Keyser   Modified to clear out any "current" XLF variables
+#     associated with Fortran unit numbers since the executables in this script
+#     do not call the utility script prep_step (which performs this function)
+#     prior to their execution, this will prevent the occurrence of unit number
+#     conflicts in the event that a unit number used by a program in this
+#     script was also used by a program executed earlier in a parent script
+# 2002-06-25  L. Sager    Added option to dump the bathymetric data, BUFR type
+#     031, from daily tanks if the BUFR subtype is .ge. 100 (if the BUFR
+#     subtype is .lt. 100,  dumping will occur from the monthly tanks) - this
+#     change is needed to handle the new data type "TOPEX altimeter processed
+#     qc data" which will be stored in daily tanks
+# 2002-11-20  D. Keyser   Modified to recognize when the program BUFR_DUPAIR
+#     stops abnormally - an abnormal stop in this program will now cause this
+#     script to exit with return code 99, but not until it has finished
+#     processing all data types
+# 2003-08-19  D. Keyser   Treats input tanks that do not have READ permission
+#     as MISSING (these tanks contain RESTRICTED data)
+# 2004-04-13  D. Keyser   Includes E-ADAS (004.006) in DUPAIR dup-checking;
+#     now processes subtypes in the order they are listed for a group mnemonic
+#     in dumplist, rather than always in ascending order (regardless of how
+#     they were arranged) (done by calling filenames "01_xxx.aaa",
+#     "02_xxx.bbb", etc. instead of "xxx.aaa" & "xxx.bbb") (002.009 needs to be
+#     read last by W3UNPKB7 but now with new 002.011 and 002.013 in "proflr"
+#     this would no longer be the case without this change); echos group name
+#     into fort.30 to be read by CHKBFR for new listing of counts by sat. id;
+#     no longer executes "timex" command prior to poe command (necessary with
+#     conversion to IBM Frost/Snow); will not execute BUFR_QUIPC unless one or
+#     more dumps in group incl. 001.001-001.005; will not execute BUFR_EDTBFR
+#     unless one or more dumps in group incl. 000.*, 001.*, 002.*, 004.*,
+#     005.*; if either BUFR_EDTBFR or BUFR_QUIPC does not complete properly,
+#     this script now returns with r.c.=99 (before ignored any problems in
+#     these two scripts); mesonet data in BUFR type 255 now uses DUPMAR
+#     followed by DUPCOR rather than DUPCOR only for duplicate checking; if
+#     final return code for dump is 22, script now copies dump file to $DATA
+#     even though it will contain no reports (it should, however, contain
+#     dictionary messages and the center and dump time messages), done so
+#     BUFRLIB will not complain that file is null when CHKBFR opens it (Note:
+#     if no database files yet exist w/i requested date range, checks
+#     availability of database file from previous day and uses it so dump file
+#     will have dictionary and dummy messages and thus not be null) (before,
+#     r.c.=22 resulted in no copy of dump file to $DATA); fixed bug: test on
+#     LALO = 0 fails when LALO includes spaces; added quotes (discovered by J.
+#     Whiting)
+# 2004-04-20  D. Keyser   Modified to correct error that occurs if parent
+#     script exports FORM=copy, in this case dumpjb was creating dump files
+#     with the naming convention "nn_ttt.sss" [where "nn" is the dump order
+#     index (01-99), ttt is the BUFR type and sss is the BUFR subtype] - this
+#     change restores the dump file name to just "ttt.sss"
+# 2005-09-22  D. Keyser   All satellite types previously using dup-check code
+#     BUFR_DUPS1B now use BUFR_DUPSAT (since latter can now handle compressed
+#     BUFR messages), all references to BUFR_DUPS1B, including script variable
+#     S1BX, removed; removed reference to scratch file scr.uncompressed_* in
+#     script executing BUFR_CHKBFR because it is no longer used by this
+#     program; added new script variable "TIME_TRIM", when imported as "off" it
+#     will cause the particular dup-checking code to NOT perform any time
+#     window trimming of subsets in the BUFR file being read by the dup-
+#     checking code, regardless of the requested time window (the default is
+#     "on", time window trimming will occur, as before, if "TIME_TRIM" is not
+#     exported to this script), NOTE: because of a bug in all dup-check codes
+#     except BUFR_DUPCOR and BUFR_DUPSAT, TIME_TRIM=off currently applies ONLY
+#     to these two dup-check codes; removed copy of LALO (lat/lon filtering
+#     boundary) into fort.11 for dup-check codes (was used only by
+#     BUFR_DUPS1B); all types using dup-check code BUFR_DUPSAT are now
+#     geographically filtered in BUFR_DUPSAT when such filtering is requested
+#     (previously all types using BUFR_DUPSAT] were geographically filtered
+#     using BUFR_GEOFIL while all types using the now obsolete dup-checking
+#     code BUFR_DUPS1B where geographically filtered in BUFR_DUPS1B - it is
+#     more efficient, computationally, to do this filtering within the dup-
+#     check code), all other types continue to use BUFR_GEOFIL if geographic
+#     filtering is requested
+# 2006-01-31  D. Keyser   Script logic for executing $RADX is expanded out
+#     because previous structure caused $RADX to be skipped, on rare occasions
+#     for reasons unknown, when $RADX was compiled with the 29 November 2005
+#     version of BUFRLIB (BUFRLIB implemented 31 January 2006)
+# 2006-02-01  D. Keyser   Level 2 radial wind or reflectivity types are in
+#     1-hour tanks to speed up their dump processing time (because there is
+#     SO MUCH DATA), to further speed up their dump processing time, logic is
+#     added which allows them to skip the BUFR_DUMPMD processing step - e.g. if
+#     the dump window spans two days only one day's database file is considered
+#     (the approriate day with data within the requested time window), also the
+#     generation of two "dummy" messages containing the dump center and
+#     processing times, resp. at the top of the dump file is moved from
+#     BUFR_DUMPMD to BUFR_COMBFR (this applies to ALL types of data when script
+#     variable FORM is NOT set to "copy", if FORM is set to "copy" then
+#     BUFR_DUMPMD must still be run for all types because it will write the
+#     dummy messages to the dump file since BUFR_COMBFR does not run in this
+#     case); added new script variable DUMPMD which controls the execution of
+#     BUFR_DUMPMD (there may be cases where BUFR_DUMPMD need not run in order
+#     to save computation time (e.g., Level 2 radial wind or reflectivity types
+#     in 1-hour tanks) - before BUFR_DUMPMD always ran in every thread), see
+#     comments about script variable DUMPMD in remarks section below; checks to
+#     see if file fort.60 exists after BUFR_CHKBFR completes - this indicates
+#     that BUFR_CHKBFR completed properly, if the file does not exist, dumpjb
+#     exits AT THE END with status code 99 which will cause calling script/job
+#     to FAIL (prior to this an improper completion of BUFR_CHKBFR could result
+#     in dumpjb continuing normally but causing problems later); $pos is now
+#     incremented only for those dump subtypes in a group mnemonic that are not
+#     set to be skipped by parent script {before $pos was incremented for each
+#     subtype in group mnemonic prior to test for skipping subtype(s)}; if
+#     BUFR_DUMPMD does not run but BUFR_GEOFIL does, copies original database
+#     tank to nominal working directly location before feeding into BUFR_GEOFIL
+#     because BUFR_GEOFIL writes output back into this file (and can't
+#     overwrite database tank!); no longer copies output file from BUFR_GEOFIL
+#     to $DEST/$FILO, it is not necessary and wastes time; after BUFR_COMBFR
+#     now moves fort.50 to $DATA/$NAME.$FORM rather than copies it (to save
+#     time); new BUFR type 12 subtypes 017 and 018 (AVHRR physical SST
+#     retrievals) defined to use dup-check code BUFR_DUPSST; script variable
+#     TIME_TRIM=off now applies to all dup-check codes (had only applied to
+#     dup-check codes BUFR_DUPCOR and BUFR_DUPSAT); includes new Canadian AMDAR
+#     (004.009) in types of aircraft reports that are dup-checked by
+#     BUFR_DUPAIR
+# 2006-10-10  D. Keyser   Now tests checkout runs for cases where global value
+#     of TMPDIR is set to /stmp, in which case it resets TMPDIR to /stmp/$USER
+#     (if /stmp not found, then tests for TMPDIR set to /gpfstmp and resets it
+#     to /gpfstmp/$USER, as before), needed because new Mist machine has
+#     replaced /gpfstmp with /stmp
+# 2007-06-13  D. Keyser   Accounts for (new) option of a mask file in imported
+#     script variable LALO
+# 2010-12-10  D. Keyser   Added logic to execute the new cross-tank duplicate-
+#     check program BUFR_DUPSHP when dumping from BUFR tanks b001/xx001 and
+#     b001/xx013 (time-windowed data from both tanks must be present to invoke
+#     this); updated to handle the dumping of Tail Doppler Radar winds which
+#     will be present in the new tank b006/xx070 in the near future; if the
+#     initial duplicate check run is BUFR_DUPMAR, checks for the existence of a
+#     file named $DIRD/$FILO.fort.60 upon its completion and if found will
+#     execute a second duplicate check run BUFR_DUPCOR (if a second dup-check
+#     run is not already specified) (means BUFR_DUPMAR encountered reports from
+#     > 1 embedded BUFR table and thus not all duplicates could be removed by
+#     it - BUFR_DUPCOR will complete the duplicate checking
+# 2012-12-02  J. Woollen  Initial port to WCOSS - updated TMPDIR default;
+#     added ksh specification.
+# 2013-01-22  J. Whiting  Final WCOSS port: trapped POE=on option, w/ printed 
+#     notice and graceful exit (this option not currently tested on WCOSS); 
+#     replaced XLF logical unit number clearing w/ appropriate FORTxx logic.
+# 2014-02-04  D. Keyser   "DUEX" (path to directory containing dump
+#     executables) no longer defaults to /nwprod/exec but rather to
+#     $HOMEobsproc_dump/exec, and one of the three variables
+#     "obsproc_dump_ver", "HOMEobsproc_dump", or "DUEX" itself must be defined
+#     coming in or this script will exit abnormally with return code 99.
+#     "DFIX" (path to directory bufr_dumplist fixed file) no longer defaults to
+#     /nwprod/fix but rather to $HOMEobsproc_shared_bufr_dumplist/fix, and one
+#     of the four variables "obsproc_shared_bufr_dumplist_ver",
+#     "HOMEobsproc_shared_bufr_dumplist", "DFIX" itself,  or "LIST" (which
+#     remains defined as the complete path to, and including, the bufr_dumplist
+#     fixed file) must be defined coming in or this script will exit abnormally
+#     with return code 99.
+# 2014-02-18  D. Stokes  Update default temporary directory location in response
+#     to fileset changes on WCOSS.  Clean up related logic and remove references
+#     to /gpfstmp and /nfstmp which had been used on systems since retired.
+# 2014-03-16  D. Stokes  Remove default TMPDIR setting.  Script will fail with
+#     status 99 if TMPDIR is referenced but not imported.
+# 2014-06-24  D. Keyser  Added option to append one or more additional BUFR
+#     type/subtypes (beyond that defined in the bufr_dumplist fixed file) to a
+#     data group mnemonic or a data group message type/subtype specified in the
+#     script parameters.  This is done via new imported environment variable
+#     $ADD_<DGRP>, where DGRP is either the group mnemonic to dump or the BUFR
+#     message type (depending upon how the dumpjb script parameters are setup).
+#     Added option to override imported value for TANK for either an entire
+#     data group mnemonic/BUFR message type {done via new imported environment
+#     variable $TANK_<DGRP>, where DGRP is either the group mnemonic to dump or
+#     the BUFR message type (depending upon how the dumpjb script parameters
+#     are setup)}; or for a specific BUFR type/subtype within a data group
+#     mnemonic or a data group message type/subtype specified in the script
+#     parameters (done via new imported environment variable $TANK_<TTTSSS>,
+#     where TTT is the BUFR message type and SSS is the BUFR message subtype). 
+# 2015-06-16  S. Melchior  Includes types MDCRS/ARINC (004.004) and MDCRS/AFWA
+#     (004.007) in bufr_dupair dup-checking.
+# 2015-07-27  S. Melchior  Includes new types Korean AMDAR aircraft (from BUFR)
+#     (004.011) and catch-all AMDAR aircraft (from BUFR) (004.103) in
+#     bufr_dupair dup-checking.
+# 2016-04-22  D. Keyser  No longer references unused utility script mpmd.sh.
+#     Uses form of unix date command to replace executable ndate in hardwired
+#     non-versioned, horizontal structure utility directory path.
+# 2016-08-15  D. Keyser  Added mesonet reports (in BUFR type 255) to types
+#     which will be processed by BUFR_EDTBFR.
+# 2017-02-20  D. Stokes  Updated to run on Cray-XC40 as well as IBM iDataPlex.
+#     - Determines current system (and phase if necessary) based on environment
+#       variable SITE and/or NCO utility getsystem.pl.
+#     - TMPDIR is no longer a required imported variable for a developer run if
+#       DATA_DUMPJB is not imported.  If TMPDIR is needed but not yet set, a 
+#       a suitable location will be assigned based on the system type and phase.
+#       Variable DTMPDIR can also be passed in if the developer wants to
+#       override the default location but has trouble running LSF jobs when 
+#       they have set TMPDIR. (currently an issue with bash on luna and surge)
+#     - Variable "MPMD" no longer points to an mpmd utility script.  Instead it
+#       is used in place of old variable "POE" to toggle mpmd processing.
+#     - MPMD=on is allowed for Cray-XC40 runs that utilize compute nodes, but
+#       will be changed to MPMD=off if dumpjb was called by a process already
+#       running under ALPS.
+#     - BACK=on is disabled for Cray-XC40 runs.
+#     - Module prod_envir is used to set DCOMROOT if not imported.
+#     - New variable DUMPJBprocdate can be set to an artificial time stamp to be
+#       stored as the "processing time" in the second dummy message of output
+#       dump files.  (Intended for use when validating of upgrades only!)
+#     - Modified dump thread script template to preserve intended DUPE2 settings
+#       when more than one message type is requested in a single dumpjb call.
+#     - Unset DUMMY_MSGS after COMX completes for current data group so that it
+#       is not defined prematurely when processing a subsequent data group.
+# 2017-08-30  D. Stokes  Enabled MPMD option for IBM iDataPlex (requires cfp).
+#       Also modified TMPDIR patterns to recognize new Cray-XC40 filesystems
+#       (/gpfs/hps2 and /gpfs/hps3 in addition to /gpfs/hps).  The default
+#       TMPDIR location for developer runs on Cray-XC40 is now on the /gpfs/hps3
+#       filesystem rather than /gpfs/hps.
+# 2018-05-04  Y. Ling  Added VIIRS SST mesgtyp/subtyp 012/023, 012/024 012/025 for 
+#       setting the DUPE1 and DUPE2 parameters.
+# 2018-08-29  JWhiting  Updated to run on Dell-p3 platforms: 
+#     - added logic to detect Dell-p3 system and initialize Modules;
+#     - disabled exact matching of Dell-p3 module versions (LMOD_EXACT_MATCH=no);
+#     - added default value for TMPDIR on Dell-p3 systems;
+#     - added checks for Dell-p3 user temporary directory filesystems.
+# 2020-03-09  SPA Update to have TANK, EPRM, QPRM default to Dell-p3 directory
+#       structure
+# 2020-08-20  S. Melchior  Added cross-tank duplicate checking logic to 
+#       remove TAC-feed content that is duplicated by BUFR-feed observations;
+#       calls new FORTRAN program bufr_dupsyp (SYPX). Duplicate checking is
+#       set up to support restricted synoptic reports (msg/sub types
+#       000/000 vs 000/100), fixed non-restricted synoptic reports (msg/sub
+#       types 000/001 vs 000/101), and mobile non-restricted synoptic reports
+#       (msg/sub types 000/002 vs 000/102).
+#     - Added logic to copy bufr_dumplist to $COMROOT for each dump cycle run.
+# 2020-08-20 JWhiting  Added cross-tank duplicate checking logic to remove 
+#       TAC-feed (Traditional Alphanumeric Code) content that is duplicated by 
+#       BUFR-feed observations; calls new FORTRAN program bufr_duptac (TACX),
+#       and is enabled by DUPC_TAC (default:on; import DUPC_TAC!=on to disable).
+#       Duplicate checking is set up to support fixed and drifting buoy data
+#       streams (ie, msg/sub types 001/003 vs 001/103; & 001/002 vs 001/102).
+# 2021-04-12  J. Dong  Updated to run on Dell-p3 as well as Cray-XC40 and IBM
+#       iDataPlex.  BACK=on is disapbled for Dell-p3 runs.  MPMD=on is allowed
+#       for Dell-p3 runs that utilize computer notes, but will be changed to
+#       MPMD=off if dumpjb was called by a process already running under ALPS.
+#     - Added cross-tank duplicate checking logic to remove the duplications
+#       among the TAC-feed and BUFR-feed observations; calls updated FORTRAN
+#       program bufr_dupshp (SHPX). Duplicate checking is set up to support
+#       restricted/unrestricted ship reports (msg/sub types 001/001 vs
+#       001/013 vs 001/101 vs 001/113).
+#     - Added cross-tank duplicate checking logic to remove the duplications
+#       among the TAC-feed and BUFR-feed observations; calls new FORTRAN
+#       program bufr_dupcman (CMANX). Duplicate checking is set up to support
+#       Land-based C-MAN reports (msg/sub types 001/004 vs 001/104).
+#     - Moved logic to copy bufr_dumplist to $COMROOT for each dump cycle run 
+#       to network specific dump scripts.  Added diagnostic print to dump log
+#       file to indicate which bufr_dumplist file was used.
+# 2021-??-??  S. Melchior - Rough modifications to include WCOSS2 (Cray-EX)
+# 2021-08-28  D. Stokes - Rough modifications to run on WCOSS2 (Cray-EX) only
+#     - Incomplete list of changes:
+#       - Removed option BACK for background threads
+#       - Removed module loads 
+#       - Removed attempt to set TMPDIR if it is needed but not set due to
+#         project-specific ptmp and stmp locations on WCOSS2
+#
+###
+#
+# Usage: dumpjb  yyyymmddhh<.hh> hh<.hh> dgrp1 dgrp2 dgrp3 ... dgrpN
+#
+#   Script parameters:
+#     yyyymmddhh<.hh> - center of time window for dump, where
+#                        yyyy  is center time year
+#                          mm  is center time month
+#                          dd  is center time day
+#                          hh  is center time hour
+#                       <.hh>  is optional fraction of an hour (defaults to 0)
+#
+#     hh<.hh>         - radius of time window for dump (i.e., the dump time
+#                       window would be hh<.hh> hours PRIOR to yyyymmddhh<.hh>
+#                       through hh<.hh> hours AFTER yyyymmddhh<.hh>)
+#                        (NOTE: This can be overidden for any individual BUFR
+#                                type/subtype in the list - see variables
+#                                "DTIM_earliest_<TTTSSS>" and
+#                                "DTIM_latest_<TTTSSS>" below
+#                                        -- or --
+#                               this can be overidden for any individual data
+#                                group in the list - see variables
+#                                "DTIM_earliest_<DGRP>" and
+#                                "DTIM_latest_<DGRP>" below)
+#
+#     dgrp1           - data group 1 - see %% below
+#     dgrp2           - data group 2
+#     dgrp3           - data group 3
+#     ...            ...
+#     dgrpN           - data group N
+#
+#-----------------------------------------------------------------------
+#   %%
+#      - When data groups dgrp1, dgrp2, dgrp3, ... , dgrpN are denoted as N
+#        different mnemonics, each represents either a single BUFR message
+#        type/subtype that is to be dumped or a sequence of multiple BUFR
+#        message types/subtypes that are to be dumped, as defined in the
+#        bufr_dumplist fixed file ($LIST).  A mnemonic can be any alphanumberic
+#        string up to 6 characters in length with the exception of 3-character
+#        numeric strings. (See $LIST for the current valid list of mnemonics.)
+#           Examples:
+#                dgrp1 = synop
+#                      (defined as a single BUFR type/subtype 000/001, dump
+#                       only this type)
+#                dgrp2 = adpupa
+#                      (defined as a sequence of BUFR types/subtypes 002/001,
+#                       002/002, 002/003, 002/004, 002/005 and 004/005, dump
+#                       all of these types/subtypes)
+#                dgrp3 = vsnds
+#                      (defined as a sequence of BUFR types/subtypes 003/001,
+#                       003/002, 003/003, 003/010, 003/101, 003/102 and
+#                       003/104, dump all of these types/subtypes)
+#
+#        This will be referred to as the "data group mnemonic" case from here
+#        on.
+#        (See $LIST for the current valid list of mnemonics.)
+#
+#      - When data group dgrp1 is denoted as a 3-character numeric string and
+#        there is only one data group (i.e., dgrpN = dgrp1), dgrp1 represents a
+#        BUFR message type as defined in the bufr_dumplist fixed file ($LIST).
+#        In this case, all BUFR message subtypes in dgrp1 will be dumped.
+#           Example:
+#                dgrpN = dgrp1 = 001
+#                      (dump all BUFR subtypes in BUFR type 001; i.e.,
+#                       subtypes 001, 002, 003, 004, 005, 006, 007, 008, 009,
+#                       010, 011, 012 and 013)
+#
+#        This likewise will be referred to as the "data group mnemonic" case
+#        from here on.
+#        (See $LIST for the current valid list of mnemonics.)
+#
+#      - When data group dgrp1 is denoted as a 3-character numeric string and
+#        there is more than one data group (i.e., dgrpN > dgrp1), dgrp1
+#        represents a BUFR message type as defined in the bufr_dumplist fixed
+#        file ($LIST) and dgrp2, ... , dgrpN represent the N-1 BUFR message
+#        subtypes in BUFR message type dgrp1 that will be dumped.  No other
+#        BUFR message subtypes in dgrp1 will be considered in this situation.
+#           Example:
+#                dgrp1 = 001
+#                dgrp2 = 003
+#                dgrp3 = 010
+#                dgrpN = dgrp4 = 013
+#                      (dump only the following BUFR subtypes in BUFR type 001:
+#                       subtypes 003, 010 and 013)
+#
+#        This will be referred to as the "data group message type/subtype" case
+#        from here on.
+#
+#     The data group mnemonic case is most commonly used.
+#
+#     {NOTE1: A particular BUFR type/subtype in the resultant list to be dumped
+#             can be skipped over via variable "SKIP_<TTTSSS>" (see below)}
+#     {NOTE2: One or more BUFR types/subtypes not in the resultant list to be
+#             dumped can be added via variable "ADD_<DGRP>" (see below)}
+#
+#-----------------------------------------------------------------------
+#
+#   Modules and files referenced:
+#     fixed fields: bufr_dumplist
+#     executables : bufr_raddate bufr_dumpmd bufr_dupcor bufr_dupsat
+#                   bufr_dupsst  bufr_dupmrg bufr_edtbfr bufr_quipc
+#                   bufr_chkbfr  bufr_combfr bufr_dupair bufr_dupshp
+#                   bufr_dupmar  bufr_geofil bufr_duprad bufr_dupsyp
+#                   bufr_duptac bufr_dupcman
+#
+# Remarks:
+#
+#   Condition codes:
+#     00 - no problem encountered
+#     11 - all groups dumped - missing data from at least one group
+#     22 - at least one group had no data dumped
+#     99 - catastrophic problem - thread script abort
+#
+#==============================================================================
+#==============================================================================
+#   One of the two following script variables must be defined (imported) or
+#   this script will exit with return code 99.  The last two variables may have
+#   operational defaults defined in the script, subject to the conditions noted
+#   below.  If a user exports non-null values for any of these variables, the
+#   user value will override the default if a default is present.
+#.............................................................................
+#   HOMEbufr_dump    - formerly $HOMEobsproc_dump prior to WCOSS2
+#                      path to home directory, up to, but not containing,
+#                      "exec" subdirectory which contains dump executables
+#                      "fix" subdirectory which contains bufr_dumplist fix file
+#                       (formerly $HOMEobsproc_shared_bufr_dumplist prior to
+#                        WCOSS2)
+#.............................................................................
+#   DUEX             - path to directory containing dump executables
+#                              (default::$HOMEbufr_dump/exec
+#                                        ===> valid only if $HOMEbufr_dump
+#                                             defined; else no default)
+#==============================================================================
+#==============================================================================
+#   One of the two following script variables must be defined (imported) or
+#   this script will exit with return code 99.  The two variables may have
+#   operational defaults defined in the script, subject to the conditions
+#   noted below.  If a user exports non-null values for any of these variables,
+#   the user value will override the default if a default is present.
+#
+#.............................................................................
+#   DFIX                             - path to directory containing
+#                                      bufr_dumplist fixed file
+#              (default::$HOMEbufr_dump/fix
+#                        ===> valid only if $HOMEbufr_dump defined; else no
+#                             default)
+#.............................................................................
+#   LIST                             - complete path to (and including)
+#                                      bufr_dumplist fixed file
+#              (default::$DFIX/bufr_dumplist
+#                        ===> valid only if $DFIX defined; else no default)
+#==============================================================================
+#==============================================================================
+#   One of the three following script variables can be imported to control
+#   the location of the working directory.  In order of precedence:
+#
+#   DATA_DUMPJB - directory path to working directories
+#           (default::$TMPDIR/dumpjb.`hostname -s`.`date -u +%Y%m%d%H%M%S`.$$
+#                        ===> valid only if $TMPDIR defined; else no default;
+#                             more info on TMPDIR available below)
+#      WARNING 1: This script removes all files in $DATA_DUMPJB prior to
+#                 writing into it - something to remember if you are exporting
+#                 DATA_DUMPJB to this script!!!
+#      WARNING 2: At the end of this script, all files in $DATA_DUMPJB and
+#                 the directory itself are removed UNLESS either:
+#                      a) you exported DATA_DUMPJB to this script;
+#                      b) the return code from this script is 99; or
+#                      c) the imported script variable LOUD is set to 'on'
+#.............................................................................
+#   TMPDIR      - root directory tree for the path to temporary work files
+#                 (e.g., /stmpd1/$USER)
+#           {defaults:: ==> for $USER "nwprod*" or "climprod*" -> $DATA;
+#                           (see more on $DATA further below)
+#                       ==> for other users -> $DTMPDIR, if set (see below);
+#                           otherwise, some stmp variant based on system and 
+#                           phase (Cray-XC40 vs IBM-p1 vs IBM-p2). 
+#                           (exit with return code 99 if system unrecognized)}
+#           ===> if $USER is defined but is something other than "nwprod*" or
+#                "climprod*" (e.g., checkout) and $TMPDIR is pointing to a
+#                known main shared temporary directory root (e.g., "/stmp",
+#                "/stmpp1", "/ptmpp1", "/stmpd3", "/gpfs/hps/stmp", etc), then
+#                $TMPDIR is redefined to append $USER as a subdirectory,
+#                i.e., TMPDIR=$TMPDIR/$USER (this is intended to reduce
+#                the metadata load in the main shared temporary directories.
+#                 ===> not referenced if DATA_DUMPJB is imported
+#.............................................................................
+#   DTMPDIR     - an optional fallback for TMPDIR added due to recent problems
+#                 encountered on luna and surge where a user-defined TMPDIR
+#                 conflicts with LSF in the bash environment.  (While this ksh
+#                 script has no problem with TMPDIR, users may need to avoid
+#                 setting that variable in a parent bash environment).
+#                 ===> not referenced if DATA_DUMPJB or TMPDIR is imported
+#==============================================================================
+#==============================================================================
+#   The following script variables are user controllable with operational
+#   defaults defined in the script. If a user exports non-null values
+#   for any of these variables, the user value will override the default.
+#
+#   RADX   -  path to RADDATE executable            (default:$DUEX/bufr_raddate)
+#   DMDX   -  path to DUMPMD executable             (default:$DUEX/bufr_dumpmd)
+#   GEOX   -  path to GEOFIL executable             (default:$DUEX/bufr_geofil)
+#   CORX   -  path to DUPCOR executable             (default:$DUEX/bufr_dupcor)
+#   SATX   -  path to DUPSAT executable             (default:$DUEX/bufr_dupsat)
+#   SSTX   -  path to DUPSST executable             (default:$DUEX/bufr_dupsst)
+#   MRGX   -  path to DUPMRG executable             (default:$DUEX/bufr_dupmrg)
+#   MARX   -  path to DUPMAR executable             (default:$DUEX/bufr_dupmar)
+#   RDWX   -  path to DUPRAD executable             (default:$DUEX/bufr_duprad)
+#   AIRX   -  path to DUPAIR executable             (default:$DUEX/bufr_dupair)
+#   SHPX   -  path to DUPSHP executable             (default:$DUEX/bufr_dupshp)
+#   CMANX  -  path to DUPCMAN executable            (default:$DUEX/bufr_dupcman)
+#   SYPX   -  path to DUPSYP executable             (default:$DUEX/bufr_dupsyp)
+#   TACX   -  path to DUPTAC executable             (default:$DUEX/bufr_duptac)
+#   EDTX   -  path to EDTBFR executable             (default:$DUEX/bufr_edtbfr)
+#   QPCX   -  path to QUIPC  executable             (default:$DUEX/bufr_quipc)
+#   CHKX   -  path to CHKBFR executable             (default:$DUEX/bufr_chkbfr)
+#   COMX   -  path to COMBFR executable             (default:$DUEX/bufr_combfr)
+#   LALO   -  geographical data filter              (default:0  (off))
+#
+#   DTIM_earliest_<TTTSSS> - if BUFR message type TTT, subtype SSS is in the
+#    resultant list to be dumped (for either the data group mnemonic or data
+#    group message type/subtype case), then it will use this as the offset
+#    value (in hh<.hh>) from the center time specified in the first script
+#    positional parameter to obtain the earliest report time in the output
+#    dump.  A negative value means prior to the center time and a positive
+#    value means after the center time.  {If DTIM_earliest_<TTTSSS> does not
+#    exist for a particular BUFR type/subtype in the list to be dumped, then
+#    the default time window radius value, passed in via the second script
+#    positional parameter (see above), is used.}
+#    Example:
+#                  export DTIM_earliest_000007=-2.1
+#                  dumpjb 2014062312 1.5 adpsfc
+#
+#               Here, for METAR reports (000007) in the "adpsfc" dump, the
+#               earliest reports dumped will be 2.1 hours PRIOR to the center
+#               time (2014062312) and the latest reports dumped will be the
+#               "default" 1.5 hours after the center time. All other BUFR
+#               types/subtypes currently defined under the data group adpsfc in
+#               $LIST will be dumped using the default time window of 1.5 hours
+#               prior to the center time (earliest) to 1.5 hours after the
+#               center time (latest).
+#
+#   DTIM_latest_<TTTSSS> - if BUFR message type TTT, subtype SSS is in the
+#    resultant list to be dumped (for either the data group mnemonic or data
+#    group message type/subtype case), then it will use this as the offset
+#    value (in hh<.hh>) from the center time specified in the first script
+#    positional parameter to obtain the latest report time in the output dump.
+#    A negative value means prior to the center time and a positive value means
+#    after the center time.  {If DTIM_latest_<TTTSSS> does not exist for a
+#    particular BUFR type/subtype in the list to be dumped, then the default
+#    time window radius value, passed in via the second script positional
+#    parameter (see above), is used.}
+#    Example:
+#                  export DTIM_latest_002007=-1
+#                  dumpjb 2014062306 2.5 proflr
+#
+#               Here, for NPN wind profiler reports (002007) in the "proflr"
+#               dump, the latest reports dumped will be 1.0 hours PRIOR to the
+#               center time (2014062306) and the earliest reports dumped will
+#               be the "default" 2.5 hours prior to the center time. All other
+#               BUFR types/subtypes currently defined under the data group
+#               proflr in $LIST will be dumped using the default time window of
+#               2.5 hours prior to the center time (earliest) to 2.5 hours
+#               after the center time (latest).
+#
+#   DTIM_earliest_<DGRP> - if DGRP is a data group in the list to dump (data
+#    group mnemonic case) or is a BUFR message type (data group mnemonic or
+#    data group message type/subtype case), then works like
+#    DTIM_earliest_<TTTSSS> defined above, except all BUFR message types and
+#    subtypes in the resultant list to be dumped are affected.
+#    Example:
+#                  export DTIM_earliest_adpupa=-2.1
+#                  dumpjb 2014062312 1.5 adpsfc
+#
+#               Here, for all BUFR types/subtypes currently defined under the
+#               data group adpupa in $LIST, the earliest reports dumped will be
+#               2.1 hours PRIOR to the center time (2014062312) and the latest
+#               reports dumped will be the "default" 1.5 hours after the center
+#               time.
+#
+#   DTIM_latest_<DGRP> - if DGRP is a data group in the list to dump (data
+#    group mnemonic case) or is a BUFR message type (data group mnemonic or
+#    data group message type/subtype case), then works like
+#    DTIM_latest_<TTTSSS> defined above, except all BUFR  message types and
+#    subtypes in the resultant list to be dumped are affected.
+#    Example:
+#                  export DTIM_latest_satwnd=0.5
+#                  dumpjb 2014062312 3.0 satwnd
+#
+#               Here, for all BUFR types/subtypes currently defined under the
+#               data group satwnd in $LIST, the latest reports dumped will be
+#               0,5 hours AFTER the center time (2014062312) and the earliest
+#               reports dumped will be the "default" 3.0 hours prior to the
+#               center time.
+#
+#    (NOTE1: For the pair DTIM_earliest_<TTTSSS> and DTIM_earliest_<DGRP> or
+#            for the pair DTIM_latest_<TTTSSS> and DTIM_latest_<DGRP>, the
+#            value specified in DTIM_*_<DGRP> always takes precedence.)
+#    (NOTE2: This script will exit with condition code 99 if the calculated
+#            earliest report time is LATER than the calculated latest report
+#            time.)
+#
+#   SKIP_<TTTSSS> - if BUFR message type TTT, subtype SSS is in the resultant
+#    list to be dumped (for either the data group mnemonic or data group
+#    message type/subtype case), and SKIP_<TTTSSS> is of length 1 or greater
+#    (regardless of its value), this type/subtype will be skipped (i.e., not
+#    dumped).  (If SKIP_<TTTSSS> does not exist for a particular BUFR type/
+#    subtype in the list to be dumped, then this type/subtype will be dumped.)
+#    Example:
+#                  export SKIP_000007=YES
+#                  dumpjb 2014062312 1.5 adpsfc
+#
+#               Here, METAR reports (000007) are not processed as part of the
+#               "adpsfc" dump even though they are included in the subtypes
+#               defined for adpsfc in $LIST.
+#
+#   ADD_<DGRP>
+#            - if DGRP is a data group in the list to dump (data group mnemonic
+#    case) or is a BUFR message type (data group mnemonic case), then the
+#    contents of ADD_<DGRP> are interpreted as a sequence of individual BUFR
+#    message type (TTT) and subtype (SSS) strings in the form TTTSSS (separated
+#    by white space) which are appended to those originally defined for DGRP in
+#    the bufr_dumplist fixed file ($LIST). These additional BUFR message types/
+#    subtypes will be dumped as part of DGRP.
+#    Example 1:
+#                  export ADD_satwnd="005019 005080"
+#                  dumpjb 2014062312 1.5 satwnd
+#
+#               Here, GOES shortwave 3.9 micron winds (005019) and AVHRR POES
+#               IR winds (005080) will be included in the "satwnd" dump along
+#               with all of the subtypes defined for satwnd in $LIST.
+#    Example 2:
+#                  export ADD_002=002195
+#                  dumpjb 2014062318 3.0 002
+#
+#               Here, BUFR message type 002, subtype 195 (which currently is
+#               not defined in $LIST but might be defined for a test BUFR tank)
+#               will be included in the "002" dump along with all of the
+#               subtypes defined for type 002 in $LIST.  (Since all operational
+#               subtypes are defined in $LIST, this would only be plausible
+#               when pointing to a test BUFR tank.)
+#
+#            - if DGRP is a BUFR message type (data group message type/subtype
+#    case), then the contents of ADD_<DGRP> are interpreted as a sequence of
+#    individual BUFR message subtype (SSS) strings in the form SSS (separated
+#    by white space) which are dumped in addition to those originally in the
+#    resultant dump list for the applicable BUFR message type.
+#    Example:
+#                  export ADD_005="070 071"
+#                  dumpjb 2014062312 1.5 005 010 012
+#
+#               Here, BUFR message type 005, subtypes 070 (MODIS POES IR winds)
+#               and 071 (MODIS POES WV imager winds) will be included in the
+#               "005" dump along with specified subtypes 010 (GOES IR winds)
+#               and 012 (GOES visible winds).  (Since all subtypes wanted are
+#               already explicitly defined in dgrp2, ... , dgrpN in this case,
+#               this use of ADD_<DGRP> doesn't seem to ever be plausible.
+#
+#   DCOMROOT - default root directory path to $TANK, $EPRM and $QPRM
+#
+#   TANK   -  directory path to database          (default:${DCOMROOT})
+#                        (NOTE: This can be overidden for any individual BUFR
+#                                type/subtype in the list - see variable
+#                                "TANK_<TTTSSS>" below
+#                                        -- or --
+#                               this can be overidden for any individual data
+#                                group in the list - see variable
+#                                "TANK_<DGRP>" below)
+#
+#   TANK_<TTTSSS> - if BUFR message type TTT, subtype SSS is in the resultant
+#    list to be dumped (for either the data group mnemonic or data group
+#    message type/subtype case), then it will use this as the directory path to
+#    the database.  {If TANK_<TTTSSS> does not exist for a particular BUFR
+#    type/subtype in the list to be dumped, then the default  directory path to
+#    the database, imported via the environment variable $TANK, (see above), is
+#    used.}
+#
+#   TANK_<DGRP> - if DGRP is a data group in the list to dump (data group
+#    mnemonic case) or is a BUFR message type (data group mnemonic or data
+#    group message type/subtype case), then works like TANK_<TTTSSS> defined
+#    above, except all BUFR message types and subtypes in the resultant list to
+#    be dumped are affected.
+#
+#   DATA   -  directory path to user data destination              (default:pwd)
+#   EPRM   -  directory path/filename of edtbfr sdmedit/reject/list file
+#                                         (default:${DCOMROOT}/sdmedit)
+#   QPRM   -  directory path/filename of QUIPS flag file
+#                                           (default:${DCOMROOT}/quips)
+#   FORM   -  if != copy, the suffix qualifier for database dump files in
+#               $DATA {the database dump files for each data group will be
+#                      combined into a single file called $DATA/dgrp.$FORM }
+#               BUFR_COMBFR is executed and writes two "dummy" messages
+#               containing the dump center and processing times, resp. to the
+#               top of the combined output dump file
+#             if  = copy, each database dump file will be copied to $DATA as
+#               is {dump files are not combined into dgrp; each dump file is
+#                   called $DATA/TTT.SSS (where TTT is BUFR data type and SSS
+#                   is BUFR data subtype in the list to dump, either specified
+#                   explicitly or contained in one of the data groups dgrp)}
+#               BUFR_COMBFR is not executed, so BUFR_DUMPMD writes the two
+#               "dummy" messages containing the dump center and processing
+#               times, resp. to the top of each output dump file   (default:ibm)
+#
+#  The following 4 variables should be set to either "on" or "off"
+#   (if set to anything but "on", assumed to be "off")
+#  ---------------------------------------------------------------
+#   LOUD   -  if 'on', turns on script trace (set -x), echos more information,
+#             prints out dumpjb environment variables, and does not
+#             delete files in DATA_DUMPJB working directory path   (default:off)
+##############
+## WARNING: NEVER, EVER EXPLICITLY SET LOUD TO "on" IN THIS SCRIPT BECAUSE
+##          IT CAN RESULT IN A GARBLED DUMP STATUS FILE. TO INVOKE LOUD=on
+##          HERE, PRODUCTION/PARALLEL/TEST RUNS SHOULD ALWAYS EXPORT LOUD AS
+##          "on" AT THE HIGHEST (JOB) SCRIPT LEVEL.
+###############
+#   MPMD   -  run in parallel under poe or similar mpmd processing to allow 
+#             threads to run across cores. (MUST run under PBS)    (default:off)
+#   DUMPMD -  if imported as "on" will ALWAYS execute DUMPMD via $DMDX
+#             if not imported will ALWAYS execute DUMPMD via $DMDX UNLESS:
+#               BUFR type/subtype is 006/xx010-xx033 or 006/xx040-xx063 (see $
+#               below) and there is only one database file being windowed
+#               {i.e., requested dump interval does not span two days (see +
+#               below)} and $FORM is NOT set to "copy" (see % below)
+#             if imported as anything other than "on" will NEVER execute DUMPMD
+#               via $DMDX UNLESS: there are two database files being windowed
+#               {i.e., requested dump interval spans two days (see + below)}
+#               and $FORM is set to "copy" (see % below)            (default:on)
+#             $ - The database files in BUFR type/subtype 006/xx010-xx033 and
+#                   006/xx040-xx063 each contain only one hour of data, unique
+#                   to each subtype.  For this reason, a dump of any one of
+#                   these databases alone or some combination of the databases
+#                   (e.g., group mnemonics "rd2w04", "rd2r21" or "nexrad")
+#                   spanning two days need only process one database file
+#                   (e.g., a dump with center time 2005052100 and radius 1.5
+#                   hours need only process the database file containing data
+#                   for 20050520 for 22 and 23Z data, and 20050521 for 00, 01
+#                   02Z data - the logic has been changed to handle this
+#                   since normally with the 24-hour tanks a dump with this
+#                   center and radius value would have to process two database
+#                   files, 20050520 and 20050521)
+#             + - If there are two database files being windowed {e.g., the
+#                   dump center time is 2005052100 and the radius is 1.5 hours
+#                   and the BUFR type/subtype is NOT 006/xx010-xx033 or
+#                   006/xx040-xx063 (see $ above)} then DUMPMD must always be
+#                   executed (even if it is imported as something other than
+#                   "on") because it must combine the two database files into
+#                   one windowed file
+#             % - If FORM=copy then DUMPMD must always be executed (even for
+#                   BUFR type/subtype 006/xx010-xx033 and 006/xx040-xx063)
+#                   because in this case COMBFR is NOT executed and DUMPMD
+#                   must then write the two dummy messages containing the dump
+#                   center and processing times, respectively, to the top of
+#                   the windowed file (the writing of the dummy messages has
+#                   otherwise been moved from DUMPMD to COMBFR except for this
+#                   case where COMBFR does not run)
+#             Normally DUMPMD should NOT be imported by this script (i.e.,
+#               allow it to default "on") so that the 24-hour database files
+#               can be properly windowed by the DUMPMD and the 1-hour database
+#               files (BUFR type/subtype 006/xx010-xx033 and 006/xx040-xx063)
+#               can skip over this processing (unless FORM=copy) to save
+#               valuable wall-clock time in their dump processing.
+#   DUPC      - turns off duplicate check                           (default:on)
+#   DUPC_TAC  - when "on", enables TAC v BUFR duplicate checking    (default:on)
+#   TIME_TRIM - turns off time window trimming in duplicate check code
+#                                                                   (default:on)
+#   DUMPJBprocdate - Intended for validation of software upgrades only!  Can be
+#                    be set to to an artificial YYYYMMDDHHMM value to override
+#                    the current wall clock time normally stored in the second 
+#                    dummy message of the output dump file.       (default:none)
+#  
+#   Geographical filtering of the data
+#   ----------------------------------
+#   LALO   -  Geographical data filter.
+#             Set to either a rectangular lat/lon box where:
+#              LALO=sssnnneeewww  where sss=southern latitude limit in degrees
+#                                           (N+, S-)
+#                                       nnn=northern latitude limit in degrees
+#                                           (N+, S-)
+#                                       eee=eastern longitude limit in degrees
+#                                           (0.-360. West)
+#                                       www=western longitude limit in degrees
+#                                           (0.-360. West)
+#      e.g.,  LALO=" 10 50 70120"  dumps everything in the rectangle bounded by
+#                                  10-50 degrees North latitude by 70-120
+#                                  degrees West longitude (note that quotes
+#                                  are needed if leading zeroes are not
+#                                  specified)
+#
+#             -- or --
+#
+#             Set to a lat/lon circle where:
+#              LALO=yyyxxxdddddC  where yyy=latitude in center of circle in
+#                                           degrees (N+,S-)
+#                                       xxx=longitude in center of circle in
+#                                           degrees (0.-360. West)
+#                                       ddddd=radius for circle filter in km
+#      e.g.,  LALO="045269 6500C"  dumps everything in a circle of radius 6500
+#                                  km centered at 45 degrees North latitude and
+#                                  260 degrees West longitude (note that quotes
+#                                  are needed if leading zeroes are not
+#                                  specified)
+#
+#             -- or --
+#
+#             Set to a mask file where:
+#              LALO=F<file name>  where <file name>=full path to mask file
+#                    There is currently only possible mask:
+#                         full global lat/lon
+#                         grid spacing is 0.5 deg
+#                         integer*4 with dimension mask(720,361)
+#                         mask(1,1) is at 0.0 E lon, 90.0 S lat
+#                         mask(720,1) is at 359.5 E lon, -90.0 S lat
+#                         mask(1,361) is at 0.0 E lon, 90.0 N lat
+#                         mask(720,361) is at 359.5 E lon, 90.0 N lat
+#                         mask(i,j) = 0 --> grid point is outside domain
+#                         mask(i,j) = 1 --> grid point is inside domain
+#      e.g.,  LALO="F/nwprod/fix/nam_expdomain_halfdeg_imask.gbl"
+#                                  dumps everything inside the 0,5 deg lat/lon
+#                                  mask specified in the file
+#                                  /nwprod/fix/nam_expdomain_halfdeg_imask.gbl
+#                                  (the expanded NAM domain)
+#
+#             -- or --
+#
+#             LALO=0             bypasses geographical filtering       (default)
+#==============================================================================
+#==============================================================================
+#   The following script variables are technically user controllable but would
+#   more typically be set for you, eg: as a common environment variable; by 
+#   module or script; or computed on the fly based on requested resources
+#
+#  DUMPJBtpn   - Tasks per node for cfp.  If not imported, 
+#                computed on the fly based on number of tasks to run in 
+#                mpmd-mode and number of compute nodes.
+#  DUMPJBprocs - Max number of concurrent processes if using MPMD.
+#                If not imported, computed on the fly based on $NCPUS (see below)
+#==============================================================================
+#==============================================================================
+#   The following variables are described for informational purposes but should
+#   not be set by the user.
+#
+#  NCPUS       - Number of processors allocated (for runs with MPMD=on)
+#  PALS_APID   - If MPMD=on, this variable is
+#                checked to ensure that this instance of dumpjb is not already
+#                running under PALS.  (If it is set, then MPMD is changed to
+#                "off" and a warning message is printed to standard output).
+#==============================================================================
+#==============================================================================
+#
+# Attributes:
+#
+#   Language: ksh script
+#   Machine:  WCOSS Cray-EX
+####
+ 
+set -a
+
+##############
+## WARNING: NEVER, EVER EXPLICITLY SET LOUD TO "on" IN THIS SCRIPT BECAUSE
+##          IT CAN RESULT IN A GARBLED DUMP STATUS FILE. TO INVOKE LOUD=on
+##          HERE, PRODUCTION/PARALLEL/TEST RUNS SHOULD ALWAYS EXPORT LOUD AS
+##          "on" AT THE HIGHEST (JOB) SCRIPT LEVEL.
+###############
+[ -z "$LOUD" ] && LOUD=off
+
+set +x
+echo
+echo "********************************************************************"
+echo "********************************************************************"
+echo "     STARTING EXECUTION OF THE UNIVERSAL DUMP SCRIPT - DUMPJB       "
+echo "                    version 08-20-2020                              "
+echo "             Start time: `date -u`                                  "
+echo "********************************************************************"
+echo "********************************************************************"
+[ $LOUD = on ] && set -x
+
+RETC=0
+RETG=0
+
+#  clear out any "current" logical unit number assignments since the
+#  programs in this script do not call prep_step (these may be present if
+#  the parent script has executed any programs)
+#  ----------------------------------------------------------------------
+
+   unset FORT00 `env | grep "^FORT[0-9]\{1,\}=" | awk -F= '{print $1}'`
+
+
+#  define the paths to the database and dump executables and files
+#  ---------------------------------------------------------------
+ 
+[ -z "$DATA" ]   && DATA=`pwd`
+if [[ -z "$DCOMROOT" && -z "$TANK" ]]; then
+    set +x
+    echo
+    echo "*** Variable DCOMROOT is not set. Did you load module prod_envir? ***"
+    echo "*** Cannot continue without knowing where to find the bufr tanks! ***"
+    echo "***                  Exiting with status 99!!                     ***"
+    [ $LOUD = on ] && set -x
+    exit 99
+fi
+if [[ -z "$DUEX" ]]; then
+  if [[ -z "$HOMEbufr_dump" ]]; then
+    set +x
+    echo "Cannot continue without knowing where to find dump executables."
+    echo "Either bufr_dump_ver or DUEX must be defined."
+    echo
+    [ $LOUD = on ] && set -x
+    exit 99
+  fi
+  DUEX=$HOMEbufr_dump/exec
+fi
+set +x
+echo
+echo "All executables used in this run of DUMPJB are found in directory path"
+echo "$DUEX"
+echo
+[ $LOUD = on ] && set -x
+
+[ -z "$RADX" ]   && RADX=$DUEX/bufr_raddate
+[ -z "$DMDX" ]   && DMDX=$DUEX/bufr_dumpmd
+[ -z "$GEOX" ]   && GEOX=$DUEX/bufr_geofil
+[ -z "$CORX" ]   && CORX=$DUEX/bufr_dupcor
+[ -z "$SATX" ]   && SATX=$DUEX/bufr_dupsat
+[ -z "$SSTX" ]   && SSTX=$DUEX/bufr_dupsst
+[ -z "$MRGX" ]   && MRGX=$DUEX/bufr_dupmrg
+[ -z "$MARX" ]   && MARX=$DUEX/bufr_dupmar
+[ -z "$RDWX" ]   && RDWX=$DUEX/bufr_duprad
+[ -z "$AIRX" ]   && AIRX=$DUEX/bufr_dupair
+[ -z "$SHPX" ]   && SHPX=$DUEX/bufr_dupshp
+[ -z "$CMANX" ]  && CMANX=$DUEX/bufr_dupcman
+[ -z "$SYPX" ]   && SYPX=$DUEX/bufr_dupsyp
+[ -z "$TACX" ]   && TACX=$DUEX/bufr_duptac
+[ -z "$EDTX" ]   && EDTX=$DUEX/bufr_edtbfr
+[ -z "$QPCX" ]   && QPCX=$DUEX/bufr_quipc
+[ -z "$CHKX" ]   && CHKX=$DUEX/bufr_chkbfr
+[ -z "$COMX" ]   && COMX=$DUEX/bufr_combfr
+
+#  define the path to the bufr_dumplist file
+#  -----------------------------------------
+ 
+if [[ -z "$LIST" ]]; then
+  if [[ -z "$DFIX" ]]; then
+    if [[ -z "$HOMEbufr_dump" ]]; then
+      set +x
+      echo
+      echo "Cannot continue without knowing where to find bufr_dumplist file."
+      echo "Either HOMEbufr_dump, DFIX, or LIST must be defined."
+      echo
+      [ $LOUD = on ] && set -x
+      exit 99
+    fi
+    DFIX=$HOMEbufr_dump/fix
+  fi
+  LIST=$DFIX/bufr_dumplist
+fi
+set +x
+echo
+echo "The bufr_dumplist file used in this run of DUMPJB is found in path"
+echo "$LIST"
+echo "********************************************************************"
+echo "********************************************************************"
+echo "  THIS EXECUTION OF DUMPJB USED THIS BUFR_DUMPLIST FILE             "
+echo "  $LIST                                                             "
+echo "********************************************************************"
+echo "********************************************************************"
+echo
+[ $LOUD = on ] && set -x
+
+[ -z "$LALO" ]   && LALO=0
+[ -z "$TANK" ]   && TANK=${DCOMROOT:?}
+[ -z "$EPRM" ]   && EPRM=${DCOMROOT:-${TANK}:-?}/sdmedit
+[ -z "$QPRM" ]   && QPRM=${DCOMROOT:-${TANK}:-?}/quips
+
+if [ -n "$DATA_DUMPJB" ]; then
+  data_dumpjb_imported=YES
+else # put DATA_DUMPJB under $TMPDIR
+  data_dumpjb_imported=NO
+  user8=`echo "$USER" | cut -c1-8`
+  if [ $user8 = "ops.prod" -o $user8 = "ops.para" ]; then  # production run
+    TMPDIR=$DATA
+  else
+# Important point: TMPDIR should never default to $DATA for checkout runs
+#  because it is never known what the user has set DATA to and this could
+#  quickly fill up a file system if it is not a temp system that is
+#  regularly cleaned out.
+   if [ -n "$DTMPDIR" ]; then
+      TMPDIR=$DTMPDIR
+   elif [ -z "${TMPDIR}" ]; then
+      set +x
+      echo "*******************************************************************"
+      echo "***********************   DUMPJB FAILED!!   ***********************"
+      echo "                                                                   "
+      echo "Please do one of the following:                                    "
+      echo "    -- export DATA_DUMPJB to point to a specific directory for     "
+      echo "       dumpjb to write its working files to, or;                   "
+      echo "    -- export TMPDIR (or DTMPDIR) which should point to your own   "
+      echo "       scrub space and a unique subdirectory will be created below."
+      echo "                                                                   "
+      echo "If you do both, DATA_DUMPJB takes precedence and that directory    "
+      echo "will remain after dumpjb is done.                                  "
+      echo "                                                                   "
+      echo "WARNING: This script removes all files in the DATA_DUMPJB directory"
+      echo "         as well as the directory itself prior to writing into it -"
+      echo "         something to remember if you are exporting DATA_DUMPJB to "
+      echo "         this script!!!                                            "
+      echo "                                                                   "
+      echo "***********************   DUMPJB FAILED!!   ***********************"
+      echo "*******************************************************************"
+      echo 
+      [ $LOUD = on ] && set -x
+      exit 99
+   fi
+  fi
+  DATA_DUMPJB=$TMPDIR/dumpjb.`hostname -s`.`date -u +%Y%m%d%H%M%S`.$$
+  if [ -d $DATA_DUMPJB ]; then
+    set +x
+    echo
+    echo "The directory path to working directories, DATA_DUMPJB "
+    echo " already exists -- this should never happen -- try running again"
+    echo
+    [ $LOUD = on ] && set -x
+    exit 99
+  fi
+fi
+rm -rf   $DATA_DUMPJB
+mkdir -p $DATA_DUMPJB
+err=$?
+if [ $err -ne 0 ]; then
+   set +x
+   echo
+   echo "Cannot create directory path to working directories,"
+   echo "  $DATA_DUMPJB -- perhaps file system is full, does not exist, or"
+   echo "  $USER does not have write permissions or has hit quota."
+   echo
+   [ $LOUD = on ] && set -x
+   exit 99
+fi
+[ -z "$FORM" ] && FORM=ibm
+[ -z "$MPMD" ] && MPMD=off
+
+if [ "$MPMD" = 'on' -a -z "$PBS_O_HOST" ]; then
+   set +x
+   echo
+   echo "YOU have set MPMD to on but are not running under PBS!!"
+   echo "You must run under PBS to use MPMD option.  Exiting.."
+   echo
+   [ $LOUD = on ] && set -x
+   exit 99
+fi
+if [ "$MPMD" = 'on' ]; then
+      if [ -n "$PALS_APID" ]; then
+         set +x
+         echo
+         echo "** You requested MPMD=on but we are already runnng under PALS **"
+         echo "**   Sorry... We must change to MPMD=off                      **"
+         echo
+         [ $LOUD = on ] && set -x
+         MPMD=off
+      fi
+fi
+
+[ -z "$DUPC" ] && DUPC=on
+[ -z "$DUPC_TAC" ] && DUPC_TAC=on
+[ "$DUPC_TAC" != on ] && DUPC_TAC=off
+[ -z "$TIME_TRIM" ] && TIME_TRIM=on
+
+if [ -z "$DUMPMD" ]; then
+   DUMPMD=on   # if DUMPMD not imported it defaults to "on"; subtypes in 1-hr
+               #  database files may not run it but all other types will
+elif [ $DUMPMD = on ]; then
+   DUMPMD=ON   # if DUMPMD imported as "on", it is switched to "ON" forcing ALL
+               #  types to run it
+elif [ $DUMPMD = ON ]; then
+   DUMPMD=off  # if DUMPMD imported as "ON", it is switched to "off" forcing
+               #  ALL types to NOT run it UNLESS other conditions are met
+               #  (this keeps next comment below true)
+fi
+
+# If DUMPMD is imported as any value other than "on" (i.e., as "OFF",
+#  "off", "dennis", or even "ON"), then DUMPMD is not executed for ANY type
+#  UNLESS other conditions are met
+
+ 
+PATH=$DUEX::$PATH
+LINE=$DATA_DUMPJB/line
+NODE=-1
+ 
+#  print the dumpjb environment if arg #1 is 'env' or LOUD is 'on'
+#  exit if arg #1 is 'env'
+#  ---------------------------------------------------------------
+ 
+if [ $1 = env -o $LOUD = on ]; then
+cat <<eof
+DUEX = $DUEX
+RADX = $RADX
+DMDX = $DMDX
+GEOX = $GEOX
+CORX = $CORX
+SATX = $SATX
+SSTX = $SSTX
+MRGX = $MRGX
+MARX = $MARX
+RDWX = $RDWX
+AIRX = $AIRX
+SHPX = $SHPX
+CMANX = $CMANX
+SYPX = $SYPX
+TACX = $TACX
+EDTX = $EDTX
+QPCX = $QPCX
+CHKX = $CHKX
+COMX = $COMX
+DFIX = $DFIX
+LIST = $LIST
+TANK = $TANK
+EPRM = $EPRM
+QPRM = $QPRM
+DATA = $DATA
+TMPDIR = $TMPDIR
+DATA_DUMPJB = $DATA_DUMPJB
+FORM = $FORM
+LOUD = $LOUD
+MPMD = $MPMD
+DUPC = $DUPC
+DUPC_TAC = $DUPC_TAC
+TIME_TRIM = $TIME_TRIM
+LALO = $LALO
+eof
+[ $1 = env ]  &&  exit
+fi
+ 
+#  compute the endpoints of the time window defined by the arguments
+#  -----------------------------------------------------------------
+ 
+RDT0=$1
+DTIM=$2
+echo "$RDT0      0" > $DATA_DUMPJB/stdin_RDT0
+$RADX < $DATA_DUMPJB/stdin_RDT0 > $DATA_DUMPJB/stdout_RDT0 2>/dev/null
+RDT0=`cat $DATA_DUMPJB/stdout_RDT0`
+echo "$RDT0 -$DTIM" > $DATA_DUMPJB/stdin_RDT1
+$RADX < $DATA_DUMPJB/stdin_RDT1 > $DATA_DUMPJB/stdout_RDT1 2>/dev/null
+RDT1=`cat $DATA_DUMPJB/stdout_RDT1`
+echo "$RDT0  $DTIM" > $DATA_DUMPJB/stdin_RDT2
+$RADX < $DATA_DUMPJB/stdin_RDT2 > $DATA_DUMPJB/stdout_RDT2 2>/dev/null
+RDT2=`cat $DATA_DUMPJB/stdout_RDT2`
+[ -z "$RDT1" -o -z "$RDT2" ] && { echo "PROBLEM with RADDATE"; exit 99; }
+ 
+DATDAY1=`echo "$RDT1"|cut -c 1-8`
+DATDAY2=`echo "$RDT2"|cut -c 1-8`
+
+DATMON1=`echo "$RDT1"|cut -c 1-6`
+DATMON2=`echo "$RDT2"|cut -c 1-6`
+
+
+RDT1_orig=$RDT1
+RDT2_orig=$RDT2
+DATDAY1_orig=$DATDAY1
+DATDAY2_orig=$DATDAY2
+DATMON1_orig=$DATMON1
+DATMON2_orig=$DATMON2
+TANK_orig=$TANK
+
+
+#  setup process lists based on the nature of the arguments
+#  --------------------------------------------------------
+ 
+NAMES=$3
+TYPE=`grep "_$NAMES " $LIST|cut -c 12-14`
+[ "$TYPE" = mgt -a $# -gt 3 ] && SUBS="" || TYPE=nem
+ 
+if [ $TYPE = mgt ]; then
+# data group message type/subtype case
+# ------------------------------------
+   while [ -n "$4" ]
+   do
+   SUBS="$SUBS $4"
+   shift
+   done
+else
+# data group mnemonic case
+# ------------------------
+   while [ -n "$4" ]
+   do
+   NAMES="$NAMES $4"
+   shift
+   done
+fi
+ 
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                           loop over data list NAMES
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+for NAME in $NAMES
+do
+ 
+if [ "${#NAME}" -gt '5' ]; then
+   NAMEprt=$NAME
+else
+   NAMEprt=`echo "$NAME     " | cut -c1-6`
+fi
+
+#  set up working directories for each NAME
+#  ----------------------------------------
+ 
+DIRD=$DATA_DUMPJB/$NAME/dird
+[ -d $DIRD ] && rm -rf $DIRD
+mkdir -p $DIRD
+
+DEST=$DATA_DUMPJB/$NAME/dest
+[ -d $DEST ] && rm -rf $DEST
+mkdir -p $DEST
+ 
+cd $DIRD
+ 
+#  process the data string for this group into message type/subtype words
+#  ----------------------------------------------------------------------
+ 
+if [ $TYPE = mgt ]; then
+# data group message type/subtype case
+# ------------------------------------
+   eval ADD_name=\$ADD_$NAME
+   if [ -n "$ADD_name" ]; then
+      for ADDsub in $ADD_name; do
+        if [ `echo $SUBS | grep -c $ADDsub` -eq 0 ]; then
+          SUBS="$SUBS $ADDsub"
+        fi
+     done
+   fi
+   MTST=""
+   for SUB in $SUBS;do
+      MTST="$MTST $NAME$SUB"
+   done
+else
+# data group mnemonic case
+# ------------------------
+   >$LINE
+   grep "_$NAME " $LIST>$LINE
+   eval ADD_name=\$ADD_$NAME
+   if [ -n "$ADD_name" ]; then
+      for ADDsub in $ADD_name; do
+         if [ `grep -c -w $ADDsub $LINE` -eq 0 ]; then
+            mv $LINE ${LINE}beg
+            echo $ADDsub > ${LINE}end
+            paste -d" " ${LINE}beg ${LINE}end > $LINE
+            rm ${LINE}beg ${LINE}end
+         fi
+      done
+   fi
+   [ -s $LINE ] && MTST="`cat $LINE|cut -c 16-500|cut -f 1 -d#`"
+   if [ ! -s $LINE ]; then
+      echo
+      echo "Data group $NAMEprt not found in $LIST - skip"
+      echo
+      continue
+   fi
+fi
+
+
+eval RDT1_${NAME}_min=$RDT1_orig
+eval RDT2_${NAME}_max=$RDT2_orig
+
+nindx_override=0
+nindx_original=0
+mindx_override=0
+mindx_original=0
+
+
+#  see if directory path to dbase is overriden for all types/subtypes in $NAME
+#  ---------------------------------------------------------------------------
+
+TANK=$TANK_orig
+TANK_this_DGRP=no
+eval TANK_this=\$TANK_${NAME}
+[ -n "$TANK_this" ] &&  TANK_this_DGRP=yes
+
+
+#  see if time window radius is overriden for all types/subtypes in $NAME
+#  ----------------------------------------------------------------------
+
+DTIM_earliest_this_DGRP=no
+eval DTIM_earliest=\$DTIM_earliest_${NAME}
+[ -n "$DTIM_earliest" ] &&  DTIM_earliest_this_DGRP=yes
+
+DTIM_latest_this_DGRP=no
+eval DTIM_latest=\$DTIM_latest_${NAME}
+[ -n "$DTIM_latest" ]  &&  DTIM_latest_this_DGRP=yes
+
+ 
+#------------------------------------------------------------------------------
+#                     loop over each subtype in NAMES
+#  If MPMD=on, threads will be collected in a command file for mpmd processing.
+#  Otherwise, loop will process each subtype serially.
+#------------------------------------------------------------------------------
+ 
+typeset -Z2 pos
+pos=00
+for mtst in $MTST
+do
+
+mt=`echo "$mtst"|cut -c 1-3`
+st=`echo "$mtst"|cut -c 4-6`
+
+eval skip_this=\$SKIP_$mtst
+if [ -n "$skip_this" ]; then
+   echo "Skipped $mt.$st in data group $NAMEprt as directed"
+   continue
+fi
+
+pos=`expr $pos + 1`
+
+thread=$mt.$st.sh
+>$thread
+[ $LOUD = on ]  &&  echo " thread name is $thread"
+
+
+#  see if directory path to database is overriden for this type/subtype
+#  --------------------------------------------------------------------
+
+TANK=$TANK_orig
+[ $TANK_this_DGRP != yes ] && eval TANK_this=\$TANK_$mtst
+[ ! -z "$TANK_this" ] && TANK=$TANK_this
+
+
+#  see if time window radius is overriden for this type/subtype
+#  ------------------------------------------------------------
+
+[ $DTIM_earliest_this_DGRP != yes ] && eval DTIM_earliest=\$DTIM_earliest_$mtst
+[ $DTIM_latest_this_DGRP   != yes ] && eval DTIM_latest=\$DTIM_latest_$mtst
+
+if [ ! -z "$DTIM_earliest" ]; then
+   DTIM=$DTIM_earliest
+   echo "$RDT0 $DTIM" > stdin_RDT1_$mtst
+   $RADX < stdin_RDT1_$mtst > stdout_RDT1_$mtst 2>/dev/null
+   RDT1=`cat stdout_RDT1_$mtst`
+   DATDAY1=`echo "$RDT1"|cut -c 1-8`
+   DATMON1=`echo "$RDT1"|cut -c 1-6`
+   nindx_override=`expr ${nindx_override} + 1`
+   [ "${nindx_override}" -eq '1' -a "${nindx_original}" -eq '0' ]  && \
+    eval RDT1_${NAME}_min=$RDT1
+else
+   RDT1=$RDT1_orig
+   DATDAY1=$DATDAY1_orig
+   DATMON1=$DATMON1_orig
+   nindx_original=`expr ${nindx_original} + 1`
+fi
+if [ ! -z "$DTIM_latest" ]; then
+   DTIM=$DTIM_latest
+   echo "$RDT0 $DTIM" > stdin_RDT2_$mtst
+   $RADX < stdin_RDT2_$mtst > stdout_RDT2_$mtst 2>/dev/null
+   RDT2=`cat stdout_RDT2_$mtst`
+   DATDAY2=`echo "$RDT2"|cut -c 1-8`
+   DATMON2=`echo "$RDT2"|cut -c 1-6`
+   mindx_override=`expr ${mindx_override} + 1`
+   [ "${mindx_override}" -eq '1' -a "${mindx_original}" -eq '0' ]  && \
+    eval RDT2_${NAME}_max=$RDT2
+else
+   RDT2=$RDT2_orig
+   DATDAY2=$DATDAY2_orig
+   DATMON2=$DATMON2_orig
+   mindx_original=`expr ${mindx_original} + 1`
+fi
+[ -z "$RDT1" -o -z "$RDT2" ] && { echo "PROBLEM with RADDATE"; exit 99; }
+
+#  the minimum and maximum times amongst all type/subtypes in a group
+#   must be saved for later use by edtbfr and/or quipc programs
+#  ------------------------------------------------------------------
+
+RDT1x100=\
+`expr \`echo "\$RDT1" | cut -c1-10\` \* 100 + \`echo "\$RDT1" | cut -c12-13\``
+if [ "${nindx_override}" -gt '0' ]; then
+   eval RDT1_this_min=\$RDT1_${NAME}_min
+   RDT1_this_minx100=\
+`expr \`echo "\$RDT1_this_min" | cut -c1-10\` \* 100 + \
+    \`echo "\$RDT1_this_min" | cut -c12-13\``
+   [ "$RDT1x100" -lt "$RDT1_this_minx100" ]  &&  eval RDT1_${NAME}_min=$RDT1
+fi
+
+RDT2x100=\
+`expr \`echo "$RDT2" | cut -c1-10\` \* 100 + \`echo "$RDT2" | cut -c12-13\``
+if [ "${mindx_override}" -gt '0' ]; then
+   eval RDT2_this_max=\$RDT2_${NAME}_max
+   RDT2_this_maxx100=\
+`expr \`echo "\$RDT2_this_max" | cut -c1-10\` \* 100 + \
+    \`echo "\$RDT2_this_max" | cut -c12-13\``
+   [ "$RDT2x100" -gt "$RDT2_this_maxx100" ]  &&  eval RDT2_${NAME}_max=$RDT2
+fi
+
+
+#  at this point need to point to daily or monthly tanks
+#  -----------------------------------------------------
+
+if [ $mt = 031 -a $st -lt 100 ]; then
+   DAT1=$DATMON1
+   DAT2=$DATMON2
+else
+   DAT1=$DATDAY1
+   DAT2=$DATDAY2
+
+   if [ $mt = 006 -a $st -ge 010 -a $st -le 063 ]; then
+
+#  if the type/subtype is one of the hourly Level 2 radial wind or
+#  reflectivity types, DUMPMD is set to "off" here unless to was forced to
+#  be "on" by the parent script)
+#    further, if the dump window spans two days, set the dates to be the same
+#    (as if the dump window does not span two days) such that only one
+#    database file is later created (the single date set here is the YYYYMMDD
+#    for the hourly database which is actually within the requested time
+#    window)
+#  this allows potential skipping of DUMPMD processing (it could now only be
+#  executed if script variable "FORM" is set to "copy")
+#  --------------------------------------------------------------------------
+
+      [ $DUMPMD != ON ]  && DUMPMD=off
+      if [ $DAT1 != $DAT2 ]; then
+         if [ \( $st -ge 010 -a $st -le 021 \) -o \
+              \( $st -ge 040 -a $st -le 051 \) ]; then
+echo "set $DAT1 to $DAT2"  # temp. diag print
+            DAT1=$DAT2
+         elif [ \( $st -ge 022 -a $st -le 033 \) -o \
+              \( $st -ge 052 -a $st -le 063 \) ]; then
+echo "set $DAT2 to $DAT1"  # temp. diag print
+            DAT2=$DAT1
+         fi
+      fi
+   fi
+fi
+
+#  see which database files (if any) exist for this thread
+#  -------------------------------------------------------
+#  Note that a zero-length file now satisfies existence.
+#  The assumption is made that a zero-length file is not
+#  really zero-length, but is momentarily being written to
+#  by one of the ingest programs since it would otherwise
+#  not exist.  In this event, sleep 30 seconds and test
+#  for non-zero length.  If still zero-length, give up and
+#  set file to "missing".
+#  -------------------------------------------------------
+ 
+FILO=${pos}_$mt.$st
+ 
+cp /dev/null $DEST/$FILO  # Initialize output dump file as null
+
+FIL1=$TANK/$DAT1/b$mt/xx$st
+[ -f $FIL1 ]  || FIL1=NONE
+FIL1s=$TANK/$DAT1/b$mt/xx$st
+[ -s $FIL1s ] || FIL1s=NONE
+FIL2=$TANK/$DAT2/b$mt/xx$st
+[ -f $FIL2 ]  || FIL2=NONE
+FIL2s=$TANK/$DAT2/b$mt/xx$st
+[ -s $FIL2s ] || FIL2s=NONE
+
+if [ \( $FIL1 != NONE -a ! -r $FIL1 \) -o \
+     \( $FIL2 != NONE -a ! -r $FIL2 \) ]; then
+   FIL1=NONE
+   FIL2=NONE
+   echo
+   echo "~~~> $mt.$st in data group $NAMEprt does not have read permission"
+   echo "     this data is RESTRICTED - treat as MISSING"
+fi
+
+LALO_1=`echo $LALO | cut -c1`
+unset fil1
+if [ $FIL1 = NONE -a $FIL2 = NONE ]; then
+   echo
+   echo "Missing $mt.$st in data group $NAMEprt for ${RDT1}-${RDT2}"
+   if [ "$LALO" = 0 ]; then
+      echo "Domain for $mt.$st in data group $NAMEprt : Global (NO lat/lon \
+filtering)"
+   elif [ "$LALO_1" = F ]; then
+      echo "Domain for $mt.$st in data group $NAMEprt : Mask file `echo $LALO \
+ | cut -c2-`"
+   else
+      echo "Domain for $mt.$st in data group $NAMEprt : `echo "$LALO"|\
+cut -c1-3`-`echo "$LALO"|cut -c4-6` N lat, `echo "$LALO"|cut -c7-9`-`echo \
+"$LALO"|cut -c10-12` W lon"
+   fi
+
+#  If no tanks found for today, see if a tank from yesterday exists so that
+#   dump file can at least have a center time and dump time (but no reports)
+#   (Note: Does not apply to BUFR Type 031 data in monthly tanks)
+#  -------------------------------------------------------------------------
+
+   if [ "${#DAT1}" -eq '8' ]; then
+      DAT1m1=$(date --date="$DAT1 -1 day" +%Y%m%d)
+      fil1=$TANK/$DAT1m1/b$mt/xx$st
+      if [ -f $fil1 ]; then
+         FIL1=$fil1
+      else
+         unset fil1
+         continue
+      fi
+   else
+      continue
+   fi
+else
+   if [ $FIL1 != NONE -a $FIL1s = NONE ]; then
+      echo "$FIL1 exists but is empty (suddenly offline?)"
+      msg1="$FIL1 exists but is empty (suddenly offline?)"
+      echo "  - sleep for 30 seconds and try again"
+      msg2="  - sleep for 30 seconds and try again"
+      if [ -n "$jlogfile" ]; then
+         $DATA/postmsg "$jlogfile" "$msg1"
+         $DATA/postmsg "$jlogfile" "$msg2"
+      fi
+      sleep 30
+      if [ -s $TANK/$DAT1/b$mt/xx$st ]; then
+         echo "$TANK/$DAT1/b$mt/xx$st is no longer empty!"
+         msg="$TANK/$DAT1/b$mt/xx$st is no longer empty!"
+         FIL1s=$TANK/$DAT1/b$mt/xx$st
+      else
+         echo "$TANK/$DAT1/b$mt/xx$st is still empty"
+         msg="$TANK/$DAT1/b$mt/xx$st is still empty"
+      fi
+      [ -n "$jlogfile" ] && $DATA/postmsg "$jlogfile" "$msg"
+   fi
+   if [ $FIL1 != $FIL2 ]; then
+      if [ $FIL2 != NONE -a $FIL2s = NONE ]; then
+         echo "$FIL2 exists but is empty (suddenly offline?)"
+         msg1="$FIL2 exists but is empty (suddenly offline?)"
+         echo "  - sleep for 30 seconds and try again"
+         msg2="  - sleep for 30 seconds and try again"
+         if [ -n "$jlogfile" ]; then
+            $DATA/postmsg "$jlogfile" "$msg1"
+            $DATA/postmsg "$jlogfile" "$msg2"
+         fi
+         sleep 30
+         if [ -s $TANK/$DAT2/b$mt/xx$st ]; then
+            echo "$TANK/$DAT2/b$mt/xx$st is no longer empty!"
+            msg="$TANK/$DAT2/b$mt/xx$st is no longer empty!"
+            FIL2s=$TANK/$DAT2/b$mt/xx$st
+         else
+            echo "$TANK/$DAT2/b$mt/xx$st is still empty"
+            msg="$TANK/$DAT2/b$mt/xx$st is still empty"
+         fi
+         [ -n "$jlogfile" ] && $DATA/postmsg "$jlogfile" "$msg"
+      fi
+   fi
+   if [ $FIL1s = NONE -a $FIL2s = NONE ]; then
+      echo
+      echo "Missing $mt.$st in data group $NAMEprt for ${RDT1}-${RDT2}"
+      if [ "$LALO" = 0 ]; then
+         echo "Domain for $mt.$st in data group $NAMEprt : Global (NO lat/lon \
+filtering)"
+      elif [ "$LALO_1" = F ]; then
+         echo "Domain for $mt.$st in data group $NAMEprt : Mask file `echo \
+ $LALO | cut -c2-`"
+      else
+         echo "Domain for $mt.$st in data group $NAMEprt : `echo "$LALO"|\
+cut -c1-3`-`echo "$LALO"|cut -c4-6` N lat, `echo "$LALO"|cut -c7-9`-`echo \
+"$LALO"|cut -c10-12` W lon"
+      fi
+      continue
+   else
+      [ $FIL1s = NONE ]  &&  FIL1=NONE
+      [ $FIL2s = NONE ]  &&  FIL2=NONE
+      echo
+      echo "Dumping $mt.$st in data group $NAMEprt for ${RDT1}-${RDT2}"
+      if [ "$LALO" = 0 ]; then
+         echo "Domain for $mt.$st in data group $NAMEprt : Global (NO lat/lon \
+filtering)"
+      elif [ "$LALO_1" = F ]; then
+         echo "Domain for $mt.$st in data group $NAMEprt : Mask file `echo \
+ $LALO | cut -c2-`"
+      else
+         echo "Domain for $mt.$st in data group $NAMEprt : `echo "$LALO"|\
+cut -c1-3`-`echo "$LALO"|cut -c4-6` N lat, `echo "$LALO"|cut -c7-9`-`echo \
+"$LALO"|cut -c10-12` W lon"
+      fi
+   fi
+fi
+
+
+[ "$RDT1x100" -gt "$RDT2x100" ] && \
+ { echo "PROBLEM with specified center time offset values"; exit 99; }
+
+ 
+[ $FIL1 = $FIL2 ] && FIL2=NONE
+ 
+#  set the DUPE1 and DUPE2 parameters depending on mesgtyp/subtyp
+#   (type of report)
+#  --------------------------------------------------------------
+ 
+DUPE1=$CORX
+DUPE2=NONE
+[ $mt -eq 000 -a $st -eq 007                               ] && DUPE1=$MARX
+[ $mt -eq 001                                              ] && DUPE1=$MARX
+[ $mt -eq 002 -a \( $st -le 005 -o $st -eq 009 \)          ] && DUPE1=$MRGX
+[ $mt -eq 003 -o $mt -eq 005 -o $mt -eq 012 -o $mt -eq 021 ] && DUPE1=$SATX
+[ $mt -eq 012 -a \( $st -ge 010 -a $st -le 012 \)          ] && DUPE1=$SSTX
+[ $mt -eq 012 -a \( $st -ge 017 -a $st -le 018 \)          ] && DUPE1=$SSTX
+[ $mt -eq 012 -a \( $st -ge 023 -a $st -le 025 \)          ] && DUPE1=$SSTX
+[ $mt -eq 006                                              ] && DUPE1=$RDWX
+if [ $mt -eq 255 ]; then
+   DUPE1=$MARX
+   DUPE2=$CORX
+fi
+ 
+NODE=`expr $NODE + 1`
+
+#VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+#VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+#  run dump iterations: in parallel  shells  if MPMD is on
+#  -------------------------------------------------------
+ 
+cat<<EOFthread>$thread
+#!/bin/ksh
+set -e
+[ $LOUD = on ] && set -x
+ 
+cd $DIRD
+
+{ echo
+echo "********************************************************************"
+if [ "\$MPMD" = 'on' ]; then
+   echo "Script mpmd.$thread $NODE"
+   [ -n "\$PALS_LOCAL_RANKID" ] && echo "Running on rank id \$PALS_LOCAL_RANKID"
+   echo "Processing number $(($NODE+1)) out of \$((\$NODE+1)) requested BUFR\
+ subtypes available for dumping"
+else
+   echo "Script $thread"
+fi
+echo "Executing on node  \`hostname -s\`"
+echo "Starting time: \`date -u\`"
+echo "********************************************************************"
+echo
+[ "\$MPMD" = 'on' -a "$LOUD" = 'on' ]  &&  env | egrep "^PALS_"
+echo "--------------------------------------------------------------------"
+echo "DUMPING $mt.$st in data group $NAME for ${RDT1}-${RDT2}"
+if [ $DUPC = on ]; then
+   echo "Duplicate check program: $DUPE1"
+   [ $DUPE2 != NONE ]  && echo "Follow-up duplicate check program: $DUPE2"
+else
+   echo "Duplicate check NOT PERFORMED (turned off by user)"
+fi
+echo "BUFR Database file(s):"
+if [ -n "$fil1" ]; then
+   echo " -1- Originally NONE, so go back one day to: $FIL1"
+   echo "      (dump will have ZERO reports but will contain dictionary, \
+center and dump time messages)"
+else
+   echo " -1- $FIL1"
+fi
+[ $FIL2 != NONE ] && echo " -2- $FIL2"
+echo "--------------------------------------------------------------------"
+ 
+fil1_good=no
+fil2_good=no
+if [ \( $DUMPMD = on -o $DUMPMD = ON \) -o \( -s $FIL1 -a -s $FIL2 \) -o \
+     $FORM = copy ]; then
+   if [ $FORM = copy ]; then
+      export DUMMY_MSGS=YES
+      DUMPJBprocdate=${DUMPJBprocdate:-$(date -u +%Y%m%d%H%M)}
+      cat << eof_17 > fort.17
+$DUMPJBprocdate
+eof_17
+   fi
+   cat<<eof|time $DMDX
+$RDT1
+$RDT2
+$FIL1
+$FIL2
+$DIRD/$FILO
+$RDT0
+eof
+   rm -f fort.17
+echo "--------------------------------------------------------------------"
+else
+   if [ -s $FIL1 ]; then
+      fil1_good=yes
+   else
+      fil2_good=yes
+   fi
+fi
+
+input_file=$DIRD/$FILO
+if [ "\$fil1_good" = yes ]; then
+   input_file=$FIL1
+elif [ "\$fil2_good" = yes ]; then
+   input_file=$FIL2
+fi
+LALO_orig="$LALO"
+if [ "$LALO" != 0 -a $DUPE1 != $SATX ]; then
+      set +e
+[ \$input_file != $DIRD/$FILO ]  &&  cp \$input_file $DIRD/$FILO
+cat<<eof|time $GEOX
+$DIRD/$FILO
+$DEST/$FILO
+$LALO
+eof
+errGEOX=\$?
+      set -e
+echo "--------------------------------------------------------------------"
+LALO=0 # set LALO=0 so geographical filtering won't run again in dup-check
+       #   (currently, only dup-check code that can run it is bufr_dupsat)
+fi
+
+[ "\$LALO_orig" != 0 ]  &&  input_file=$DIRD/$FILO
+
+line3="$RDT1 $RDT2"
+[ $TIME_TRIM = off ]  &&  line3=""
+if [ $DUPC = on ]; then
+   cat<<eof|time $DUPE1
+\$input_file
+$DEST/$FILO
+\$line3
+eof
+   ATG=\$?
+   [ $LOUD = on ]  &&  echo "FINISHED `basename $DUPE1`, R.C. = \$ATG"
+   DUPE2_prev=$DUPE2
+   if [ $DUPE1 = $MARX -a -s $DIRD/$FILO.fort.60 ]; then
+      DUPE2=$CORX
+      if [ \$DUPE2_prev = NONE ]; then
+        echo 
+     echo "--------------------------------------------------------------------"
+         echo "\$DUPE1 encountered reports from > 1 embedded BUFR table."
+         echo "Not all duplicates could be removed.  Must run follow-up"
+         echo "duplicate check program: \$DUPE2 to complete dup-checking"
+     echo "--------------------------------------------------------------------"
+        echo 
+      fi
+   else
+      DUPE2=\$DUPE2_prev
+   fi
+   echo "--------------------------------------------------------------------"
+   if [ \$DUPE2 != NONE ]; then
+      line3="$RDT1 $RDT2"
+      [ $TIME_TRIM = off ]  &&  line3=""
+      cp $DEST/$FILO $DIRD/$FILO
+      cat<<eof|time \$DUPE2
+$DIRD/$FILO
+$DEST/$FILO
+\$line3
+eof
+      ATG=\$?
+      [ $LOUD = on ]  &&  echo "FINISHED `basename \$DUPE2`, R.C. = \$ATG"
+   echo "--------------------------------------------------------------------"
+   fi
+else
+   cp \$input_file $DEST/$FILO
+fi
+echo "********************************************************************"
+if [ "\$MPMD" = 'on' ]; then
+   echo "Script mpmd.$thread $NODE"
+else
+   echo "Script $thread"
+fi
+echo "Finished executing on node  \`hostname -s\`"
+echo "Ending time  : \`date -u\`"
+echo "********************************************************************"
+ } > $DIRD/$FILO.out 2>&1
+
+echo "finished" > $DIRD/$FILO.fin
+EOFthread
+chmod +x $thread
+
+#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+#AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ 
+
+if [ $MPMD = on ]; then
+   echo " ===> MPMD is set to ON"
+   cat  $thread > $DATA_DUMPJB/mpmd.$thread
+   echo "$DATA_DUMPJB/mpmd.$thread $NODE" >> $DATA_DUMPJB/mpmd.cmd
+   chmod 755 $DATA_DUMPJB/mpmd.$thread
+else
+   echo " ===> W A R N I N G :  MPMD is OFF"
+   echo "      Will process each subtype serially"
+   $thread 
+fi
+
+#----------------------------------------------------------------------------
+#                       end loop over each subtype in NAMES
+#----------------------------------------------------------------------------
+done
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                         end loop over data list NAMES
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+done
+
+
+if [ $MPMD = on ]; then
+
+#  end of data group loops - invoke mpmd processing
+#  ------------------------------------------------
+
+echo
+echo "--------------------------------------------------------------------"
+echo "Invoking poe or poe-like mpmd processing: `date -u`"
+echo
+if [ -s $DATA_DUMPJB/mpmd.cmd ]; then
+   which cfp
+   which_cfp_err=$?
+   ntasks=$(wc -l $DATA_DUMPJB/mpmd.cmd | awk '{print $1}')
+      if [ $ntasks -gt 1 ]; then
+         if [ $which_cfp_err -ne 0 ]; then
+            set +x
+            echo -e "\n ** cfp command not found.  run standard mpmd method **"
+            [ $LOUD = on ] && set -x
+            DUMPJBprocs=${DUMPJBprocs:-$NCPUS}  # max concurrent processes
+            if [ $ntasks -gt $DUMPJBprocs ]; then  # we need to combine
+               rm -f $DATA_DUMPJB/tmpCHUNK*
+               cp -p $DATA_DUMPJB/mpmd.cmd $DATA_DUMPJB/mpmd.cmd.orig
+               split --number l/$DUMPJBprocs -e $DATA_DUMPJB/mpmd.cmd $DATA_DUMPJB/tmpCHUNK
+               chmod +x $DATA_DUMPJB/tmpCHUNK*
+               ls -1 $DATA_DUMPJB/tmpCHUNK* > $DATA_DUMPJB/mpmd.cmd
+	       sed -i 's/^/ksh /' $DATA_DUMPJB/mpmd.cmd
+            fi
+            mpiexec --cpu-bind core --configfile $DATA_DUMPJB/mpmd.cmd
+            errmpmd=$?
+         else
+            ## Determine max number of concurrent procs (DUMPJBprocs) for cfp
+            # timing tests on old Cray-XC40 indicated cfp is sometimes faster with
+            #   a free pe.  Have not yet done testing on Cray-XE.
+            set -u
+            DUMPJBprocs=${DUMPJBprocs:-$NCPUS}  # max concurrent processes
+            mpiexec -np $DUMPJBprocs --cpu-bind verbose,core cfp $DATA_DUMPJB/mpmd.cmd
+            errmpmd=$?
+            set +u
+         fi
+      else # no need for overhead of mpiexec if only one thread
+         chmod u+x $DATA_DUMPJB/mpmd.cmd 
+         MPMD=off $DATA_DUMPJB/mpmd.cmd
+         errmpmd=$?
+      fi
+   [ $errmpmd -ne 0 ]  &&  exit 99
+else
+   echo
+   echo "==> There are no tasks in MPMD Command File - MPMD not run"
+   echo
+fi
+echo
+echo "Ending mpmd processing  : `date -u`"
+echo "--------------------------------------------------------------------"
+echo
+echo
+fi
+
+if [ $DUPC = on ]; then
+   echo
+   echo
+   echo "Duplicate checking completed for all dump files"
+fi
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                           loop over data list NAMES
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#  move the dump outputs to the DATA directory
+#  ------------------------------------------
+
+echo
+
+for NAME in $NAMES
+do
+
+#  remember the working directory names
+#  ------------------------------------
+
+DIRD=$DATA_DUMPJB/$NAME/dird
+DEST=$DATA_DUMPJB/$NAME/dest
+cd $DIRD
+
+#  copy stdout/stderr from dump to DATA
+#  ------------------------------------
+
+{
+echo
+echo "********************************************************************"
+echo "********************************************************************"
+echo "                     Contents of $NAME.out ...                     "
+echo "********************************************************************"
+echo "********************************************************************"
+cat *.out
+ } > $DATA/$NAME.out 2>/dev/null
+
+if [ $TYPE = nem ]; then
+# data group mnemonic case
+# ------------------------
+   >$LINE
+   grep "_$NAME " $LIST>$LINE
+   if [ ! -s $LINE ]; then
+      msg="Data group $NAME not found in $LIST"
+{
+      echo
+      echo "$msg"
+      echo
+ } >>$DATA/$NAME.out 2>&1
+      echo
+      echo "$msg"
+      [ -n "$jlogfile" ]  && $DATA/postmsg "$jlogfile" "$msg"
+      echo "Dump Status: $NAME : RC=22"
+      RETC=22
+      continue
+   fi
+fi
+
+#  apply special processing for certain types of data
+#  --------------------------------------------------
+
+cd $DEST
+DATES=$DATA_DUMPJB/dates
+>$DATES
+FILES=$DATA_DUMPJB/files
+>$FILES
+
+
+eval RDT1_min=\$RDT1_${NAME}_min
+eval RDT2_max=\$RDT2_${NAME}_max
+echo "$RDT1_min $RDT2_max" >$DATES
+
+{ echo
+
+for file in `ls`
+do
+[ -s $file ] && echo "$file" >> $FILES
+done
+
+echo "********************************************************************"
+echo "              Wrap-up Processing for Data Group $NAME              "
+echo "********************************************************************"
+echo
+
+rc_dupair=0
+dupair_run=no
+grep -q -e "004.001" -e "004.002" -e "004.003" -e "004.004" -e "004.006" \
+-e "004.007" -e "004.009" -e "004.010" -e "004.011" -e "004.103" $FILES
+errgrepa=$?
+if [ $errgrepa -eq 0 ]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined aircraft and aircar reports in \
+004.001 - 004.004, 004.006, 004.007, 004.009, 004.010, 004.011 and 004.103"
+      echo "Duplicate check program: $AIRX"
+     echo "--------------------------------------------------------------------"
+      time cat $FILES | $AIRX
+      if [ ! -s fort.60 ]; then
+         rc_dupair=99
+      else
+         dupair_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined aircraft and aircar reports in \
+004.001 - 004.004, 004.006, 004.007, 004.009, 004.010, 004.011 and 004.103 \
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+rc_dupsyp=0
+dupsyp_run=no
+grep -q -e "000.000" -e "000.001" -e "000.002" -e "000.100" -e "000.101" \
+-e "000.102" $FILES
+errgreps=$?
+if [ $errgreps -eq 0 ]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102"
+      echo "Duplicate check program: $SYPX"
+     echo "--------------------------------------------------------------------"
+      echo $FILES
+      cat $FILES
+      time cat $FILES | $SYPX
+      if [ ! -s fort.60 ]; then
+         rc_dupsyp=99
+      else
+         dupsyp_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102 \ 
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+rc_dupshp=0
+dupshp_run=no
+grep -q -e "001.001" -e "001.013" -e "001.101" -e "001.113" $FILES
+errgreps=$?
+if [ $errgreps -eq 0 ]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined ship reports in 001.001, 001.013"
+      echo ",001.101 and 001.113"
+      echo "Duplicate check program: $SHPX"
+     echo "--------------------------------------------------------------------"
+      time cat $FILES | $SHPX
+      if [ ! -s fort.60 ]; then
+         rc_dupshp=99
+      else
+         dupshp_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined ship reports in 001.001, 001.013, \
+001.101 and 001.113\
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+
+rc_dupcman=0
+dupcman_run=no
+grep -q -e "001.004" -e "001.104" $FILES
+errgreps=$?
+if [ $errgreps -eq 0 ]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined cman reports in 001.004, 001.104"
+      echo "Duplicate check program: $CMANX"
+     echo "--------------------------------------------------------------------"
+      time cat $FILES | $CMANX
+      if [ ! -s fort.60 ]; then
+         rc_dupcman=99
+      else
+         dupcman_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined cman reports in 001.004, 001.104 \
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+
+# run cross tank duplicate check, TAC v BUFR data streams
+# -------------------------------------------------------
+
+# -- moored buoy data (TAC:mbuoy/001.003 & BUFR:mbuoyb/001.103)
+if [ $DUPC = on -a $DUPC_TAC = on ]; then
+
+TACtyps='001.003 001.002'
+for TACtyp in $TACtyps ; do 
+
+case $TACtyp in 
+  001.003) MTSTs="$TACtyp 001.103" ; dtyp='mbuoy' ;;
+  001.002) MTSTs="$TACtyp 001.102" ; dtyp='dbuoy' ;;
+  *) echo "TACtyp='$TACtyp' not supported - TAC/BUFR dupe checking not done"
+     rc_duptac=99
+     break ;;
+esac
+
+MTST1=$(echo $MTSTs | cut -c-7)   ; MTST2=$(echo $MTSTs | cut -c9-15)  
+f1=$(egrep "$MTST1" $FILES) ; f2=$(egrep "$MTST2" $FILES)              # db
+
+rc_duptac=0
+duptac_run=no
+
+FILES_T2B=$DATA_DUMPJB/files_t2b
+>$FILES_T2B
+
+files_found=yes
+for mtst in $MTSTs ; do
+  grep "$mtst" $FILES >> $FILES_T2B
+  errgrep=$? ; if [ $errgrep -ne 0 ] ; then files_found=no ; fi
+done # for mtst
+
+  set +x
+  echo ; echo "--------------------------------------------------------------------"
+  echo "Duplicate check of TAC v BUFR $DSTR reports in $MTST1 and $MTST2"
+
+  if [ "$files_found" != 'yes' ]; then
+      echo "-- NOT PERFORMED - missing input data stream:"
+      echo "-- FILES_T2B=$(cat $FILES_T2B | xargs)"
+      [ $LOUD = on ] && set -x
+
+  else
+      echo "Duplicate check program: $TACX"
+      echo "--------------------------------------------------------------------"
+      echo
+      [ $LOUD = on ] && set -x
+
+      time cat $FILES_T2B | $TACX
+
+      if [ ! -s fort.60 ]; then
+         rc_duptac=99
+      else
+         duptac_run=yes
+      fi
+      rm fort.60 2>/dev/null
+  fi # errgrep* = 0
+  echo "--------------------------------------------------------------------"
+done # for TACtyp
+
+else # DUPC && DUPC_TAC != on
+  set +x
+  echo "--------------------------------------------------------------------"
+  echo "Duplicate check of TAC v BUFR $dtyp reports in $MTST1 and $MTST2 \
+NOT PERFORMED (turned off by user)"
+  echo "--------------------------------------------------------------------"
+  [ $LOUD = on ] && set -x
+
+fi # DUPC && DUPC_TAC == on
+
+ [ "$LOUD" -ne "on" ] && set +x
+ } >>$DATA/$NAME.out 2>&1
+
+if [ $dupair_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined aircraft and aircar \
+reports in 004.001 - 004.004, 004.006, 004.007, 004.009, 004.010, \
+004.011 and 004.103"
+fi
+if [ $dupsyp_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined synoptic \
+reports in 000.000 - 000.002, 000.100 - 000.102"
+fi
+if [ $dupshp_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined ship reports in 001.001 \
+001.013 001.101 and 001.113"
+fi
+if [ $dupcman_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined cman reports in 001.004 \
+and 001.104"
+fi
+if [ "$duptac_run_mbuoy" = yes ]; then
+   echo
+   echo "Duplicate TAC v BUFR checking completed for mbuoy, 001.003 v 001.103"
+fi
+
+if [ "$duptac_run_dbuoy" = yes ]; then
+   echo
+   echo "Duplicate TAC v BUFR checking completed for dbuoy, 001.002 v 001.102"
+fi
+
+{ echo
+
+rc_edtbfr=0
+edtbfr_run=no
+grep -q -e "000." -e "001." -e "002." -e "004." -e "005."  -e "255." $FILES
+errgrepe=$?
+if [ $errgrepe -eq 0 ]; then
+   echo "--------------------------------------------------------------------"
+   echo "Apply q.c. changes from SDMEDIT flag file entries to all subtypes in"
+   echo "BUFR types 000.* - 002.*, 004.*, 005* and 255.* (surface land,"
+   echo "surface marine, upper-air, aircraft, satellite-derived wind, mesonet)"
+   echo
+   echo "SDMEDIT flag file: $EPRM"
+   echo "Program: $EDTX"
+   echo
+   echo "Date range for checking reports is: $RDT1_min - $RDT2_max"
+   echo "--------------------------------------------------------------------"
+   cp $EPRM fort.20
+   time cat $DATES $FILES | $EDTX
+   if [ ! -s fort.60 ]; then
+      rc_edtbfr=99
+   else
+      edtbfr_run=yes
+   fi
+   rm fort.20
+   rm fort.60 2>/dev/null
+   echo "--------------------------------------------------------------------"
+fi
+ } >>$DATA/$NAME.out 2>&1
+
+if [ $edtbfr_run = yes ]; then
+   echo
+   echo "Q.C. changes in SDMEDIT flag file (if present) applied to reports \
+in $NAME"
+   echo "over date range $RDT1_min - $RDT2_max"
+   echo
+fi
+
+{ echo
+
+rc_quipc=0
+quipc_run=no
+grep -q -e "001.001" -e "001.002" -e "001.003" -e "001.004" -e "001.005" \
+  -e "001.102" -e "001.103" $FILES
+errgrepq=$?
+if [ $errgrepq -eq 0 ]; then
+   echo "--------------------------------------------------------------------"
+   echo "Apply q.c. changes and data corrections from QUIPS flag file entries"
+   echo "to surface marine reports in BUFR types in 001.001 - 001.005 (ships,"
+   echo "drifting buoys, moored buoys, C-MAN platforms, tide gauge stations)"
+   echo
+   echo "QUIPS flag file: $QPRM"
+   echo "Program: $QPCX"
+   echo
+   echo "Date range for checking reports is: $RDT1_min - $RDT2_max"
+   echo "--------------------------------------------------------------------"
+   cp $QPRM fort.20
+   time cat $DATES $FILES | $QPCX
+   if [ ! -s fort.60 ]; then
+      rc_quipc=99
+   else
+      quipc_run=yes
+   fi
+   rm fort.20
+   rm fort.60 2>/dev/null
+   echo "--------------------------------------------------------------------"
+fi
+ } >>$DATA/$NAME.out 2>&1
+
+if [ $quipc_run = yes ]; then
+   echo
+   echo "Q.C. changes and corrections in QUIPS flag file (if present) applied"
+   echo "to reports in $NAME over date range $RDT1_min - $RDT2_max"
+   echo
+fi
+
+rm -f [A-Z]* [a-z]*
+
+#  survey the situation and set return code for the group
+#  ------------------------------------------------------
+
+[ $LOUD = on ]  &&  echo "beforchkRETG=$RETG"
+{
+[ $LOUD = on ]  &&  echo "beforchkRETG=$RETG"
+cd $DEST
+rc_chkbfr=0
+echo "$NAME" > fort.30
+time ls|grep -v fort|$CHKX
+RETG=$?
+[ ! -s fort.60 ] && rc_chkbfr=99
+rm fort.30
+rm fort.60 2>/dev/null
+echo "--------------------------------------------------------------------"
+ } >>$DATA/$NAME.out 2>&1
+[ $LOUD = on ]  &&  echo "chkbfrATG=$RETG"
+
+#  either copy or combine BUFR files into the DATA directory
+#  --------------------------------------------------------
+
+[ $LOUD = on ]  &&  echo "RETG=$RETG"
+{
+cd $DIRD
+NOUT=`ls *.out 2>/dev/null|wc -w`
+NFIN=`ls *.fin 2>/dev/null|wc -w`
+[ $NFIN -lt $NOUT ] && RETG=99
+[ $rc_dupair -eq 99 -o $rc_dupshp -eq 99 -o $rc_dupsyp -eq 99 -o \
+  $rc_duptac -eq 99 -o $rc_edtbfr -eq 99 -o $rc_quipc  -eq 99 -o \
+  $rc_chkbfr -eq 99 -o $rc_dupcman -eq 99 ]  && RETG=99
+
+###########if [ $RETG -ge 22 ]
+if [ $RETG -gt 22 ]; then
+   echo
+   echo "--------------------------------------------------------------------"
+   echo "No output dump files associated with data group $NAME are copied or"
+   echo "written into \$DATA because return code $RETG exceeds lowest"
+   echo "acceptable value of 22"
+   echo "--------------------------------------------------------------------"
+   errcp=0
+elif [ $FORM = copy ]; then
+   echo
+   echo "--------------------------------------------------------------------"
+   echo "Copying individual BUFR type/subtype database dump files in data"
+   echo "group $NAME to \$DATA as ttt.sss (where ttt is type and sss is"
+   echo "subtype)"
+   echo "--------------------------------------------------------------------"
+
+#  Rename the files from nn_ttt.sss to ttt.sss as they are copied (where nn
+#   is the dump order index)
+#  ------------------------------------------------------------------------
+
+   for file in `ls $DEST`; do
+      cp $DEST/$file $DATA/`echo $file | cut -f2 -d_ `
+      errcp=$?
+      [ $errcp -ne 0 ]  &&  break
+   done
+else
+   echo
+   echo "--------------------------------------------------------------------"
+   echo "Combining individual BUFR type/subtype database dump files in data"
+   echo "group $NAME and writing the output into \$DATA as $NAME.$FORM"
+   echo "--------------------------------------------------------------------"
+   cd $DEST
+   ls > $DATA_DUMPJB/stdin_COMX
+   DUMMY_MSGS=YES
+   DUMPJBprocdate=${DUMPJBprocdate:-$(date -u +%Y%m%d%H%M)}
+   cat << eof_17 > fort.17
+$RDT0
+$DUMPJBprocdate
+eof_17
+   time $COMX < $DATA_DUMPJB/stdin_COMX
+   mv fort.50 $DATA/$NAME.$FORM
+   errcp=$?
+   rm fort.50 fort.10 fort.15 fort.17 2> /dev/null
+   unset DUMMY_MSGS
+   echo "--------------------------------------------------------------------"
+   echo
+fi
+ } >>$DATA/$NAME.out 2>&1
+[ "$errcp" -ne '0' ] && RETG=99
+[ "$RETG" -gt '99' ] && RETG=99
+
+#  report the dump status for this group
+#  -------------------------------------
+
+echo
+echo "Dump Status: $NAME : RC=$RETG"
+[ $RETG -gt $RETC ] && RETC=$RETG
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                         end loop over data list NAMES
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+done
+
+
+#
+#  if return code is less than 99, blow away working directory
+#   - but only if working directory was given default value by this script
+#  -----------------------------------------------------------------------
+
+cd $DATA
+if [ ${data_dumpjb_imported} = NO ]; then
+   [ $RETC -lt 99 -a $LOUD != on ]  &&  rm -rf $DATA_DUMPJB
+fi
+
+
+#
+#  the end of the DUMP script - exit with a RETC return code
+#  ---------------------------------------------------------
+
+set +x
+echo
+echo "Dump processing completed with return code $RETC"
+echo
+echo "********************************************************************"
+echo "********************************************************************"
+echo "                THIS EXECUTION OF DUMPJB IS FINISHED                "
+echo "                End time: `date -u`                                 "
+echo "********************************************************************"
+echo "********************************************************************"
+echo
+[ $LOUD = on ] && set -x
+exit $RETC

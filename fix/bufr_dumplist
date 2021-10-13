@@ -1,0 +1,644 @@
+
+ List of valid Data Group Names (in both mnemonic and message type form)
+ =======================================================================
+
+  Best viewed with at least 132 column window width
+
+ This table is read by the dumpjb ush script and by the programs
+ BUFR_AVGDATA and BUFR_DATACOUNT.  It is also read by the realtime hourly
+ and model-time data dump monitoring processing scripts and codes which
+ posts results to the web.
+
+ It is important that you read the notes in each section below before
+ modifiying this table.
+
+ Comment lines can be added anywhere in this table as long as:
+      1) They do not contain a "_" in column 1.
+      2) They do not contain the strings "#" and ">" in any two adjacent
+         columns.
+
+
+ ===================================================================================================================================
+
+ Section 1. Data Groups Names by Message Type
+ ---------- ---------------------------------
+
+ Note 1: All lines with "_" in column 1 are processed by the dumpjb ush script
+         out to maximum column 500.
+         DO NOT ADD A "#" CHARACTER IN ANY COLUMN!!!
+         DO NOT CHANGE THE COLUMNAR POSITION OF ANY CHARACTERS IN THESE
+         LINES!!!
+ Note 2: Existing data groups may be expanded to include new types/subtypes,
+         but the type/subtype list must be arranged in increasing order.
+ Note 3: New data groups (lines) may be added as long as they follow the
+         proper columnar convention.
+ 
+   --> Surface data - land -- TYPE 000
+       -------------------------------
+_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
+_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
+
+   --> Surface data - sea -- TYPE 001
+       ------------------------------
+_sfmar     nem 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104
+_001       mgt 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104
+
+   --> Vertical soundings (other than satellite) -- TYPE 002
+       -----------------------------------------------------
+_vsndn     nem 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002101 002102 002103 002104 002105 002109
+_002       mgt 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002101 002102 002103 002104 002105 002109
+
+   --> Vertical soundings (satellite) -- TYPE 003
+       ------------------------------------------
+_vsnds     nem 003001 003002 003003 003010 003101 003102 003104
+_003       mgt 003001 003002 003003 003010 003101 003102 003104
+
+   --> Single level upper-air data (other than satellite) -- TYPE 004
+       --------------------------------------------------------------
+_sluan     nem 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004103
+_004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004103
+
+   --> Single-level upper-air data (satellite) -- TYPE 005
+       ---------------------------------------------------
+_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005091
+_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005091
+
+   --> Radar data -- TYPE 006
+       ----------------------
+_radar     nem 006001 006002 006010 006011 006012 006013 006014 006015 006016 006017 006018 006019 006020 006021 006022 006023 006024 006025 006026 006027 006028 006029 006030 006031 006032 006033 006040 006041 006042 006043 006044 006045 006046 006047 006048 006049 006050 006051 006052 006053 006054 006055 006056 006057 006058 006059 006060 006061 006062 006063 006070 006080 006081 006082 006083 006084 006085 006086 006087 006088 006089 006090 006091 006092 006093 006094 006095 006096 006097 006098 006099 006100 006101 006102 006103 006110 006111 006112 006113 006114 006115 006116 006117 006118 006119 006120 006121 006122 006123 006124 006125 006126 006127 006128 006129 006130 006131 006132 006133
+_006       mgt 006001 006002 006010 006011 006012 006013 006014 006015 006016 006017 006018 006019 006020 006021 006022 006023 006024 006025 006026 006027 006028 006029 006030 006031 006032 006033 006040 006041 006042 006043 006044 006045 006046 006047 006048 006049 006050 006051 006052 006053 006054 006055 006056 006057 006058 006059 006060 006061 006062 006063 006070 006080 006081 006082 006083 006084 006085 006086 006087 006088 006089 006090 006091 006092 006093 006094 006095 006096 006097 006098 006099 006100 006101 006102 006103 006110 006111 006112 006113 006114 006115 006116 006117 006118 006119 006120 006121 006122 006123 006124 006125 006126 006127 006128 006129 006130 006131 006132 006133
+
+   --> Synoptic features -- TYPE 007
+       -----------------------------
+_synfe     nem 007000 007001 007002 007003 007021
+_007       mgt 007000 007001 007002 007003 007021
+
+   --> Physical/chemical constituents -- TYPE 008
+       ------------------------------------------
+_ozone     nem 008010 008011 008012 008013 008014 008015 008016 008017 008018 008019 008020 008021 008022 008023 008031 008032 008041
+_008       mgt 008010 008011 008012 008013 008014 008015 008016 008017 008018 008019 008020 008021 008022 008023 008031 008032 008041
+
+   --> Surface data (satellite) -- TYPE 012
+       ------------------------------------
+_sfsat     nem 012001 012002 012003 012004 012005 012006 012008 012009 012010 012011 012012 012013 012017 012018 012023 012024 012025 012031 012034 012103 012122 012137 012138 012139 012150 012160 012255
+_012       mgt 012001 012002 012003 012004 012005 012006 012008 012009 012010 012011 012012 012013 012017 012018 012023 012024 012025 012031 012034 012103 012122 012137 012138 012139 012150 012160 012255
+
+   --> Radiances (satellite measured) -- TYPE 021
+       ------------------------------------------
+_radnc     nem 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
+_021       mgt 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
+
+   --> Oceanographic data -- TYPE 031
+       ------------------------------
+_ocean     nem 031001 031002 031003 031004 031005 031011 031012 031013 031014 031101 031102 031103 031104 031105 031106 031107 031108 031109 031110 031112 031113 031114 031115 031116 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031128 031129 031130
+_031       mgt 031001 031002 031003 031004 031005 031011 031012 031013 031014 031101 031102 031103 031104 031105 031106 031107 031108 031109 031110 031112 031113 031114 031115 031116 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031128 031129 031130
+
+   --> Indicator for local use, with sub-category -- TYPE 255
+       ------------------------------------------------------
+_local     nem 255001 255002 255003 255004 255005 255006 255007 255008 255009 255010 255011 255012 255013 255014 255015 255016 255017 255018 255019 255020 255021 255022 255023 255024 255025 255026 255027 255028 255029 255030 255031 255101 255102 255111 255131 255160 255161
+_255       mgt 255001 255002 255003 255004 255005 255006 255007 255008 255009 255010 255011 255012 255013 255014 255015 255016 255017 255018 255019 255020 255021 255022 255023 255024 255025 255026 255027 255028 255029 255030 255031 255101 255102 255111 255131 255160 255161
+
+
+ ===================================================================================================================================
+ 
+ Section 2. List of Data Groups by Network Data Dump Composition
+ ---------- ----------------------------------------------------
+ 
+ Note 1: All lines with "_" in column 1 are processed by the dumpjb ush script
+         out to maximum column 500.
+         DO NOT ADD A "#" CHARACTER IN ANY COLUMN!!!
+         DO NOT CHANGE THE COLUMNAR POSITION OF ANY CHARACTERS IN THESE
+         LINES!!!
+ Note 2: Existing data groups may be expanded to include new types/subtypes,
+         but the type/subtype list must be arranged in increasing order.
+ Note 3: New data groups (lines) may be added as long as they follow the
+         proper columnar convention.
+
+_aircar    nem 004004 004007
+_aircft    nem 004001 004002 004003 004006 004009 004010 004011 004103
+_adpsfc    nem 000000 000001 000002 000007 000100 000101 000102
+_adpupa    nem 002001 002002 002003 002004 002005 004005
+_erswnd    nem 012008
+_qkscat    nem 012137
+_ascatt    nem 012122
+_wndsat    nem 012138
+_rscatw    nem 012255
+_proflr    nem 002011 002009
+_rassda    nem 002012
+_vadwnd    nem 002008 002017
+_goesnd    nem 003002 003003
+_goesfv    nem 003003
+_satwnd    nem 005021 005022 005023 005044 005045 005046 005067 005068 005069 005070 005071 005080 005091
+_sfcshp    nem 001001 001013 001002 001003 001004 001007 001102 001103 001101 001113 001104
+_sfcbog    nem 001006
+_gpsipw    nem 012004
+_msonet    nem 255001 255002 255003 255004 255005 255006 255007 255008 255009 255010 255011 255012 255014 255015 255016 255017 255018 255019 255020 255021 255022 255023 255024 255025 255026 255027 255028 255029 255030 255031 255101
+_coop      nem 255101 255102
+_hydro     nem 255131 255160 
+_radwnd    nem 006001 006002
+_nexrad    nem 006010 006011 006012 006013 006014 006015 006016 006017 006018 006019 006020 006021 006022 006023 006024 006025 006026 006027 006028 006029 006030 006031 006032 006033 006040 006041 006042 006043 006044 006045 006046 006047 006048 006049 006050 006051 006052 006053 006054 006055 006056 006057 006058 006059 006060 006061 006062 006063
+_canrad    nem 006080 006081 006082 006083 006084 006085 006086 006087 006088 006089 006090 006091 006092 006093 006094 006095 006096 006097 006098 006099 006100 006101 006102 006103 006110 006111 006112 006113 006114 006115 006116 006117 006118 006119 006120 006121 006122 006123 006124 006125 006126 006127 006128 006129 006130 006131 006132 006133
+_airnow    nem 008021 008022 008031
+_lghtng    nem 007001 007002
+_avcs17    nem 021051
+_avcl17    nem 021052
+_avcs18    nem 021053
+_avcl18    nem 021054
+_shpall    nem 001001 001013
+_satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130
+ 
+
+ ===================================================================================================================================
+
+ Section 3. List of Individual Types and Subtypes
+ ---------- -------------------------------------
+ 
+ Note 1: All lines with "_" in column 1 are processed by the dumpjb ush
+         script, but information beyond column 23 is ignored.
+         DO NOT ADD A "#" CHARACTER IN ANY COLUMN BETWEEN 1 AND 23!!!
+         DO NOT CHANGE THE COLUMNAR POSITION OF ANY CHARACTERS IN THESE
+         LINES!!!
+ Note 2: All lines with a "_" in column 1 and a "#" in column 24 and a  ">" in
+         column 25 are read by the BUFR_AVGDATA and BUFR_DATACOUNT programs.
+         They are also read by the realtime hourly and model-time data dump
+         monitoring scripts and codes which posts results to the web.
+         Information in all columns out to column 25 is used by the
+         BUFR_AVGDATA program and information in all columns out to column 130
+         is used by the BUFR_DATACOUNT program.  Information in columns 1-75
+         is used by the realtime hourly and model-time data dump monitoring
+         codes and scripts and information in columns 130-136 is used by the
+         realtime hourly data dump monitoring codes and scripts which all
+         posts results to the web.
+         DO NOT CHANGE THE COLUMNAR POSITION OF ANY CHARACTERS IN THESE
+         LINES!!!
+ Note 3: New types/subtypes (lines) may be added as long as they follow the
+         proper columnar convention.
+
+ Key: ttt - BUFR type
+      sss - BUFR subtype
+      flags used by both BUFR_DATACOUNT program and by the Realtime Data
+       Monitoring System (RTDMS - which posts results to the web) for "NAM",
+       "GFS" and "GDAS" networks:
+       "red" column  - If "RED", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is CRITICAL resulting in the
+                       following:
+                          BUFR_DATACOUNT program: A return code 6 (this is
+                           usually reserved for types that are dumped and
+                           assimilated by the analysis and are critical to the
+                           analysis);
+                          RTDMS: The web page listing this type/subtype in RED
+                           ("abnormal") (Note: if there is no deficiency, this
+                           type/subtype is listed in green on the web page);
+                     - If "   ", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is moderately-critical
+                       resulting in the following:
+                          BUFR_DATACOUNT program: A return 5 code (this is
+                           usually reserved for types that are dumped and
+                           assimilated by the analysis, or will soon be, but
+                           are not critical to the analysis);
+                          RTDMS: The web page listing this type/subtype in
+                           YELLOW ("suspect") (Note: if there is no deficiency,
+                           this type/subtype is listed in green on the web
+                           page);
+                     - If "grn", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is non-critical resulting in
+                       the following:
+                          BUFR_DATACOUNT program: A return code 4 (this is
+                           usually reserved for types that are either not dumped
+                           or are dumped but are not assimilated by the
+                           analysis);
+                          RTDMS: The web page listing this type/subtype in
+                           BLACK (Note: also the case if there is no
+                           deficiency).
+       "%"   column  - Percent of expected value (30-day average) below which
+                       this BUFR type/subtype is deemed deficient by the
+                       BUFR_DATACOUNT program.
+       "lim" column  - If the expected value (30-day average) is below this
+                       number, then this BUFR type/subtype can never be deemed
+                       deficient by the BUFR_DATACOUNT program.
+                       NOTE: For raobf (rawinsonde - fixed land), the value
+                             here is reduced by 10% at 06 and 18Z {prevents
+                             special field experiments from tripping alerts
+                             (abundance during experiment, deficiency after
+                             experiment)}
+       "long" column - Switches in 4 columns indicate whether long-term checks
+                       of the trend in the data average should be performed in
+                       BUFR_DATACOUNT. If "Y", current 30-day average is
+                       compared to 30-day average from 3-months ago (column
+                       "3"), 6-months ago (column "6"), 9-months ago (column
+                       "9") and 12-months ago (column "C").  If "N", long-term
+                       check is not performed.  There can be any combination
+                       of "Y"'s and "N"'s across these 4 columns.
+      flags used only by the Realtime Data Monitoring System {RTDMS - which
+       posts results to the web for HRLY (i.e., "DUMP") and RAP networks}:
+       "flg" column  - If "RED", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is CRITICAL resulting in its
+                       web page listing being in RED ("abnormal") when just one
+                       cycle in a row is deficient (Note: if there is no
+                       deficiency, this type/subtype is listed in green on the
+                       web page);
+                     - If "YEL", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is moderately-critical
+                       resulting in its web page listing being in YELLOW
+                       ("suspect") when just one cycle is deficient or in RED
+                       ("abnormal") when two or more cycles in a row are
+                       deficient (Note: if there is no deficiency, this type/
+                       subtype is listed in green on the web page);
+                     - If "   ", indicates that a deficiency (if there is one)
+                       in this BUFR type/subtype is non-critical resulting in
+                       its web page listing being in BLACK (Note: also the case
+                       if there is no deficiency).
+
+                                                                           -------------------------flags-------------------------------------
+                                                                           |    NAM NETWORK  |    GFS NETWORK  |    GDAS NETWORK | HRLY| RAP |
+                                                                           |             long|             long|             long|     |     |
+ mnemonic      tttsss     Descriptive Information                          | red  %  lim 369C| red  %  lim 369C| red  %  lim 369C| flg | flg |
+ ------        ------     -------------------------------------------------| --- -- ---- ----| --- -- ---- ----| --- -- ---- ----| --- | --- |
+                                                                           |                 |                 |                 |     |     |
+_synopr    nem 000000  #> Synoptic - restricted (WMO Res 40) manual & auto.|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_synop     nem 000001  #> Synoptic - fixed manual and automatic            | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| grn | grn |
+_synopm    nem 000002  #> Synoptic - mobile manual and automatic           | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_metar     nem 000007  #> Aviation - METAR                                 | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | RED |
+_prflrs    nem 000008  #> Surface profiler data (NOAA and Multi-Agency)    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_shefcm    nem 000010  #> Products decoded from SHEF not in any other tank | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sheff     nem 000011  #> AFOS products (precip) decoded from SHEF format  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_scd       nem 000012  #> Aviation - supplementary climatological data     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_synpbr    nem 000100  #> Synoptic - restricted (WMO Res 40)(decoded BUFR) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_synopb    nem 000101  #> Synoptic - fixed manual & auto (decoded fr BUFR) | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | YEL |
+_synpmb    nem 000102  #> Synoptic - mobile manual & auto (decoded fr BUFR)| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_ships     nem 001001  #> Ship - manual and automatic, restricted          |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_dbuoy     nem 001002  #> Buoys decoded from FM-18 fmt (moored or drifting)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_mbuoy     nem 001003  #> Buoys decoded from FM-13 format (moored)         |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
+_lcman     nem 001004  #> Land-based CMAN stations decoded from CMAN format|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_tideg     nem 001005  #> Tide gauge reports decoded from CREX format      |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_slpbg     nem 001006  #> Sea level pressure bogus                         | grn 50   50 YYYY| grn 50   50 YYYY| grn 30   50 YYYY|     |     |
+_cstgd     nem 001007  #> Coast Guard                                      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tidgcm    nem 001008  #> Tide gauge reports decoded from CMAN format      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_river     nem 001009  #> USGS River/Stream data                           | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cmansh    nem 001010  #> CMAN stations decoded from SHEF format           | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_buoysh    nem 001011  #> Buoys decoded from SHEF fmt (moored or drifting) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tidgsh    nem 001012  #> Tide gauge reports decoded from SHEF format      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_shipsu    nem 001013  #> Ship - manual and automatic, unrestricted        |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_shipsb    nem 001101  #> Ship - manual and automatic, restricted (BUFR)   | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | RED |
+_dbuoyb    nem 001102  #> Drifting buoys (decoded from BUFR)               | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_mbuoyb    nem 001103  #> Moored buoys (decoded from BUFR)                 | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cmanb     nem 001104  #> Surface Marine CMAN rpts decoded from BUFR format|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
+_shipub    nem 001113  #> Ship - manual and automatic, unrestricted (BUFR) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_saldrn    nem 001120  #> Surface Marine Saildrone (decoded from BUFR)     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_raobf     nem 002001  #> Rawinsonde - fixed land (from TEMP or PILOT)     | RED 80   50 YYYY| RED 80   50 YYYY| RED 80   50 YYYY| RED | RED |
+_raobm     nem 002002  #> Rawinsonde - mobile land (from TEMP/PILOT MOBIL) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_raobs     nem 002003  #> Rawinsonde - ship (from TEMP SHIP, PILOT SHIP)   |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_dropw     nem 002004  #> Dropwinsonde (from TEMP DROP)                    |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_pibal     nem 002005  #> PIBAL (from PILOT, PILOT SHIP, PILOT MOBIL)      |     50   30 YYYY|     50   30 YYYY|     50   30 YYYY| YEL |     |
+_ozonlo    nem 002006  #> Ozone soundings, low-res decoded from BUFR       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_prflr     nem 002007  #> NOAA Profiler Network (NPN) winds                |     50   20 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
+_nxrdw     nem 002008  #> NEXRAD Vel Azm Dsp(VAD) winds via radar coded msg|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
+_prflrp    nem 002009  #> Profilr winds from PIBAL (PILOT,PILOT SHIP/MOBIL)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_prflrm    nem 002010  #> Profiler spectral moments (NOAA and Multi-Agency)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_prflrb    nem 002011  #> Multi-Agency Profiler (MAP) and SODAR winds      |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rass      nem 002012  #> RASS temperatures (NOAA and Multi-Agency)        |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | RED |
+_prflrj    nem 002013  #> Japanese Meteorological Agency profiler winds    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_prflrh    nem 002014  #> Other profiler winds (e.g., from Hong Kong)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ozonhi    nem 002015  #> Ozone soundings, high-res decoded from ASCII fmt | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_prflre    nem 002016  #> European profiler winds                          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nxrdw2    nem 002017  #> NEXRAD Vel Azm Dsp(VAD) winds via Level 2 decoder| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_raobfb    nem 002101  #> Rawinsonde - fixed land (decoded from BUFR)      | grn 80   50 YYYY| grn 80   50 YYYY| grn 80   50 YYYY|     |     |
+_raobmb    nem 002102  #> Rawinsonde - mobile land (decoded from BUFR)     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_raobsb    nem 002103  #> Rawinsonde - ship (decoded from BUFR)            | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_dropwb    nem 002104  #> Dropwinsonde (decoded from BUFR)                 | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_pibalb    nem 002105  #> PIBAL (decoded from BUFR)                        | grn 50   30 YYYY| grn 50   30 YYYY| grn 50   30 YYYY|     |     |
+_prflpb    nem 002109  #> Profiler winds from PIBAL (decoded from BUFR)    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_geost     nem 003001  #> GOES/NESDIS (5x5 f-o-v) soundings/radiances      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_geosth    nem 003002  #> GOES/NESDIS hi-resol. (1x1 f-o-v) cloud data     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     | YEL |
+_geost1    nem 003003  #> GOES/NESDIS hi-resol. (1x1 f-o-v) sndgs/radiances|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_gpsro     nem 003010  #> GPS radio occultation data                       |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_tovs      nem 003101  #> POES/NESDIS - processed TOVS soundings/radiances | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rtovs     nem 003102  #> POES/NESDIS - processed RTOVS soundings/radiances| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_atovs     nem 003104  #> POES/NESDIS - processed ATOVS soundings/radiances| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_airep     nem 004001  #> Manual AIREP aircraft data (dcded from AIREP fmt)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_pirep     nem 004002  #> Manual PIREP aircraft data (dcded from AIREP fmt)| grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_amdar     nem 004003  #> AMDAR aircraft data (decoded from AMDAR format)  |     10   10 YYYY| RED 10   10 YYYY| RED 10   10 YYYY| RED |     |
+_acars     nem 004004  #> MDCRS ACARS acft data from ARINC(dcded from BUFR)| RED 45   50 YYYY| RED 45   50 YYYY| RED 45   50 YYYY| RED | RED |
+_recco     nem 004005  #> Flight level reconnaissance aircraft data        |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_eadas     nem 004006  #> E-AMDAR (European AMDAR acft decoded from BUFR)  |     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED |     |
+_acarsa    nem 004007  #> MDCRS ACARS acft data (ARINC via AFWA)(AIREP fmt)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tamdar    nem 004008  #> TAMDAR-Mesaba aircraft data (from GSD, netCDF)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_camdar    nem 004009  #> Canadian AMDAR aircraft data (decoded from BUFR) |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_tmdara    nem 004010  #> TAMDAR aircft data-all types(from Panasonic,BUFR)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_kamdar    nem 004011  #> Korean AMDAR aircraft data (decoded from BUFR)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tmdarp    nem 004012  #> TAMDAR-PenAir aircraft data (from GSD, netCDF)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tmdarc    nem 004013  #> TAMDAR-Chautauqua aircraft data(from GSD, netCDF)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_famdar    nem 004014  #> French AMDAR aircraft data (decoded from BUFR)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_hdob      nem 004015  #> High Density OBs from reconnaissance acft data   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED |     |
+                                                                           |                 |                 |                 |     |     |
+_visuw     nem 005008  #> GOES/UW-CIMSS visible derived cloud motion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ptrus     nem 005013  #> GOES/NESDIS picture triplet derived cloud motion | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_infin     nem 005021  #> INSAT/KALPANA India ir lg-wave derived cld motion| grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_visin     nem 005022  #> INSAT/KALPANA India visible derived cloud motion | grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_h20in     nem 005023  #> INSAT/KALPANA India wvpr derived cloud motion    | grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_infin2    nem 005024  #> INDIA SATWIND, INSAT IR channel                  | grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_visin2    nem 005025  #> INDIA SATWIND, INSAT VIS channel                 | grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_h20in2    nem 005026  #> INDIA SATWIND, INSAT WV channel                  | grn  0   50 YYYY| grn  0   50 YYYY| grn  0   50 YYYY|     |     |
+_infusr    nem 005030  #> GOES-16&up/NESDIS ir long-wave derived cld motion| grn 40   50 YYYY|     40   50 YYYY|     40   50 YYYY| YEL |     |
+_h2dusr    nem 005031  #> GOES-16&up/NESDIS wv imgr/deep-lyr derivd cld mtn| grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_visusr    nem 005032  #> GOES-16&up/NESDIS visible derived cloud motion   | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_h2tusr    nem 005034  #> GOES-16&up/NESDIS wv imgr/cld-top derived cld mtn| grn 40   50 YYYY|     40   50 YYYY|     40   50 YYYY| YEL |     |
+_3p9usr    nem 005039  #> GOES-16&up/NESDIS ir short-wv derived cld motion | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_infja     nem 005044  #> MTSAT/JMA infrared long-wave derived cloud motion| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_visja     nem 005045  #> MTSAT/JMA visible derived cloud motion           | grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_h20ja     nem 005046  #> MTSAT/JMA water vapor imager derived cloud motion| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_infjan    nem 005050  #> MTSAT/NESDIS infrared lg-wave derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_h2ijan    nem 005051  #> MTSAT/NESDIS water vapor imger derived cld motion| grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_infeu     nem 005064  #> METEOSAT/EUMETSAT ir lg-wave derived cloud motion| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_viseu     nem 005065  #> METEOSAT/EUMETSAT visible derived cloud motion   | grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_h20eu     nem 005066  #> METEOSAT/EUMETSAT wvpr imager derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ifeunb    nem 005067  #> METEOSAT/EUMETSAT ir lg-wave drv cld motion NBseq| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_vseunb    nem 005068  #> METEOSAT/EUMETSAT visible drv cld motion  NBseq  | grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_h2eunb    nem 005069  #> METEOSAT/EUMETSAT wvpr imgr drv cld motion NBseq | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_infmo     nem 005070  #> MODIS (AQUA/TERRA) ir l-wave derived cloud motion|      0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_h20mo     nem 005071  #> MODIS (AQUA/TERRA) wvpr imager derived cld motion|      0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_leogeo    nem 005072  #> LEO-GEO satellite AMVs from UWisc.               |      0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_infav     nem 005080  #> AVHRR (NOAA/METOP) ir lg-wave derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_infvr     nem 005090  #> VIIRS (NPP/NOAA-20) ir lg-wave drv cloud motion  | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ifvrnb    nem 005091  #> VIIRS (NPP/NOAA-20) ir lg-wv drv cloud motion(NB)| grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_radw30    nem 006001  #> NEXRAD radial wind superobs (Level 3 - NIDS)     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_radw25    nem 006002  #> NEXRAD radial wind superobs (Level 2.5 - ORPG)   |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w00    nem 006010  #> NEXRAD radial wind (0000-0059 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w01    nem 006011  #> NEXRAD radial wind (0100-0159 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w02    nem 006012  #> NEXRAD radial wind (0200-0259 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w03    nem 006013  #> NEXRAD radial wind (0300-0359 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w04    nem 006014  #> NEXRAD radial wind (0400-0459 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w05    nem 006015  #> NEXRAD radial wind (0500-0559 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w06    nem 006016  #> NEXRAD radial wind (0600-0659 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w07    nem 006017  #> NEXRAD radial wind (0700-0759 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w08    nem 006018  #> NEXRAD radial wind (0800-0859 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w09    nem 006019  #> NEXRAD radial wind (0900-0959 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w10    nem 006020  #> NEXRAD radial wind (1000-1059 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w11    nem 006021  #> NEXRAD radial wind (1100-1159 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w12    nem 006022  #> NEXRAD radial wind (1200-1259 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w13    nem 006023  #> NEXRAD radial wind (1300-1359 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w14    nem 006024  #> NEXRAD radial wind (1400-1459 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w15    nem 006025  #> NEXRAD radial wind (1500-1559 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w16    nem 006026  #> NEXRAD radial wind (1600-1659 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w17    nem 006027  #> NEXRAD radial wind (1700-1759 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w18    nem 006028  #> NEXRAD radial wind (1800-1859 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w19    nem 006029  #> NEXRAD radial wind (1900-1959 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w20    nem 006030  #> NEXRAD radial wind (2000-2059 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w21    nem 006031  #> NEXRAD radial wind (2100-2159 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w22    nem 006032  #> NEXRAD radial wind (2200-2259 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2w23    nem 006033  #> NEXRAD radial wind (2300-2359 UTC)(Level 2 - GTS)|     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_rd2r00    nem 006040  #> NEXRAD reflectivity (0000-0059 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r01    nem 006041  #> NEXRAD reflectivity (0100-0159 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r02    nem 006042  #> NEXRAD reflectivity (0200-0259 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r03    nem 006043  #> NEXRAD reflectivity (0300-0359 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r04    nem 006044  #> NEXRAD reflectivity (0400-0459 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r05    nem 006045  #> NEXRAD reflectivity (0500-0559 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r06    nem 006046  #> NEXRAD reflectivity (0600-0659 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r07    nem 006047  #> NEXRAD reflectivity (0700-0759 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r08    nem 006048  #> NEXRAD reflectivity (0800-0859 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r09    nem 006049  #> NEXRAD reflectivity (0900-0959 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r10    nem 006050  #> NEXRAD reflectivity (1000-1059 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r11    nem 006051  #> NEXRAD reflectivity (1100-1159 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r12    nem 006052  #> NEXRAD reflectivity (1200-1259 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r13    nem 006053  #> NEXRAD reflectivity (1300-1359 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r14    nem 006054  #> NEXRAD reflectivity (1400-1459 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r15    nem 006055  #> NEXRAD reflectivity (1500-1559 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r16    nem 006056  #> NEXRAD reflectivity (1600-1659 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r17    nem 006057  #> NEXRAD reflectivity (1700-1759 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r18    nem 006058  #> NEXRAD reflectivity (1800-1859 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r19    nem 006059  #> NEXRAD reflectivity (1900-1959 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r20    nem 006060  #> NEXRAD reflectivity (2000-2059 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r21    nem 006061  #> NEXRAD reflectivity (2100-2159 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r22    nem 006062  #> NEXRAD reflectivity (2200-2259 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_rd2r23    nem 006063  #> NEXRAD reflectivity (2300-2359 UTC) (Lvl 2 - GTS)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_tldplr    nem 006070  #> P-3 aircraft Tail Doppler Radar (TDR) radial wind| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr00    nem 006080  #> Canadian radar reflectivity (0000-0059 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr01    nem 006081  #> Canadian radar reflectivity (0100-0159 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr02    nem 006082  #> Canadian radar reflectivity (0200-0259 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr03    nem 006083  #> Canadian radar reflectivity (0300-0359 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr04    nem 006084  #> Canadian radar reflectivity (0400-0459 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr05    nem 006085  #> Canadian radar reflectivity (0500-0559 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr06    nem 006086  #> Canadian radar reflectivity (0600-0659 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr07    nem 006087  #> Canadian radar reflectivity (0700-0759 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr08    nem 006088  #> Canadian radar reflectivity (0800-0859 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr09    nem 006089  #> Canadian radar reflectivity (0900-0959 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr10    nem 006090  #> Canadian radar reflectivity (1000-1059 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr11    nem 006091  #> Canadian radar reflectivity (1100-1159 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr12    nem 006092  #> Canadian radar reflectivity (1200-1259 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr13    nem 006093  #> Canadian radar reflectivity (1300-1359 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr14    nem 006094  #> Canadian radar reflectivity (1400-1459 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr15    nem 006095  #> Canadian radar reflectivity (1500-1559 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr16    nem 006096  #> Canadian radar reflectivity (1600-1659 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr17    nem 006097  #> Canadian radar reflectivity (1700-1759 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr18    nem 006098  #> Canadian radar reflectivity (1800-1859 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr19    nem 006099  #> Canadian radar reflectivity (1900-1959 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr20    nem 006100  #> Canadian radar reflectivity (2000-2059 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr21    nem 006101  #> Canadian radar reflectivity (2100-2159 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr22    nem 006102  #> Canadian radar reflectivity (2200-2259 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcr23    nem 006103  #> Canadian radar reflectivity (2300-2359 UTC)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw00    nem 006110  #> Canadian radar radial wind (0000-0059 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw01    nem 006111  #> Canadian radar radial wind (0100-0159 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw02    nem 006112  #> Canadian radar radial wind (0200-0259 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw03    nem 006113  #> Canadian radar radial wind (0300-0359 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw04    nem 006114  #> Canadian radar radial wind (0400-0459 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw05    nem 006115  #> Canadian radar radial wind (0500-0559 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw06    nem 006116  #> Canadian radar radial wind (0600-0659 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw07    nem 006117  #> Canadian radar radial wind (0700-0759 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw08    nem 006118  #> Canadian radar radial wind (0800-0859 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw09    nem 006119  #> Canadian radar radial wind (0900-0959 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw10    nem 006120  #> Canadian radar radial wind (1000-1059 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw11    nem 006121  #> Canadian radar radial wind (1100-1159 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw12    nem 006122  #> Canadian radar radial wind (1200-1259 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw13    nem 006123  #> Canadian radar radial wind (1300-1359 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw14    nem 006124  #> Canadian radar radial wind (1400-1459 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw15    nem 006125  #> Canadian radar radial wind (1500-1559 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw16    nem 006126  #> Canadian radar radial wind (1600-1659 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw17    nem 006127  #> Canadian radar radial wind (1700-1759 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw18    nem 006128  #> Canadian radar radial wind (1800-1859 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw19    nem 006129  #> Canadian radar radial wind (1900-1959 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw20    nem 006130  #> Canadian radar radial wind (2000-2059 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw21    nem 006131  #> Canadian radar radial wind (2100-2159 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw22    nem 006132  #> Canadian radar radial wind (2200-2259 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rdcw23    nem 006133  #> Canadian radar radial wind (2300-2359 UTC)       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_trpstm    nem 007000  #> Tropical storms                                  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ltngsr    nem 007001  #> NLDN Shrt-rng lightning from Vaisala via NOAAPORT| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ltnglr    nem 007002  #> LLDN Long-rng lightning from Vaisala via NOAAPORT| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ltngen    nem 007003  #> Earth Networks Total Lightning Network (ENTLN)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_bdyhl2    nem 007021  #> Boundary layer height from NEXRAD Level 2 decoder| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_osbuv     nem 008010  #> NOAA-series Solar Backscattr UV-2 rad frm V6 BUFR| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_osbuv8    nem 008011  #> NOAA 16-19 Solar Backscatter UV-2 rad frm V8 BUFR| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_gome      nem 008012  #> METOP 1-2 Global Ozone Monitoring Exp.-2 (GOME-2)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_omi       nem 008013  #> Aura Ozone Monitoring Instrument (OMI) data      | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_ompsn6    nem 008014  #> OMPS nadir profile ozone (Version 6 BUFR)        | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_mls       nem 008015  #> Aura Microwave Limb Sounder (MLS) ozone data     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ompst6    nem 008016  #> OMPS total column ozone (Version 6 BUFR)         | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ompsn8    nem 008017  #> OMPS nadir profile ozone (Version 8 BUFR)        | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ompst8    nem 008018  #> OMPS total column ozone (Version 8 BUFR)         | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ompslp    nem 008019  #> OMPS Limb Profiler ozone data (NPP)              | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowfa    nem 008020  #> AIRNOW ozone data - delayed 1- & 8-hr forward avg| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowb1    nem 008021  #> AIRNOW ozone data - delayed 1-hour backward avg  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowb8    nem 008022  #> AIRNOW ozone data - delayed 8-hour backward avg  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowrt    nem 008023  #> AIRNOW ozone data - real time 1-hour backward avg| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowpm    nem 008031  #> AIRNOW particulate data-1hr bkwrd avg-daily ingst| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_anowp1    nem 008032  #> AIRNOW particulate data-1hr bkwrd avg-hrly ingst | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_aodmod    nem 008041  #> MODIS Aerosol Optical Depth (AOD) data           | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_ssmit     nem 012001  #> DMSP SSM/I - brightness temperatures             | grn 30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ssmip     nem 012002  #> DMSP SSM/I - FNOC derived products               | grn 30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_gpspw     nem 012003  #> GPS integrated precipitable water                |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_gnss      nem 012004  #> Grnd-based Gbl Navigation Sat System (GNSS) data |     50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_ersar     nem 012005  #> ERS/SAR                                          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ssmisp    nem 012006  #> DMSP SSM/IS - FNOC derived products              | grn 30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_erswn     nem 012008  #> ERS/scatterometer winds                          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ersal     nem 012009  #> ERS/radar altimeter data                         | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstnv     nem 012010  #> POES/NAVOCEANO low-resolution sea surface temps  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstns     nem 012011  #> POES/NESDIS AVHRR sea sfc temps and btemps/albedo| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstnvh    nem 012012  #> POES/NAVOCEANO hi-res. AVHRR SSTs & btemps/albedo| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_trmm      nem 012013  #> NASA/TRMM microwave imager                       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstnvp    nem 012017  #> POES/NAVOCEANO physical sea sfc temp retrievals  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstnsp    nem 012018  #> POES/NESDIS physical sea surface temp retrievals | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstvcw    nem 012023  #> NPP/NOAA-20 VIIRS SST - CLEAR & OVER WATER       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstvpw    nem 012024  #> NPP/NOAA-20 VIIRS SST - PROBABLY CLR & OVER WATER| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sstvdl    nem 012025  #> NPP/NOAA-20 VIIRS SST - CLOUDY OR OVER LAND      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amsrep    nem 012031  #> AQUA-AMSR-E ocean surface products (Level 2)     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amsrem    nem 012034  #> AQUA/AMSR-E Ocean surface swath from NCDC/MISST  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ssmipn    nem 012103  #> DMSP SSM/I - NCEP Neural Net-3 derived products  | grn 30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ascat     nem 012122  #> METOP 1-2 ASCAT products                         |     30   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_qscat     nem 012137  #> QuikSCAT products                                | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_wdsat     nem 012138  #> CORIOLIS WindSat products from FNMOC             | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_wdsats    nem 012139  #> CORIOLIS WindSat products from NESDIS            | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_lgycld    nem 012150  #> GOES/NASA(Langley) hi-res. (1x1 f-o-v) cloud data| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL | YEL |
+_efclam    nem 012160  #> GOES imager effective cloud amount data (U.Wisc.)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_rscat     nem 012255  #> International Space Stn (ISS) RAPIDSCAT products | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_1bhrs2    nem 021021  #> NOAA 14 HIRS-2 NCEP-processed brightness temps   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_1bmsu     nem 021022  #> NOAA 14 MSU NCEP-processed brightness temps      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_1bamua    nem 021023  #> NOAA 15-19 & METOP 1-2 AMSU-A NCEP-proc. br.temps|     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| YEL | YEL |
+_1bamub    nem 021024  #> NOAA 15-17 AMSU-B NCEP-processed brightness temps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_1bhrs3    nem 021025  #> NOAA 15-17 HIRS-3 NCEP-processed brightness temps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_1bmhs     nem 021027  #> NOAA 18-19 & METOP 1-2 MHS NCEP-proces. br. temps|     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| YEL | YEL |
+_1bhrs4    nem 021028  #> NOAA 18-19 & METOP 1-2 HIRS-4 NCEP-proc. br.temps|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
+_esamua    nem 021033  #> NOAA 15-19 & METOP 1-2 AMSU-A proc btmps frm RARS| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_esamub    nem 021034  #> NOAA 15-17 AMSU-B proc. brightness tmps from RARS| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_eshrs3    nem 021035  #> NOAA 15-19 & METOP 1-2 HIRS-3/4 pr btmps frm RARS| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_esmhs     nem 021036  #> NOAA 18-19 & METOP 1-2 MHS proc. btemps from RARS| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_esatms    nem 021038  #> NPP Adv. Tech. MW Sndr (ATMS) br. temps from RARS| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_esiasi    nem 021039  #> METOP 1-2 IASI 1C radiance data vbl chn from RARS| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_geoimr    nem 021041  #> GOES/NESDIS (11x17 f-o-v) imager clear radiances | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sevasr    nem 021042  #> METEOSAT-10 2nd Gen SEVIRI All Sky Radiance(proc)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sevcsr    nem 021043  #> METEOSAT-10 2nd Gen SEVIRI Clr Sky Radiance(proc)| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_ahicsr    nem 021044  #> Himawari Clear Sky Radiance                      | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
+_gsrasr    nem 021045  #> GOES-16/17 All Sky Radiances (proc.)             | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_gsrcsr    nem 021046  #> GOES-16/17 Clear Sky Radiances (proc.)           | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_avcsam    nem 021051  #> A.M.(N17,M2,M3) AVHRR GAC NCEP-proc clr&sea btmps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_avclam    nem 021052  #> A.M.(N17,M2,M3) AVHRR GAC NCEP-proc cld/lnd btmps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_avcspm    nem 021053  #> P.M.(N18-19) AVHRR GAC NCEP-proc clr & sea btemps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_avclpm    nem 021054  #> P.M.(N18-19) AVHRR GAC NCEP-proc cld or lnd btmps| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amuata    nem 021123  #> NOAA 15-19 AMSU-A NESDIS antenna temperatures    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ssmisu    nem 021201  #> DMSP SSM/IS 1C radiance data (Unified Pre-Proc.) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cris      nem 021202  #> NPP CrIS apodized radiances (399 channel)        | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_atms      nem 021203  #> NPP/NOAA-20 ATMS brightness temperatures         | grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_viirs     nem 021204  #> NPP/NOAA-20 VIIRS radiances                      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_crisfs    nem 021205  #> NPP/NOAA-20 CrIS full spctrl radiances (2211 chn)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_crisf4    nem 021206  #> NPP/NOAA-20 CrIS full spctrl radn (431 ch subset)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_crsfdb    nem 021212  #> NPP/NOAA-20 CrIS full spctrl radn dir brdcst SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_atmsdb    nem 021213  #> NPP/NOAA-20 ATMS bright. temps-direct b-cast SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_iasidb    nem 021239  #> METOP 1-2 IASI 1C radiances-direct broadcast SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_modair    nem 021240  #> MODIS/AIRS radiance/reflectance data (colocated) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_mtiasi    nem 021241  #> METOP 1-2 IASI 1C radiance data (varbl. channels)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_saphir    nem 021242  #> Megha-Tropiques SAPHIR L1A2 brightness temps     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_gmi1cr    nem 021246  #> GPM GMI Level 1C-R brightness temperatures       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amsr2     nem 021248  #> GCOM-W AMSR2 1B brightness temperatures          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_airsev    nem 021249  #> AQUA AIRS/AMSU-A/HSB brightness temps- every FOV |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_airs      nem 021250  #> AQUA AIRS/AMSU-A/HSB brightness temps- center FOV| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amsre     nem 021254  #> AQUA AMSR-E processed brightness temperatures    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_airswm    nem 021255  #> AQUA AIRS/AMSU-A/HSB brightness temps-warmest FOV| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_bathy     nem 031001  #> eXpendable BathyThermograph, mooring (BATHY fmt) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tesac     nem 031002  #> CTD probe, Argo prflng float, mooring (TESAC fmt)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_trkob     nem 031003  #> ThermoSalinoGraph (TSG) TRACKOB format)          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_axbt      nem 031004  #> Airborne eXpendable BathyThermograph(AXBT)(ASCII)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_subpfl    nem 031005  #> Sub-surface float and glider profile (BUFR)      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_xbtctd    nem 031006  #> eXpendable BathyThermograph, XCTD profiles (BUFR)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_altkob    nem 031007  #> along-track oceanographic observations (BUFR)    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ershal    nem 031011  #> NLSA ERS-2 altimeter SSHA hi-resolution regional | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_tophal    nem 031012  #> NLSA TOPEX altimeter SSHA hi-resolution regional | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_toplal    nem 031013  #> NLSA TOPEX altimeter SSHA low-resolution global  | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_gfohal    nem 031014  #> NLSA GEOSAT Follow-On altimeter SSHA high-res rgl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nersal    nem 031101  #> NAVOCEANO ALPS ERS-2 altimeter SSHA hi-res global| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ngfoal    nem 031102  #> NAVOCEANO ALPS GEOSAT FO altim. SSHA high-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ntpxal    nem 031103  #> NAVOCEANO ALPS TOPEX altimeter SSHA hi-res global| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njsnal    nem 031104  #> NAVOCEANO ALPS JASON-1 altimeter SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ngfnal    nem 031105  #> NAVOCEANO GEOSAT FO Navy-IGDR altim. wind/wave   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cajsww    nem 031106  #> CNES/AVISO JASON-1 IGDR altimeter wind/wave      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_gfofww    nem 031107  #> NAVOCEANO GEOSAT FO altim. wind/wave fast delvry | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_envsww    nem 031108  #> NAVOCEANO ENVISAT altimeter wind/wave fast delvry| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_envsal    nem 031109  #> NAVOCEANO ALPS ENVISAT altimeter SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njsnww    nem 031110  #> NAVOCEANO JASON-1 altim. wind/wave fast delivery | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njsn2o    nem 031112  #> NAVOCEANO ALPS JASON-2 OGDR altim. SSHA h-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njsn2i    nem 031113  #> NAVOCEANO ALPS JASON-2 IGDR altim. SSHA h-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njs2ww    nem 031114  #> NAVOCEANO JASON-2 altim. wind/wave fast delivery | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cnjsal    nem 031115  #> CNES/NESDIS JASON-2 OGDR altim SSHA+wnd/wv hr gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_envavi    nem 031116  #> AVISO SSALTO/DUACS ENVISAT NRT altim SLA h-rs gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ncryal    nem 031117  #> NAVOCEANO ALPS CRYOSAT-2 altim. SSHA high-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsarao    nem 031118  #> NAVOCEANO ALPS SARAL OGDR altim. SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsarai    nem 031119  #> NAVOCEANO ALPS SARAL IGDR altim. SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_ncr2ww    nem 031120  #> NAVOCEANO CRYOSAT-2 altim. wind/wave fast delivry| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsarww    nem 031121  #> NAVOCEANO SARAL altim. wind/wave fast delivery   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cnsaal    nem 031122  #> CNES SARAL/ALTIKA OGDR altim SSHA+wnd/wave hr gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cnc2al    nem 031123  #> CNES CRYOSAT-2 OGDR altim SSHA+wnd/wave h-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cnj3al    nem 031124  #> CNES/NESDIS JASON-3 OGDR altim SSHA+wnd/wv hr gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsjn3o    nem 031125  #> NAVOCEANO ALPS JASON-3 OGDR altim. SSHA h-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njsn3i    nem 031126  #> NAVOCEANO ALPS JASON-3 IGDR altim. SSHA h-res gbl| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_njs3ww    nem 031127  #> NAVOCEANO JASON-3 altim. wind/wave fast delivery | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsn3am    nem 031128  #> NAVOCEANO SENTINEL-3A NRT altim. SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsn3as    nem 031129  #> NAVOCEANO SENTINEL-3A STC altim. SSHA hi-res gbl | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_nsn3ww    nem 031130  #> NAVOCEANO SENTINEL-3A altim wind/wave fast delvry| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+                                                                           |                 |                 |                 |     |     |
+_msoden    nem 255001  #> Mesonet/MADIS Denver Urban Drainage & Flood Cntrl|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoraw    nem 255002  #> Mesonet/MADIS NFIC Remote Automated Wx Stns(RAWS)|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msowst    nem 255003  #> Mesonet/MADIS MesoWest (many subproviders)       |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoapr    nem 255004  #> Mesonet/MADIS Citizen Weather Observers Program  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msokan    nem 255005  #> Mesonet/MADIS Kansas Department of Transportation|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msofla    nem 255006  #> Mesonet/MADIS Florida (FAWN & USF)               |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoiow    nem 255007  #> Mesonet/MADIS Iowa Department of Transportation  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msomin    nem 255008  #> Mesonet/MADIS Minnesota Dept. of Transportation  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoawx    nem 255009  #> Mesonet/MADIS "Anything Weather"                 |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msonos    nem 255010  #> Mesonet/MADIS NOS-Phys Oceanographic Realtime Sys|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoapg    nem 255011  #> Mesonet/MADIS U.S. Army Aberdeen Proving Grounds |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msowfy    nem 255012  #> Mesonet/MADIS "Weather for You"                  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msocob    nem 255013  #> Mesonet/MADIS NWS COoperative Observer Program   |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msohad    nem 255014  #> Mesonet/MADIS NWS Hydromet Auto Data System(HADS)|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoaws    nem 255015  #> Mesonet/MADIS AWS Convergence Technologies, Inc. |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoien    nem 255016  #> Mesonet/MADIS Iowa Environmental                 |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msokla    nem 255017  #> Mesonet/MADIS Oklahoma Mesonet                   |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msocol    nem 255018  #> Mesonet/MADIS Colorado Dept. of Transportation   |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msowtx    nem 255019  #> Mesonet/MADIS West Texas                         |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msowis    nem 255020  #> Mesonet/MADIS Wisconsin Dept. of Transportation  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msolju    nem 255021  #> Mesonet/MADIS Louisiana State/Jackson State Univ.|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_mso470    nem 255022  #> Mesonet/MADIS Colorado E-470 (Interstate 470)    |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msodcn    nem 255023  #> Mesonet/MADIS DC Net                             |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoind    nem 255024  #> Mesonet/MADIS Indiana Dept. of Transportation    |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoflt    nem 255025  #> Mesonet/MADIS Florida Dept. of Transportation    |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msoalk    nem 255026  #> Mesonet/MADIS Alaska Department of Transportation|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msogeo    nem 255027  #> Mesonet/MADIS Georgia Dept. of Transportation    |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msovir    nem 255028  #> Mesonet/MADIS Virginia Dept. of Transportation   |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msomca    nem 255029  #> Mesonet/MADIS Missouri Commercial Agricult Wx Net|     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msothr    nem 255030  #> Mesonet/MADIS many providers, not separated out  |     30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY| YEL |     |
+_msourb    nem 255031  #> Mesonet/MADIS UrbaNet                            | grn 30   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_coopmd    nem 255101  #> Coop/MADIS NEPP & HCN-Modernization NOAA COOP Obs| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_coopal    nem 255102  #> Coop All NWS COOPerative Obs (decoded from SHEF) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_msocrn    nem 255111  #> CRN/MADIS Climate Reference Network              | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_hydden    nem 255131  #> Hydro/MADIS Denver Urban Drainage & Flood Control| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_hydoth    nem 255160  #> Hydro/MADIS many providers, not separated out    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_snow      nem 255161  #> Snow/MADIS: many providers, not separated out    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+
+ ===================================================================================================================================

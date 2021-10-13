@@ -1,0 +1,40 @@
+Library versions and variables are defined by sourcing load_libs.rc which loads library modules.
+  -- This is done for you in build.sh.
+  -- To test with versions of libraries that don't yet have proper module files, 
+     one can modify setlibs.rc as needed and modify build.sh to source setlibs.rc 
+     instead of load_libs.rc
+
+
+To build ALL codes, simply run:
+  ./build.sh
+
+To build only select codes (to save time):
+  ./build.sh <some_code.fd ...>
+
+
+To install builds (creating exec dir if necessary):
+  ./install.sh
+or 
+  ./install.sh <some_code.fd ...>
+
+This assumes the exec dir belongs one directory back from this directory (and two 
+directories back from each code directory).  If you don't trust install scripts
+and targets, don't use 'em.
+
+
+To clean directories
+  ./clean.sh
+or 
+  ./clean.sh <some_code.fd ...>
+
+
+Examples:
+  ./build.sh
+  ./install.sh
+  ./clean.sh
+-or-
+  ./build.sh bufr_dupsat.fd  bufr_dupsst.fd
+  ./install.sh bufr_dupsat.fd  bufr_dupsst.fd
+  ./clean.sh bufr_dupsat.fd  bufr_dupsst.fd
+  
+

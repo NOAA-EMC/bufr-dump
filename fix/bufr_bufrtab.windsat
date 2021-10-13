@@ -1,0 +1,91 @@
+.------------------------------------------------------------------------------.
+| ------------   USER DEFINITIONS FOR TABLE-A TABLE-B TABLE D   -------------- |
+|------------------------------------------------------------------------------|
+| MNEMONIC | NUMBER | DESCRIPTION                                              |
+|----------|--------|----------------------------------------------------------|
+|          |        |                                                          |
+| NC012138 | A61180 | MSG TYPE 012-138  WindSat data from FNMOC (NOGAPS guess) |
+| NC012139 | A61206 | MSG TYPE 012-139  WindSat data from NESDIS (GFS guess)   |
+|          |        |                                                          |
+| SAID     | 001007 | SATELLITE IDENTIFIER                                     |
+| RPID     | 001198 | REPORT IDENTIFIER                                        |
+|          |        |                                                          |
+| YEAR     | 004001 | YEAR                                                     |
+| MNTH     | 004002 | MONTH                                                    |
+| DAYS     | 004003 | DAY                                                      |
+| HOUR     | 004004 | HOUR                                                     |
+| MINU     | 004005 | MINUTE                                                   |
+| SECO     | 004006 | SECOND                                                   |
+|          |        |                                                          |
+| CLAT     | 005002 | LATITUDE (COARSE ACCURACY)                               |
+|          |        |                                                          |
+| CLON     | 006002 | LONGITUDE (COARSE ACCURACY)                              |
+|          |        |                                                          |
+| ACAV     | 008022 | TOTAL NUMBER(WITH RESPECT TO ACCUMULATION OR AVERAGE)    |
+|          |        |                                                          |
+| WD10     | 011011 | WIND DIRECTION AT 10 M                                   |
+| WS10     | 011012 | WIND SPEED AT 10 M                                       |
+| MWD10    | 011081 | MODEL WIND DIRECTION AT 10 M                             |
+| MWS10    | 011082 | MODEL WIND SPEED AT 10 M                                 |
+|          |        |                                                          |
+| REQV     | 013014 | RAINFALL/WATER EQUIVALENT OF SNOW (AVERAGE RATE)         |
+| MRWVC    | 013096 | MWR WATER VAPOR CONTENT (TOTAL WATER VAPOR)              |
+| MRLWC    | 013097 | MWR LIQUID WATER CONTENT (TOTAL CLOUD LIQUID WATER)      |
+|          |        |                                                          |
+| WSST     | 020219 | WINDSAT SURFACE TYPE                                     |
+|          |        |                                                          |
+| SST1     | 022043 | SEA SURFACE TEMPERATURE                                  |
+|          |        |                                                          |
+| CHSQ     | 033199 | CHI-SQUARED (OF THE WIND VECTOR RETRIEVAL)               |
+| WSEQC1   | 033200 | WINDSAT EDR QC FLAG #1                                   |
+| PHER     | 033201 | EST. ERROR COVARIANCE FOR WIND DIRECTION RETRIEVAL       |
+| SSTE     | 033245 | EST. ERROR COVARIANCE FOR SEA SURFACE TEMP RETRIEVAL     |
+| SPDE     | 033246 | EST. ERROR COVARIANCE FOR WIND SPEED RETRIEVAL           |
+| VPRE     | 033247 | EST. ERROR COVARIANCE FOR TOTAL WATER VAPOR RETRIEVAL    |
+| CLDE     | 033248 | EST. ERROR COVARIANCE FOR TOTAL CLD LIQUID WATER RETR.   |
+|          |        |                                                          |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SEQUENCE                                                          |
+|----------|-------------------------------------------------------------------|
+|          |                                                                   |
+| NC012138 | YEAR   MNTH   DAYS   HOUR   MINU   SECO   CLAT   CLON   WSST      |
+| NC012138 | SSTE   SPDE   VPRE   CLDE   SST1   MRWVC  MRLWC  REQV   MWD10     |
+| NC012138 | MWS10  WSEQC1 WD10   WS10   CHSQ   PHER   RPID   SAID   ACAV      |
+|          |                                                                   |
+| NC012139 | YEAR   MNTH   DAYS   HOUR   MINU   SECO   CLAT   CLON   WSST      |
+| NC012139 | SSTE   SPDE   VPRE   CLDE   SST1   MRWVC  MRLWC  REQV   MWD10     |
+| NC012139 | MWS10  WSEQC1 WD10   WS10   CHSQ   PHER   RPID   SAID   ACAV      |
+|          |                                                                   |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SCAL | REFERENCE   | BIT | UNITS                    |-------------|
+|----------|------|-------------|-----|--------------------------|-------------|
+|          |      |             |     |                          |-------------|
+| SAID     |    0 |           0 |  10 | CODE TABLE               |-------------|
+| RPID     |    0 |           0 |  64 | CCITT IA5                |-------------|
+| YEAR     |    0 |           0 |  12 | YEAR                     |-------------|
+| MNTH     |    0 |           0 |   4 | MONTH                    |-------------|
+| DAYS     |    0 |           0 |   6 | DAY                      |-------------|
+| HOUR     |    0 |           0 |   5 | HOUR                     |-------------|
+| MINU     |    0 |           0 |   6 | MINUTE                   |-------------|
+| SECO     |    0 |           0 |   6 | SECOND                   |-------------|
+| CLAT     |    2 |       -9000 |  15 | DEGREES                  |-------------|
+| CLON     |    2 |      -18000 |  16 | DEGREES                  |-------------|
+| ACAV     |    0 |           0 |  16 | NUMERIC                  |-------------|
+| WD10     |    0 |           0 |   9 | DEGREES TRUE             |-------------|
+| WS10     |    1 |           0 |  12 | M/S                      |-------------|
+| MWD10    |    2 |           0 |  16 | DEGREES TRUE             |-------------|
+| MWS10    |    2 |           0 |  14 | M/S                      |-------------|
+| REQV     |    4 |           0 |  12 | KG/((M**2)*SEC)          |-------------|
+| MRWVC    |    2 |           0 |  14 | KG/M**2                  |-------------|
+| MRLWC    |    2 |           0 |  14 | KG/M**2                  |-------------|
+| WSST     |    0 |           0 |   3 | CODE TABLE               |-------------|
+| SST1     |    2 |           0 |  15 | K                        |-------------|
+| CHSQ     |    2 |           0 |  17 | NUMERIC                  |-------------|
+| WSEQC1   |    0 |           0 |  31 | FLAG TABLE               |-------------|
+| PHER     |    1 |           0 |  12 | DEGREES TRUE             |-------------|
+| SSTE     |    2 |           0 |  16 | KELVIN                   |-------------|
+| SPDE     |    2 |           0 |  15 | M/S                      |-------------|
+| VPRE     |    2 |           0 |  14 | KG/M**2                  |-------------|
+| CLDE     |    3 |           0 |  14 | KG/M**2                  |-------------|
+|          |      |             |     |                          |-------------|
+`------------------------------------------------------------------------------'

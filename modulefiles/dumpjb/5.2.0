@@ -1,0 +1,70 @@
+#%Module1.0 ###################################################################
+##
+##                                                        Diane.Stokes@noaa.gov
+##                                                        NOAA/NWS/NCEP/EMC
+## dumpjb modulefile
+##
+## 2014/02/18 - Initial private version
+## 2017/02/20 - Add DUMPJB var; make load of bufr_dumplist conditional;
+##              update to work on ibm or cray
+## 2017/02/27 - Removed load of bufr_dumplist module. Instead print information
+##              to stderr if no variables used to find bufr_dumplist are set.
+## 2018/08/29 JWhiting  - update to version 5.0.0 (for Dell-p3 use)
+## 2018/11/01 SMelchior - update to version 5.0.1
+## 2019/04/19 SMelchior - update to version 5.0.2
+## 2020/03/11 SPA       - update to version 5.0.3
+## 2020/08/12 SMelchior - update to version 5.1.0
+## 2021/03/09 SMelchior - update to version 5.1.1
+## 2021/08/18 SMelchior - update to version 5.2.0
+##
+proc ModulesHelp { } {
+	puts stderr "Set up environment for bufr utility script dumpjb\n"
+}
+
+module-whatis   "Sets environment variables to find dumpjb utility"
+
+set envir     prod
+set ver       5.2.0
+
+conflict     dumpjb
+if { [regexp {^/gpfs/hps} [file normalize $ModulesCurrentModulefile]] } {
+  # Cray-XC40
+  set base    /gpfs/hps/nco/ops/nw${envir}/obsproc_dump
+} elseif { [regexp {^/gpfs/del} [file normalize $ModulesCurrentModulefile]] } {
+  # Dell-p3
+  set base    /gpfs/dell1/nco/ops/nw${envir}/obsproc_dump
+} else {
+  # IBM-p1/2
+  set base    /nw${envir}2/obsproc_dump
+}
+
+# setenv        obsproc_dump_ver    v$ver
+# setenv        HOMEobsproc_dump    $base.$env(obsproc_dump_ver)
+set        obsproc_dump_ver    v$ver
+set        HOMEobsproc_dump    $base.${obsproc_dump_ver}
+
+setenv        obsproc_dump_ver    ${obsproc_dump_ver}
+setenv        HOMEobsproc_dump    ${HOMEobsproc_dump}
+setenv        DUMPJB              ${HOMEobsproc_dump}/ush/dumpjb
+prepend-path  PATH                ${HOMEobsproc_dump}/ush
+
+if { [module-info mode load] } {
+   if { ![info exists env(LIST)] 
+     && ![info exists env(DFIX)]
+     && ![info exists env(HOMEobsproc_shared_bufr_dumplist)]
+     && ![info exists env(obsproc_shared_bufr_dumplist_ver)]} {
+	puts stderr "\n  Please remember to load a bufr_dumplist module"
+	puts stderr "                    -OR- "
+        puts stderr "  set one of the following environment variables in order for dumpjb to find the"
+        puts stderr "  bufr_dumplist file you want to use:"
+	puts stderr "     * LIST (pointer to specific bufr_dumplist file)"
+	puts stderr "     * DFIX (pointer to directory containing bufr_dumplist file)"
+	puts stderr "     * HOMEobsproc_shared_bufr_dumplist (directory containing fix/bufr_dumplist)"
+        if { [regexp {^/gpfs/hps} [file normalize $ModulesCurrentModulefile]] } {
+	   puts stderr "     * obsproc_shared_bufr_dumplist_ver (a production version available on luna/surge)"
+        } else {
+	   puts stderr "     * obsproc_shared_bufr_dumplist_ver (a production version available on tide/gyre)"
+        }
+	puts stderr ""
+   }
+}

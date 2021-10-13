@@ -1,0 +1,60 @@
+.------------------------------------------------------------------------------.
+| ------------   USER DEFINITIONS FOR TABLE-A TABLE-B TABLE D   -------------- |
+|------------------------------------------------------------------------------|
+| MNEMONIC | NUMBER | DESCRIPTION                                              |
+|----------|--------|----------------------------------------------------------|
+|          |        |                                                          |
+| NC012137 | A61213 | MESSAGE TYPE 012-137  QUIKSCAT data                      |
+|          |        |                                                          |
+| SAID     | 001007 | SATELLITE IDENTIFIER                                     |
+| RPID     | 001198 | REPORT IDENTIFIER                                        |
+|          |        |                                                          |
+| YEAR     | 004001 | YEAR                                                     |
+| MNTH     | 004002 | MONTH                                                    |
+| DAYS     | 004003 | DAY                                                      |
+| HOUR     | 004004 | HOUR                                                     |
+| MINU     | 004005 | MINUTE                                                   |
+| SECO     | 004006 | SECOND                                                   |
+|          |        |                                                          |
+| CLAT     | 005002 | LATITUDE (COARSE ACCURACY)                               |
+| ATRN     | 005034 | ALONG TRACK ROW NUMBER                                   |
+|          |        |                                                          |
+| CLON     | 006002 | LONGITUDE (COARSE ACCURACY)                              |
+| CTCN     | 006034 | CROSS TRACK CELL NUMBER                                  |
+|          |        |                                                          |
+| ACAV     | 008022 | TOTAL NUMBER(WITH RESPECT TO ACCUMULATION OR AVERAGE)    |
+|          |        |                                                          |
+| WD10     | 011011 | WIND DIRECTION AT 10 M                                   |
+| WS10     | 011012 | WIND SPEED AT 10 M                                       |
+|          |        |                                                          |
+| SPRR     | 021120 | SEAWINDS PROBABILITY OF RAIN                             |
+|          |        |                                                          |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SEQUENCE                                                          |
+|----------|-------------------------------------------------------------------|
+|          |                                                                   |
+| NC012137 | YEAR   MNTH   DAYS   HOUR   MINU   SECO   CLAT   ATRN     CLON    |
+| NC012137 | CTCN   WD10   WS10   SPRR   RPID   SAID   ACAV                    |
+|          |                                                                   |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SCAL | REFERENCE   | BIT | UNITS                    |-------------|
+|----------|------|-------------|-----|--------------------------|-------------|
+|          |      |             |     |                          |-------------|
+| SAID     |    0 |           0 |  10 | CODE TABLE               |-------------|
+| RPID     |    0 |           0 |  64 | CCITT IA5                |-------------|
+| YEAR     |    0 |           0 |  12 | YEAR                     |-------------|
+| MNTH     |    0 |           0 |   4 | MONTH                    |-------------|
+| DAYS     |    0 |           0 |   6 | DAY                      |-------------|
+| HOUR     |    0 |           0 |   5 | HOUR                     |-------------|
+| MINU     |    0 |           0 |   6 | MINUTE                   |-------------|
+| SECO     |    0 |           0 |   6 | SECOND                   |-------------|
+| CLAT     |    2 |       -9000 |  15 | DEGREES                  |-------------|
+| CLON     |    2 |      -18000 |  16 | DEGREES                  |-------------|
+| ATRN     |    0 |           0 |  11 | NUMERIC                  |-------------|
+| CTCN     |    0 |           0 |   7 | NUMERIC                  |-------------|
+| ACAV     |    0 |           0 |  16 | NUMERIC                  |-------------|
+| WD10     |    0 |           0 |   9 | DEGREES TRUE             |-------------|
+| WS10     |    1 |           0 |  12 | M/S                      |-------------|
+| SPRR     |    3 |           0 |  10 | NUMERIC                  |-------------|
+|          |      |             |     |                          |-------------|
+`------------------------------------------------------------------------------'

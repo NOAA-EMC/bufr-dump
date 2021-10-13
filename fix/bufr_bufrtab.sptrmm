@@ -1,0 +1,57 @@
+.------------------------------------------------------------------------------.
+| ------------   USER DEFINITIONS FOR TABLE-A TABLE-B TABLE D   -------------- |
+|------------------------------------------------------------------------------|
+| MNEMONIC | NUMBER | DESCRIPTION                                              |
+|----------|--------|----------------------------------------------------------|
+|          |        |                                                          |
+| NC012013 | A61226 | MESSAGE TYPE 012-013  TRMM/Trop. rainfall meas. mission  |
+|          |        |                                                          |
+| SAID     | 001007 | SATELLITE IDENTIFIER                                     |
+| RPID     | 001198 | REPORT IDENTIFIER
+|          |        |                                                          |
+| YEAR     | 004001 | YEAR                                                     |
+| MNTH     | 004002 | MONTH                                                    |
+| DAYS     | 004003 | DAY                                                      |
+| HOUR     | 004004 | HOUR                                                     |
+| MINU     | 004005 | MINUTE                                                   |
+| SECO     | 004006 | SECOND                                                   |
+|          |        |                                                          |
+| CLAT     | 005002 | LATITUDE (COARSE ACCURACY)                               |
+|          |        |                                                          |
+| CLON     | 006002 | LONGITUDE (COARSE ACCURACY)                              |
+|          |        |                                                          |
+| ACAV     | 008022 | TOTAL NUMBER(WITH RESPECT TO ACCUMULATION OR AVERAGE)    |
+|          |        |                                                          |
+| TRRT     | 013205 | TOTAL RAIN RATE                                          |
+| CRRT     | 013215 | CONVECTIVE RAIN RATE                                     |
+| RCWA     | 013207 | RAIN + CLOUD WATER                                       |
+| PCIA     | 013208 | PRECIPITATION + CLOUD ICE                                |
+|          |        |                                                          |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SEQUENCE                                                          |
+|----------|-------------------------------------------------------------------|
+|          |                                                                   |
+| NC012013 | SAID YEAR MNTH DAYS HOUR MINU SECO CLAT CLON TRRT CRRT            |
+| NC012013 | RCWA PCIA ACAV RPID                                               |
+|          |                                                                   |
+|------------------------------------------------------------------------------|
+| MNEMONIC | SCAL | REFERENCE   | BIT | UNITS                    |-------------|
+|----------|------|-------------|-----|--------------------------|-------------|
+|          |      |             |     |                          |-------------|
+| SAID     |    0 |           0 |  10 | CODE TABLE               |-------------|
+| RPID     |    0 |           0 |  64 | CCITT IA5                |-------------|
+| YEAR     |    0 |           0 |  12 | YEAR                     |-------------|
+| MNTH     |    0 |           0 |   4 | MONTH                    |-------------|
+| DAYS     |    0 |           0 |   6 | DAY                      |-------------|
+| HOUR     |    0 |           0 |   5 | HOUR                     |-------------|
+| MINU     |    0 |           0 |   6 | MINUTE                   |-------------|
+| SECO     |    0 |           0 |   6 | SECOND                   |-------------|
+| CLAT     |    2 |       -9000 |  15 | DEGREES                  |-------------|
+| CLON     |    2 |      -18000 |  16 | DEGREES                  |-------------|
+| ACAV     |    0 |           0 |  16 | NUMERIC                  |-------------|
+| TRRT     |    2 |           0 |  12 | MM / HR                  |-------------|
+| CRRT     |    2 |           0 |  12 | MM / HR                  |-------------|
+| RCWA     |    2 |           0 |  12 | MM                       |-------------|
+| PCIA     |    2 |           0 |  12 | MM                       |-------------|
+|          |      |             |     |                          |-------------|
+`------------------------------------------------------------------------------'
