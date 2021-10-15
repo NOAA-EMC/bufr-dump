@@ -11,6 +11,7 @@
 *.tar
 *.tar.gz*
 *.tgz*
+fort.*
 
 # Ignore the contents of these directories
 exec/
