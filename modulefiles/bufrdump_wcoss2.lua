@@ -9,6 +9,6 @@ load("PrgEnv-intel")
 load(pathJoin("intel/19.1.3.304"))
 
 -- Load common modules for this package
-load("bufrtranjb_common")
+load("bufrdump_common")
 
 whatis("Description: bufr-dump build environment")

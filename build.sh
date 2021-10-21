@@ -2,7 +2,8 @@
 
 set -eux
 
-target=${1:-${target:-"null"}}
+target=${1:-${target:-"wcoss2"}}
+prefix=${2:-${prefix:-"../install"}}
 
 readlink=$(which readlink)
 [[ $(uname -s) == Darwin ]] && readlink=$(which greadlink)
@@ -20,16 +21,13 @@ if [[ "$target" =~ ^(wcoss2|hera|orion)$ ]]; then
   set -x
 fi
 
-# Determine install path.
-INSTALL_PREFIX=${INSTALL_PREFIX:-$pkg_root/install}
-
 # Create a build directory and cd into it.
 [[ -d build  ]] && rm -rf build
 mkdir -p build && cd build
 
 # build and install.
-cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX ${CMAKE_OPTS:-} ..
-make -j ${BUILD_JOBS:-4} VERBOSE=${BUILD_VERBOSE:-}
+cmake -DCMAKE_INSTALL_PREFIX=$prefix ${CMAKE_OPTS:-} ..
+make -j ${BUILD_JOBS:-6} VERBOSE=${BUILD_VERBOSE:-}
 make install
 
 exit 0
