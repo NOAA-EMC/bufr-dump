@@ -45,10 +45,12 @@ set -eu
 # Force option to overwrite fix binary files from a previous download
 force=${1:-"NO"}
 
-URL=https://ftp.emc.ncep.noaa.gov/EIB/rmahajan
-tarball=bufr-dump-fix.tgz
+URL="https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc"
+SHA="0c2d467f3f5fef14fc9f57fc6c461f8ebf68716c81c7b3ab9974d268c99cc442"
+SHORTSHA=$(echo $SHA | cut -c1-6)
+TAR="bufr-dump-fix-${SHORTSHA}.tgz" # poor-man's version control
 
-# fix files to download (contents of the tarball should match)
+# fix files to download (contents of the $TAR should match)
 fix_files=( \
   nam_expdomain_halfdeg_imask.gbl \
   nam_expdomain_guam_halfdeg_imask.gbl \
@@ -72,10 +74,16 @@ if [[ "$force" =~ [yYtY] ]]; then
 fi
 
 if $download; then
-  echo -e "\nDownloading $tarball from $URL"
-  wget -q $URL/$tarball
-  tar xzf $tarball
-  rm -f $tarball
+  echo -e "\nDownloading $TAR from $URL"
+  rm -f $TAR
+  wget -q $URL/$TAR
+  SHA256=$(sha256sum $TAR 2>/dev/null | awk '{print $1}')
+  if [[ ! "$SHA256" == "$SHA" ]]; then
+    echo -e "\nIncorrect checksum, ABORT!"
+    exit 1
+  fi
+  tar xzf $TAR
+  rm -f $TAR
 else
   echo -e "\nFix files present in the cloned repository. Nothing to download!\n"
 fi
