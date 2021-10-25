@@ -9,7 +9,7 @@ elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^(GNU)$")
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fconvert=big-endian")
 endif()
 
-set(exe_name wave_dcodquikscat.x)
+set(exe_name wave_dcodquikscat)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

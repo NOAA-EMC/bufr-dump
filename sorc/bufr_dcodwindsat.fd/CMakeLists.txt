@@ -2,7 +2,7 @@ list(APPEND fortran_src
   dcodwindsat.f
 )
 
-set(exe_name bufr_dcodwindsat.x)
+set(exe_name bufr_dcodwindsat)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

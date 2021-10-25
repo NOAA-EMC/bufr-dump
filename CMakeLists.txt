@@ -26,10 +26,13 @@ if(NOT CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
 endif()
 
 # Build and install code.
-add_subdirectory(sorc)
+#add_subdirectory(sorc)
 
 # Install utility scripts.
 add_subdirectory(ush)
 
 # Install fix files.
 add_subdirectory(fix)
+
+# Install modulefile for this package.
+add_subdirectory(modulefiles)

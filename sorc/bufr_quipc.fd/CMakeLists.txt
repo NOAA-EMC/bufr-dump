@@ -6,7 +6,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -warn nousage")
 endif()
 
-set(exe_name bufr_quipc.x)
+set(exe_name bufr_quipc)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

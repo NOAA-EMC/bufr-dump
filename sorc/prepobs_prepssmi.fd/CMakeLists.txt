@@ -6,7 +6,7 @@ if(CMAKE_Fortran_COMPILER_ID MATCHES "^(Intel)$")
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ")
 endif()
 
-set(exe_name prepobs_prepssmi.x)
+set(exe_name prepobs_prepssmi)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}
