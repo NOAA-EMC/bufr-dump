@@ -2,7 +2,7 @@ list(APPEND fortran_src
   dupair.f
 )
 
-set(exe_name bufr_dupair.x)
+set(exe_name bufr_dupair)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

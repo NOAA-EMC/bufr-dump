@@ -2,7 +2,7 @@ list(APPEND fortran_src
   dupsst.f
 )
 
-set(exe_name bufr_dupsst.x)
+set(exe_name bufr_dupsst)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

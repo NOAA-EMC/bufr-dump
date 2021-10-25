@@ -2,7 +2,7 @@ list(APPEND fortran_src
   dupcman.f
 )
 
-set(exe_name bufr_dupcman.x)
+set(exe_name bufr_dupcman)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

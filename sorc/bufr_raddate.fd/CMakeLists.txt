@@ -2,7 +2,7 @@ list(APPEND fortran_src
   raddate.f
 )
 
-set(exe_name bufr_raddate.x)
+set(exe_name bufr_raddate)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

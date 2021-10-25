@@ -2,7 +2,7 @@ list(APPEND fortran_src
   supertmi.f90
 )
 
-set(exe_name bufr_supertmi.x)
+set(exe_name bufr_supertmi)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}

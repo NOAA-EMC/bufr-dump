@@ -12,6 +12,7 @@
 *.tar.gz*
 *.tgz*
 fort.*
+*.bak
 
 # Ignore the contents of these directories
 exec/

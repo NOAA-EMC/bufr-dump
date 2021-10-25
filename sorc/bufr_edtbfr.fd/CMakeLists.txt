@@ -2,7 +2,7 @@ list(APPEND fortran_src
   edtbfr.f
 )
 
-set(exe_name bufr_edtbfr.x)
+set(exe_name bufr_edtbfr)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}
