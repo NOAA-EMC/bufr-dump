@@ -12,7 +12,6 @@ target_link_libraries(
   ${exe_name}
   bacio::bacio_4
   w3emc::w3emc_4
-  sp::sp_4
   bufr::bufr_4)
 
 install(TARGETS ${exe_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
