@@ -16,7 +16,6 @@ endif()
 find_package(bacio REQUIRED)
 find_package(w3emc REQUIRED)
 find_package(bufr REQUIRED)
-find_package(sp REQUIRED)
 
 # Build code.
 add_subdirectory(bufr_chkbfr.fd)
