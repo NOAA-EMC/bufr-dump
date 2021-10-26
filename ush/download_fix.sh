@@ -26,7 +26,6 @@
 # $> pwd
 #     /path/to/bufr-dump
 # $> ls -1
-#    CMakeLists.txt
 #    fix
 #    modulefiles
 #    sorc
