@@ -13,6 +13,7 @@
 *.tgz*
 fort.*
 *.bak
+*.log
 
 # Ignore the contents of these directories
 exec/
