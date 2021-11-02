@@ -16,15 +16,7 @@ file(DOWNLOAD
   )
 
 # Extract downloaded tarball.
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0")
-  file(ARCHIVE_EXTRACT INPUT ${TAR})
-else()
-  add_custom_target(archive_extract ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${TAR})
-  add_custom_command(
-    TARGET archive_extract
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_BINARY_DIR} tar xvf ${TAR})
-endif()
+file(ARCHIVE_EXTRACT INPUT ${TAR})
 
 # Collect list of fix files to install.
 list(APPEND fix_files

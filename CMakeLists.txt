@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 
 # Get the version from the VERSION file.
 file(STRINGS "VERSION" pVersion)
