@@ -6,6 +6,7 @@
 #
 # Author:        R. Mahajan         Org: NCEP/EMC       Date: 2021-10-21
 #
+#
 # Abstract: This script downloads the binary fix files that used to be a part of the
 # VLab repository.
 # The downloaded files are:
@@ -18,18 +19,13 @@
 #
 # HASH is the truncated 6 character sha256sum hash of the tar file and can be obtained as:
 # $> sha256sum bufr-dump-fix.tgz
-#     0c2d467f3f5fef14fc9f57fc6c461f8ebf68716c81c7b3ab9974d268c99cc442
+#    0c2d467f3f5fef14fc9f57fc6c461f8ebf68716c81c7b3ab9974d268c99cc442
 #
 # The data can be downloaded manually and into the cloned
 # repository by executing this script from the root of the cloned directory
 # e.g.
 # $> pwd
-#     /path/to/bufr-dump
-# $> ls -1
-#    fix
-#    modulefiles
-#    sorc
-#    ush
+#    /path/to/bufr-dump
 # $> ./ush/download_fix.sh
 #
 # Usage: ./ush/download_fix.sh [yes|no]

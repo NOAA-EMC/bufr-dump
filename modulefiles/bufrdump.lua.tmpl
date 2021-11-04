@@ -1,0 +1,25 @@
+help([[
+Sets environment variables for bufr-dump utilities
+]])
+
+local pkgName = myModuleName()
+local pkgVersion = myModuleVersion()
+local pkgNameVer = myModuleFullName()
+
+conflict(pkgName)
+
+local base = "@CMAKE_INSTALL_PREFIX@"
+
+setenv("HOMEbufr_dump", base)
+setenv("FIXbufr_dump", pathJoin(base, "fix"))
+setenv("USHbufr_dump", pathJoin(base, "ush"))
+
+setenv("BUFR_DUMPLIST", pathJoin(base, "fix/bufr_dumplist"))
+setenv("DUMPJB", pathJoin(base, "ush/dumpjb"))
+
+prepend_path("PATH", pathJoin(base, "ush"))
+
+whatis("Name: ".. pkgName)
+whatis("Version: " .. pkgVersion)
+whatis("Category: Utility")
+whatis("Description: This module sets the environment variables for BUFR DUMP utilities")
