@@ -33,9 +33,9 @@
 #  TANK - path to database tanks up to the YYYYMMDD
 #         (default is $DCOMROOT/prod)
 #  LIST - complete path to bufr_dumplist fixed file
-#         (default is $FIXbufr_util/bufr_dumplist, formerly
+#         (default is $FIXbufr_dump/bufr_dumplist, formerly
 #          $FIXobsproc_shared_bufr_dumplist prior to WCOSS2)
-#         (If $LIST not imported, then $FIXbufr_util MUST
+#         (If $LIST not imported, then $FIXbufr_dump MUST
 #          BE PASSED INTO THIS SCRIPT)
 #  cycle - e.g., t12z
 #         (default is t00z)
@@ -69,7 +69,7 @@ rm *
 
 TANK=${TANK:-${DCOMROOT:?}/prod}
 
-LIST=${LIST:-$FIXbufr_util/bufr_dumplist}
+LIST=${LIST:-$FIXbufr_dump/bufr_dumplist}
 
 set +u
 if [ -z "$PDY" ]; then
