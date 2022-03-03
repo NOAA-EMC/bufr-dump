@@ -280,7 +280,7 @@ _cmansh    nem 001010  #> CMAN stations decoded from SHEF format           | grn
 _buoysh    nem 001011  #> Buoys decoded from SHEF fmt (moored or drifting) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _tidgsh    nem 001012  #> Tide gauge reports decoded from SHEF format      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _shipsu    nem 001013  #> Ship - manual and automatic, unrestricted        |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
-_shipsb    nem 001101  #> Ship - manual and automatic, restricted (BUFR)   | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | RED |
+_shipsb    nem 001101  #> Ship - manual and automatic, restricted (BUFR)   | YEL 50   50 YYYY| YEL 50   50 YYYY| YEL 50   50 YYYY| YEL | YEL |
 _dbuoyb    nem 001102  #> Drifting buoys (decoded from BUFR)               | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _mbuoyb    nem 001103  #> Moored buoys (decoded from BUFR)                 | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _cmanb     nem 001104  #> Surface Marine CMAN rpts decoded from BUFR format|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
