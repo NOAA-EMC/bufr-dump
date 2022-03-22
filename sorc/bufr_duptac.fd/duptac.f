@@ -216,6 +216,13 @@ C  ---------------------------------------------------------------
          MXTB = MXTB + NUM_SUBSETS
       ENDDO
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input buoy reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(IWORK(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
@@ -503,6 +510,8 @@ C  -------------------------------------------------------------------
          ENDIF ! (FILI(I)(1:4).NE.'NONE')
       ENDDO ! I=1,1
  
+  400 CONTINUE    
+
 C  GENERATE REPORT
 C  ---------------
  

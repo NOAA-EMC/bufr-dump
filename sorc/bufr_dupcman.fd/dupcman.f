@@ -178,6 +178,13 @@ C  ---------------------------------------------------------------
          MXTB = MXTB + NUM_SUBSETS
       ENDDO
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input cman reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(IWORK(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
@@ -485,7 +492,9 @@ C  -------------------------------------------------------------------
             CLOSE(LUBFI)
          ENDIF
       ENDDO
- 
+
+  400 CONTINUE
+
 C  GENERATE REPORT
 C  ---------------
  

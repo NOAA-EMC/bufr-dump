@@ -597,7 +597,7 @@ C  -------------------------------------------------------------------
          ENDIF
       ENDDO
 
- 400  CONTINUE
+  400 CONTINUE
 
 C  GENERATE REPORT SUMMARY
 C  -----------------------

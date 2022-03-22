@@ -667,6 +667,13 @@ ccccc call date_and_time(date,time); print*,time,' counting'
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input satellite reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
 ccccc call date_and_time(date,time); print*,time,' allocating',mxtb
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(SLQF_8(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
@@ -1311,6 +1318,8 @@ ccccc call date_and_time(date,time); print*,time,' finishing'
       ENDIF
       CLOSE(LUBFJ)
       CLOSE(LUBFC)
+
+  400 CONTINUE
 
 C  GENERATE REPORT
 C  ---------------
