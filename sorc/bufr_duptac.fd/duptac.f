@@ -23,8 +23,10 @@ C 2020-08-20  J. Whiting   Original version for implementation
 c     New code to check for and remove duplicate reports found in TAC
 C     feed data streams relative to the BUFR feed replacements.
 C     Currently configured for buoy (moored & drifting) data streams
-c     (TAC: mbuoy/nc001003 dbuoy/nc001002, and 
-c     BUFR: mbuoyb/nc001103 dbuoyb/nc001102).
+C     (TAC: mbuoy/nc001003 dbuoy/nc001002, and 
+C     BUFR: mbuoyb/nc001103 dbuoyb/nc001102).
+C 2022-03-22  I. Genkova   Added check for 0 reports in input file
+C     and allows for graceful continue in the event of 0 reports.
 C
 C USAGE:
 C   INPUT FILES:
@@ -99,10 +101,10 @@ C$$$
 
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPTAC',2020,0233,0050,'EMC')
+      CALL W3TAGB('BUFR_DUPTAC',2022,0081,0050,'EMC')
 
 
-      print * ,'---> Welcome to BUFR_DUPTAC - v08-20-2020'
+      print * ,'---> Welcome to BUFR_DUPTAC - v03-22-2022'
       call bvers(cvstr)
       print'(13x,"(BUFRLIB version = v",a,")",//)', trim(cvstr)
 
@@ -215,6 +217,13 @@ C  ---------------------------------------------------------------
 
          MXTB = MXTB + NUM_SUBSETS
       ENDDO
+
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input reports'
+         PRINT *
+         GO TO 400
+      ENDIF
 
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
@@ -502,6 +511,8 @@ C  -------------------------------------------------------------------
 
          ENDIF ! (FILI(I)(1:4).NE.'NONE')
       ENDDO ! I=1,1
+
+ 400  CONTINUE
  
 C  GENERATE REPORT
 C  ---------------
