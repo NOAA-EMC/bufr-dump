@@ -24,6 +24,9 @@ c     DUPLICATIONS FOR C-MAN TAC FORMAT 001.004 AND C-MAN BUFR FORMAT
 C     001.104. 
 C 2021-08-28  D. STOKES -- MODIFIED IMST DATA STATEMENT TO INITIALIZE
 C     ALL 113 ARRAY ELEMENTS
+C 2022-03-22  I. GENKOVA -- ADDED CHECK FOR 0 REPORTS IN INPUT FILE AND
+C     ALLOWS FOR GRACEFUL CONTINUE IN THE EVENT OF 0 REPORTS.
+C     CORRECTLY INITIALIZED IMST.
 C
 C USAGE:
 C   INPUT FILES:
@@ -98,10 +101,10 @@ C$$$
       DATA IMST  /  3*-99, 1, 99*-99, 2, 9*-99 /
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPCMAN',2021,0241,2250,'NP22')
+      CALL W3TAGB('BUFR_DUPCMAN',2022,0081,2250,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPCMAN - Version 08-28-2021'
+      print * ,'---> Welcome to BUFR_DUPCMAN - Version 03-22-2022'
       print *
 
       CALL DATELEN(10)
@@ -493,8 +496,8 @@ C  -------------------------------------------------------------------
          ENDIF
       ENDDO
 
-  400 CONTINUE
-
+ 400  CONTINUE
+ 
 C  GENERATE REPORT
 C  ---------------
  
