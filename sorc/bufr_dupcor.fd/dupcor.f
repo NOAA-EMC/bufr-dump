@@ -580,7 +580,7 @@ C  ---------------------------------------------------------
 
       IF(MXTB.EQ.0) THEN
          PRINT *
-         PRINT *, '### WARNING: A total of ZERO input aircraft reports'
+         PRINT *, '### WARNING: A total of ZERO input reports //dupcor'
          PRINT *
          GO TO 400
       ENDIF
