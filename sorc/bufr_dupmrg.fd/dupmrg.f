@@ -319,7 +319,7 @@ C  ---------------------------------------------------------
 
       IF(MXTB.EQ.0) THEN
          PRINT *
-         PRINT *, '### WARNING: A total of ZERO input sonde reports'
+         PRINT *, '### WARNING: A total of ZERO input reports //dupmrg'
          PRINT *
          GO TO 400
       ENDIF

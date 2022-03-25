@@ -464,7 +464,8 @@ C  ---------------------------------------------------------
 
       IF(MXTB.EQ.0) THEN
          PRINT *
-         PRINT *, '### WARNING: A total of ZERO input surface reports'
+         PRINT *, '### WARNING: A total of ZERO input marine reports //
+     . //dupmar' 
          PRINT *
          GO TO 400
       ENDIF

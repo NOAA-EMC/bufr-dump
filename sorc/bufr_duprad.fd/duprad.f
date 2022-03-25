@@ -346,7 +346,7 @@ C  ---------------------------------------------------------
 
       IF(MXTB.EQ.0) THEN
          PRINT *
-         PRINT *, '### WARNING: A total of ZERO input radar reports'
+         PRINT *, '### WARNING: A total of ZERO input reports //duprad'
          PRINT *
          GO TO 400
       ENDIF
