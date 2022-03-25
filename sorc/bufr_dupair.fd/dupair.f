@@ -475,7 +475,7 @@ C  ---------------------------------------------------------------
 
       IF(MXTB.EQ.0) THEN
          PRINT *
-         PRINt *, '### WARNING: A total of ZERO input aircraft reports'
+         PRINT *, '### WARNING: A total of ZERO input aircraft reports'
          PRINT *
          GO TO 400
       ENDIF
@@ -1066,7 +1066,7 @@ C  -------------------------------------------------------------------
          ENDIF
       ENDDO
 
- 400  CONTINUE
+  400 CONTINUE
 
 C  GENERATE REPORT SUMMARY
 C  -----------------------
