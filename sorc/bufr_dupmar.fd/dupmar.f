@@ -462,6 +462,13 @@ C  ---------------------------------------------------------
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input surface reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(REC_8(3,MXTB),STAT=I);   IF(I.NE.0) GOTO 901
@@ -958,6 +965,8 @@ cpppp
       ENDIF
       CLOSE(LUBFJ)
  
+  400 CONTINUE
+
 C  GENERATE REPORT
 C  ---------------
  

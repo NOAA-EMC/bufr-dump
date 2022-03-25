@@ -344,6 +344,13 @@ C  ---------------------------------------------------------
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input radar reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
 C  IF INPUT FILE WAS DETERMINED TO BE "DYNAMIC" (I.E., IT MAY BE
 C   GROWING DURING THE COURSE OF THE RUNNING OF THIS PROGRAM), BUMP UP
 C   ALLOCATABLE ARRAY SIZE TO 3 MILLION TO ENSURE THAT UFBTAB DOES NOT
@@ -557,7 +564,9 @@ C  -------------------------------------------------------------------
      .    'MESSAGE TYPE FOUND IS",I5/)', MSGT
       ENDIF
       CLOSE(LUBFJ)
- 
+
+  400 CONTINUE
+
 C  GENERATE REPORT
 C  ---------------
  

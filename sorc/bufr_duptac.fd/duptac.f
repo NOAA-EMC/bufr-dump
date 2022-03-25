@@ -512,8 +512,8 @@ C  -------------------------------------------------------------------
          ENDIF ! (FILI(I)(1:4).NE.'NONE')
       ENDDO ! I=1,1
 
- 400  CONTINUE
- 
+ 400  CONTINUE   
+
 C  GENERATE REPORT
 C  ---------------
  
