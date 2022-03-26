@@ -37,6 +37,8 @@ C     AND 001.113 (UNRESTRICTED SHIPS). DO THE DUPLICATION CHECKS.
 C 2021-09-02  D. STOKES --  CHANGED NINT TO KIDNNT FOR REAL(8) INPUT
 C     ARGUMENTS TO AVOID OVERFLOW AND INCORRECT RESULTS WHEN PROCESING
 C     MISSING VALUES.
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C     allows for graceful continue in the event of 0 reports.
 C
 C USAGE:
 C   INPUT FILES:
@@ -110,10 +112,10 @@ C$$$
       DATA IMST  /  1, 11*-99, 2, 87*-99, 3, 11*-99, 4 /
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPSHP',2021,0245,1800,'NP22')
+      CALL W3TAGB('BUFR_DUPSHP',2022,0084,1800,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPSHP - Version 09-02-2021'
+      print * ,'---> Welcome to BUFR_DUPSHP - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)

@@ -253,6 +253,8 @@ C                    setting (1/1/3000) to retain old logic.
 C 2020-08-20  J. DONG  --  ADDED SETBMISS CALL TO SET BMISS TO 10E8
 C           TO AVOID INTEGER OVERFLOW
 C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C           allows for graceful continue in the event of 0 reports.
 C     
 C USAGE:
 C   INPUT FILES:
@@ -342,10 +344,10 @@ C$$$
  
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPCOR',2021,0245,1100,'NP22') 
+      CALL W3TAGB('BUFR_DUPCOR',2022,0084,1100,'NP22') 
 
       print *
-      print * ,'---> Welcome to BUFR_DUPCOR - Version 09-02-2021'
+      print * ,'---> Welcome to BUFR_DUPCOR - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)

@@ -241,10 +241,10 @@ C     DIFFERENT SATELLITE IDS, IF SO A DIAGNOSTIC IS PRINTED (WE MAY
 C     NOT WANT TO TOSS DUPLICATE REPORTS WITH DIFFERENT SATELLITE IDS,
 C     IF INDEED THERE EVER ARE ANY, IN THE FUTURE)
 C 2012-11-20  J. WOOLLEN  INITIAL PORT TO WCOSS -- ADAPTED IBM/AIX
-C       GETENV SUBPROGRAM CALLS TO INTEL/LINUX SYNTAX
+C      GETENV SUBPROGRAM CALLS TO INTEL/LINUX SYNTAX
 C 2013-01-14  J. WHITING  FINAL PORT TO WCOSS -- UPDATED DOC BLOCKS;
-C       REPLACED TESTS VS BMISS W/ IBFMS FUNCTION; REPLACED EXPLICIT
-C       ASSIGNMENT OF BMISS W/ GETBMISS() FUNCTION.
+C      REPLACED TESTS VS BMISS W/ IBFMS FUNCTION; REPLACED EXPLICIT
+C      ASSIGNMENT OF BMISS W/ GETBMISS() FUNCTION.
 C 2013-07-01  D. KEYSER   ADDED GOES-15 (SAT. ID 259) TO COMMENTS
 C 2014-11-07  D. KEYSER   DECLARE FUNCTION GETBMISS AND ITS RETURN
 C     VALUE BMISS AS REAL*8 TO GET A RELIABLE VALUE FOR BMISS IN PRINT
@@ -264,19 +264,21 @@ C        allows a unique sequential serial index (counter) to be used
 C        to generate characters 3-7 of RPID for each individual
 C        satellite.
 C 2015-06-30  D. Keyser  Fixed bug in code which failed to initialize a
-C        counting variable and led to incorrect print statements. It
-C        had no affect on answers.
+C     counting variable and led to incorrect print statements. It
+C     had no affect on answers.
 C 2018-03-28  D. Keyser  Changes to handle new GOES-16 & up satellite
-C        winds which do not contain a report id (RPID) - do not call
-C        subroutine SATWND_ID for these.
+C     winds which do not contain a report id (RPID) - do not call
+C     subroutine SATWND_ID for these.
 C 2019-04-16  S. MELCHIOR  In subr. SATWND_ID: IR (long-wave) NOAA-20
-C        VIIRS POES winds now handled. These have message type NC005090
-C        and BUFR satellite ID 225. Get previously unused character "S"
-C        in 1st character of generated RPID and "9" (meaning NASA is
-C        producer) in 2nd character of RPID.
+C     VIIRS POES winds now handled. These have message type NC005090
+C     and BUFR satellite ID 225. Get previously unused character "S"
+C     in 1st character of generated RPID and "9" (meaning NASA is
+C     producer) in 2nd character of RPID.
 C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
-C        CHANGE THE CODE TO FIX OUTPUT CONVERSION ERROR
+C     CHANGE THE CODE TO FIX OUTPUT CONVERSION ERROR
 C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C     allows for graceful continue in the event of 0 reports.
 C
 C USAGE:
 C   INPUT FILES:
@@ -446,10 +448,10 @@ C$$$
 
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPSAT',2021,0245,1100,'NP22')
+      CALL W3TAGB('BUFR_DUPSAT',2022,0084,1100,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPSAT - Version 09-02-2021'
+      print * ,'---> Welcome to BUFR_DUPSAT - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)

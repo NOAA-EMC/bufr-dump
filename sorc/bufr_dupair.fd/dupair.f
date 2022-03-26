@@ -218,6 +218,8 @@ C     report identifier) - AMDAR reports use only tail number for
 C     report identifier}.
 C 2020-08-20  J. DONG  --  ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
 C     CHANGE THE CODE TO AVOID INTEGER OVERFLOW
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C     allows for graceful continue in the event of 0 reports.
 C
 C USAGE:
 C   INPUT FILES:
@@ -361,10 +363,10 @@ C  -------------------------------------
  
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPAIR',2020,0233,0054,'NP22')
+      CALL W3TAGB('BUFR_DUPAIR',2022,0084,0054,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPAIR - Version 08-20-2020'
+      print * ,'---> Welcome to BUFR_DUPAIR - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)
