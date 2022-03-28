@@ -74,6 +74,8 @@ C 2018-04-02  Y. LING   MODIFIED TO ADD DUPLICATE CHECKING FOR VIIRS
 C     SST (MNEMONICS NC012023/024/025)
 C 2020-08-20  J. DONG  ADDED SETBMISS CALL TO SET BMISS TO 10E8 TO
 C     AVOID INTEGER OVERFLOW
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C     allows for graceful continue in the event of 0 reports.
 C
 C USAGE:
 C   INPUT FILES:
@@ -145,10 +147,10 @@ C$$$
  
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPSST',2020,0233,0005,'NP22')
+      CALL W3TAGB('BUFR_DUPSST',2022,0084,0005,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPSST - Version 08-20-2020'
+      print * ,'---> Welcome to BUFR_DUPSST - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)

@@ -42,13 +42,15 @@ C                 LAT/LON DIFFERENCE BETWEEN TAC AND BUFR FORMAT REPORTS
 C                 IN THE DUPLICATION CHECKS.
 C              -  ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
 C                 CHANGE THE CODE TO AVOID INTEGER OVERFLOW
-C 2021-04-20  X. Su
-C               -  adding statement for station with missing values
+C 2021-04-20  X. Su  adding statement for station with missing values
 C 2021-04-20  J. DONG -- 
 C              -  CHANGED DEXY TO 0.005.
 C              -  REMOVED THE UNNESSARY CODES
 C              -  FIXED THE BUGS FOR KEEPING THE REPORTS WITH
 C                 DIFFERENT IDs BUT WITH CLOSE LAT/LON.
+C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
+C     allows for graceful continue in the event of 0 reports.      
+C     
 C USAGE:
 C   INPUT FILES:
 C     UNIT 05  - STANDARD INPUT - RECORDS CONTAINING THE WORKING INPUT
@@ -146,10 +148,10 @@ C     default of 1 because first eligible synop tank is b000/xx000.
  
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPSYP',2021,0175,0054,'NP22')
+      CALL W3TAGB('BUFR_DUPSYP',2022,0084,0054,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPSYP - Version 06-24-2021'
+      print * ,'---> Welcome to BUFR_DUPSYP - Version 03-25-2022'
       print *
 
       CALL DATELEN(10)
