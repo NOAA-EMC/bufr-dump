@@ -324,6 +324,8 @@
 #       (/gpfs/hps2 and /gpfs/hps3 in addition to /gpfs/hps).  The default
 #       TMPDIR location for developer runs on Cray-XC40 is now on the /gpfs/hps3
 #       filesystem rather than /gpfs/hps.
+# 2018-02-23  D. Keyser  New BUFR-feed land RAOBS (002.101) are dup-checked by
+#      new dup-check code BUFR_DUPUPR.
 # 2018-05-04  Y. Ling  Added VIIRS SST mesgtyp/subtyp 012/023, 012/024 012/025 for 
 #       setting the DUPE1 and DUPE2 parameters.
 # 2018-08-29  JWhiting  Updated to run on Dell-p3 platforms: 
@@ -474,7 +476,7 @@
 #                   bufr_dupsst  bufr_dupmrg bufr_edtbfr bufr_quipc
 #                   bufr_chkbfr  bufr_combfr bufr_dupair bufr_dupshp
 #                   bufr_dupmar  bufr_geofil bufr_duprad bufr_dupsyp
-#                   bufr_duptac bufr_dupcman
+#                   bufr_duptac bufr_dupcman bufr_dupupr
 #
 # Remarks:
 #
@@ -573,6 +575,7 @@
 #   DMDX   -  path to DUMPMD executable             (default:$DUEX/bufr_dumpmd)
 #   GEOX   -  path to GEOFIL executable             (default:$DUEX/bufr_geofil)
 #   CORX   -  path to DUPCOR executable             (default:$DUEX/bufr_dupcor)
+#   UPRX   -  path to DUPUPR executable             (default:$DUEX/bufr_dupupr)
 #   SATX   -  path to DUPSAT executable             (default:$DUEX/bufr_dupsat)
 #   SSTX   -  path to DUPSST executable             (default:$DUEX/bufr_dupsst)
 #   MRGX   -  path to DUPMRG executable             (default:$DUEX/bufr_dupmrg)
@@ -992,6 +995,7 @@ echo
 [ -z "$DMDX" ]   && DMDX=$DUEX/bufr_dumpmd
 [ -z "$GEOX" ]   && GEOX=$DUEX/bufr_geofil
 [ -z "$CORX" ]   && CORX=$DUEX/bufr_dupcor
+[ -z "$UPRX" ]   && UPRX=$DUEX/bufr_dupupr
 [ -z "$SATX" ]   && SATX=$DUEX/bufr_dupsat
 [ -z "$SSTX" ]   && SSTX=$DUEX/bufr_dupsst
 [ -z "$MRGX" ]   && MRGX=$DUEX/bufr_dupmrg
@@ -1168,6 +1172,7 @@ RADX = $RADX
 DMDX = $DMDX
 GEOX = $GEOX
 CORX = $CORX
+UPRX = $UPRX
 SATX = $SATX
 SSTX = $SSTX
 MRGX = $MRGX
@@ -1657,6 +1662,7 @@ DUPE2=NONE
 [ $mt -eq 000 -a $st -eq 007                               ] && DUPE1=$MARX
 [ $mt -eq 001                                              ] && DUPE1=$MARX
 [ $mt -eq 002 -a \( $st -le 005 -o $st -eq 009 \)          ] && DUPE1=$MRGX
+[ $mt -eq 002 -a $st -eq 101                               ] && DUPE1=$UPRX
 [ $mt -eq 003 -o $mt -eq 005 -o $mt -eq 012 -o $mt -eq 021 ] && DUPE1=$SATX
 [ $mt -eq 012 -a \( $st -ge 010 -a $st -le 012 \)          ] && DUPE1=$SSTX
 [ $mt -eq 012 -a \( $st -ge 017 -a $st -le 018 \)          ] && DUPE1=$SSTX

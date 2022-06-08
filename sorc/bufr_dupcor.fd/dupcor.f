@@ -354,6 +354,23 @@ C-----------------------------------------------------------------------
 
 ccccc CALL OPENBF(0,'QUIET',2) ! Uncomment for extra print from bufrlib
 
+C  Override current BUFRLIB maximum number of data values in an
+C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
+C -------------------------------------------------------------
+      IRET=ISETPRM('MAXSS',300000 )  ! must use DA version of BUFRLIB
+      IF(IRET.EQ.0)  THEN
+         IMAXSS=IGETPRM('MAXSS')
+         PRINT'(/" MAXIMUM NUMBER OF DATA VALUES IN AN UNCOMPRESSED",
+     $    " BUFR SUBSET (MAXSS) SET TO ",I0)', IMAXSS
+      ELSE
+         PRINT'(/" ATTEMPT TO SET MAXSS IN DUPCOR FAILED")'
+c        PRINT'(/25("*"),"ABORT",25("*")/"ATTEMPT TO SET MAXSS FAILED ",
+c    $    " -- STOP 94"/25("*"),"ABORT",25("*")/)'
+c        CALL W3TAGE('BUFR_DUPCOR')
+c        call errexit(94)
+      ENDIF
+C  Above block copied and adapted from EDTBFR.F    CH 03/15/2022
+
 C  ASSIGN DEFAULT VALUE FOR 'MISSING' TO LOCAL BMISS VARIABLE
 C  ----------------------------------------------------------
 

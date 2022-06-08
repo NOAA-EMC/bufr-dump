@@ -211,6 +211,10 @@
 #      Note: ERS scatterometer wind reprocessing executables (dcodcloc, dataqc,
 #       datasort) have not been ported to current WCOSS systems and would fail
 #       if invoked.
+# 2018-12-07  C. Hill -- Each subtype of FM42-based sonde data (002.00[1-5]) is
+#      paired with its corresponding subtype of BUFR-based data (002.10[1-5])
+#      within the 'pattern' list of potentially missing subtypes (i.e. tanks).
+#
 # 2021-03-09 SMelchior -- Included gpsro among the data types whose dump files
 #    are restricted.
 #
@@ -735,6 +739,11 @@
 #          002.004 (dropw)      All                     All
 #          002.005 (pibal)      NAM,NDAS,RAP,RUC        All
 #          002.009 (prflrp)     All                     All
+#          002.101 (raobf)      RAP,RUC                 02-05,08-11,14-17,20-23
+#          002.102 (raobm)      All                     All
+#          002.103 (raobs)      RAP,RUC                 All
+#          002.104 (dropw)      All                     All
+#          002.105 (pibal)      RAP,RUC                 All
 #          004.005 (recco)      All                     All
 #          004.007 (acarsa)     All                     All
 #          004.008 (tamdar)     All                     All
@@ -902,6 +911,8 @@ cat <<\EOFp > pattern
 002.002
 002.004
 002.009
+002.102
+002.104
 004.005
 004.007
 004.008
@@ -1104,6 +1115,7 @@ EOFp5p2p3
 #  ruc2a_dump at center dump times 02-05Z, 08-11Z, 14-17Z, or 20-23Z
 cat <<\EOFp5p2p4 >> pattern
 002.001
+002.101
 EOFp5p2p4
    fi
 
