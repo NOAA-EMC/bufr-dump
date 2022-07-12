@@ -146,7 +146,7 @@ _avcs18    nem 021053
 _avcl18    nem 021054
 _shpall    nem 001001 001013
 _satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130 
-_testig    nem 021223
+_atmsvc    nem 021223
 
  ===================================================================================================================================
 
@@ -551,7 +551,7 @@ _crisfs    nem 021205  #> NPP/NOAA-20 CrIS full spctrl radiances (2211 chn)| grn
 _crisf4    nem 021206  #> NPP/NOAA-20 CrIS full spctrl radn (431 ch subset)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _crsfdb    nem 021212  #> NPP/NOAA-20 CrIS full spctrl radn dir brdcst SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _atmsdb    nem 021213  #> NPP/NOAA-20 ATMS bright. temps-direct b-cast SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
-_testig    nem 021223  #> ATMS & collocated VIITS cloud informattion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_atmsvc    nem 021223  #> ATMS & collocated VIITS cloud informattion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _iasidb    nem 021239  #> METOP 1-2 IASI 1C radiances-direct broadcast SSEC| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _modair    nem 021240  #> MODIS/AIRS radiance/reflectance data (colocated) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _mtiasi    nem 021241  #> METOP 1-2 IASI 1C radiance data (varbl. channels)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
