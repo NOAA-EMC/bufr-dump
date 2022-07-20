@@ -35,8 +35,8 @@
  
    --> Surface data - land -- TYPE 000
        -------------------------------
-_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
-_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
+_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
+_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
 
    --> Surface data - sea -- TYPE 001
        ------------------------------
@@ -119,6 +119,7 @@ _aircft    nem 004001 004002 004003 004006 004009 004010 004011 004103
 _adpsfc    nem 000000 000001 000002 000007 000100 000101 000102
 _adpupa    nem 002001 002002 002003 002004 002005 004005
 _erswnd    nem 012008
+_snocvr    nem 000015
 _qkscat    nem 012137
 _ascatt    nem 012122
 _wndsat    nem 012138
@@ -267,6 +268,7 @@ _synpbr    nem 000100  #> Synoptic - restricted (WMO Res 40)(decoded BUFR) |    
 _synopb    nem 000101  #> Synoptic - fixed manual & auto (decoded fr BUFR) | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | YEL |
 _synpmb    nem 000102  #> Synoptic - mobile manual & auto (decoded fr BUFR)| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
                                                                            |                 |                 |                 |     |     |
+_snocvr    nem 000015  #>SNOW COVER, DEPTH/DENSITY AND WATER EQUIVALENT    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _ships     nem 001001  #> Ship - manual and automatic, restricted          |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _dbuoy     nem 001002  #> Buoys decoded from FM-18 fmt (moored or drifting)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
 _mbuoy     nem 001003  #> Buoys decoded from FM-13 format (moored)         |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
