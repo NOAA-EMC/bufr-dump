@@ -337,7 +337,7 @@ _tmdarp    nem 004012  #> TAMDAR-PenAir aircraft data (from GSD, netCDF)   | grn
 _tmdarc    nem 004013  #> TAMDAR-Chautauqua aircraft data(from GSD, netCDF)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _famdar    nem 004014  #> French AMDAR aircraft data (decoded from BUFR)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _hdob      nem 004015  #> High Density OBs from reconnaissance acft data   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
-_amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED |     |
+_amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| YEL 50   50 YYYY| YEL 50   50 YYYY| YEL |     |
                                                                            |                 |                 |                 |     |     |
 _visuw     nem 005008  #> GOES/UW-CIMSS visible derived cloud motion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _ptrus     nem 005013  #> GOES/NESDIS picture triplet derived cloud motion | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
