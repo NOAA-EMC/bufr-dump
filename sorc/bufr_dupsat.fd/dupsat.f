@@ -1117,7 +1117,9 @@ ccccc call date_and_time(date,time); print*,time,' writing'
       OPEN(LUBFJ,FILE=FILO(1:NBYTES_FILO),FORM='UNFORMATTED')
       CALL OPENBF(LUBFI,'IN ',LUBFI)
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
-      CALL MAXOUT(25000)
+      
+C     IG  CALL MAXOUT(25000)
+      CALL MAXOUT(50000)
 
       CALL GETENV('DUMMY_MSGS',DUMMY_MSGS)
 

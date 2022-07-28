@@ -169,7 +169,15 @@ C-----------------------------------------------------------------------
 C  Override current BUFRLIB maximum number of data values in an
 C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
 C -------------------------------------------------------------
-      IRET=ISETPRM('MAXSS',400000 )  ! must use DA version of BUFRLIB
+
+C  IG ADD SOME SPACE :)
+      MAXBYT=40000
+      CALL MAXOUT(50000)
+      IRET=ISETPRM('MAXSS',600000 )  ! must use DA version of BUFRLIB
+
+
+
+C      IRET=ISETPRM('MAXSS',400000 )  ! must use DA version of BUFRLIB
       IF(IRET.EQ.0)  THEN
          IMAXSS=IGETPRM('MAXSS')
          PRINT'(/" MAXIMUM NUMBER OF DATA VALUES IN AN UNCOMPRESSED",
