@@ -490,6 +490,9 @@ C   check for possible high accuracy LAT/LON (mesonet reports)
 C  -----------------------------------------------------------
 
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
+C  IG INCREASE MAXMEM FROM DEFAULT 50,000,000 to 120,000,000
+      CALL ISETPRM(MAXMEM,120000000)
+
       CALL UFBMEM(LUBFI,0,IMSG,MUNIT)
       IF(MUNIT.EQ.0) THEN
          PRINT *, '###BUFR_DUPMAR - NO DATA IN INPUT FILE - STOP'
