@@ -169,7 +169,7 @@ C-----------------------------------------------------------------------
 C  Override current BUFRLIB maximum number of data values in an
 C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
 C -------------------------------------------------------------
-      IRET=ISETPRM('MAXSS',400000 )  ! must use DA version of BUFRLIB
+      IRET=ISETPRM('MAXSS',300000 )  ! must use DA version of BUFRLIB
       IF(IRET.EQ.0)  THEN
          IMAXSS=IGETPRM('MAXSS')
          PRINT'(/" MAXIMUM NUMBER OF DATA VALUES IN AN UNCOMPRESSED",
@@ -348,6 +348,7 @@ c ----------------------------------------------------------------------
                CALL ERREXIT(99)
             ENDIF
             kount = kount + 1
+            if(SUBSET(3:8) == "002101") then
             read(CRPID(1:2),'(I2)') ithis_blk_num
             if(ithis_blk_num.lt.00.or.ithis_blk_num.gt.99) then
                PRINT *, '#####BUFR_DUPUPR - REPORT HAS INVALID WMO ',
@@ -358,6 +359,7 @@ c ----------------------------------------------------------------------
             if(IBLK_NUM(ithis_blk_num).ne.1) then
                ktossed = ktossed + 1
                cycle
+            endif
             endif
             print *, 'retain accepted report with id: ',CRPID
             CALL OPENMB(LUBFJ,SUBSET,IDATE)

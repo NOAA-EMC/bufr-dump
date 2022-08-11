@@ -1839,6 +1839,7 @@ C  -------------------------------------------------------------------
          OPEN(LUBFJ,FILE='.EBTMP',FORM='UNFORMATTED')
          CALL OPENBF(LUBFI,'IN ',LUBFI)
          CALL OPENBF(LUBFJ,'OUT',LUBFI)
+         call maxout(200000)
          ISUB = 0
 
          STNID_MATCH = '99999999'
