@@ -54,7 +54,7 @@ M fix/bufr_dumplist
   sorc/bufr_duptac.fd/CMakeLists.txt
   sorc/bufr_duptac.fd/duptac.f
   sorc/bufr_edtbfr.fd/CMakeLists.txt
-  sorc/bufr_edtbfr.fd/edtbfr.f
+M sorc/bufr_edtbfr.fd/edtbfr.f
   sorc/bufr_geofil.fd/CMakeLists.txt
   sorc/bufr_geofil.fd/geofil.f
   sorc/bufr_quipc.fd/CMakeLists.txt
@@ -71,7 +71,7 @@ M fix/bufr_dumplist
   ush/bufr_dump_obs.sh
   ush/check_tanks.sh
   ush/download_fix.sh
-  ush/dumpjb
+M ush/dumpjb
   versions/build.ver
 ------------------------------
 M-modified; A-added; D-deleted
@@ -86,7 +86,8 @@ SCRIPTS file changes
 
 USH script changes
 ------------------
- No changes
+ ush/dumpjb
+ Print out name of sdmedit file if LOUD is on
 
 DOCS file changes
 -----------------
@@ -105,7 +106,8 @@ FIX code changes
  
 Source code changes
 -------------------
- No changes
+ sorc/bufr_edtbfr.fd/edtbfr.f
+ Increase array limit MEDT to accomodate growing sdmedit file
 
 Output changes
 --------------
