@@ -36,3 +36,6 @@ add_subdirectory(fix)
 
 # Install modulefile for this package.
 add_subdirectory(modulefiles)
+
+# Install release_notes files.
+add_subdirectory(release_notes)
