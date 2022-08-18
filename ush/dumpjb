@@ -1043,6 +1043,9 @@ echo
 [ -z "$EPRM" ]   && EPRM=${DCOMROOT:-${TANK}:-?}/sdmedit
 [ -z "$QPRM" ]   && QPRM=${DCOMROOT:-${TANK}:-?}/quips
 
+#IG
+echo "IG : SDMEDIT flag file: $EPRM"
+
 if [ -n "$DATA_DUMPJB" ]; then
   data_dumpjb_imported=YES
 else # put DATA_DUMPJB under $TMPDIR
