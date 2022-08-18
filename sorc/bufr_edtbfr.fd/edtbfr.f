@@ -650,7 +650,7 @@ C
 C$$$
       PROGRAM BUFR_EDTBFR
 
-      PARAMETER (MEDT=2000)         ! Allows up to 2000 time- and report
+      PARAMETER (MEDT=12000)        ! Allows up to 12000 time- and report
                                     ! type-relevant entries in the
                                     ! SDMEDIT flag file
       PARAMETER (MXTS=10)
@@ -2167,8 +2167,8 @@ C
 C$$$
       SUBROUTINE APPLY(LUBFJ,CARD,M,ITYP,JTYP,LPRINT)
 
-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
-                            ! relevant entries in the SDMEDIT flag file
+      PARAMETER (MEDT=12000) ! Allows up to 12000 time- and report type-
+                             ! relevant entries in the SDMEDIT flag file
 
       CHARACTER*128 CARD
       CHARACTER*80  PQMST
@@ -2685,8 +2685,8 @@ C
 C$$$
       SUBROUTINE PRSRNG(CARD,M,IER)
 
-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
-                            ! relevant entries in the SDMEDIT flag file
+      PARAMETER (MEDT=12000) ! Allows up to 12000 time- and report type-
+                             ! relevant entries in the SDMEDIT flag file
 
       CHARACTER*128 CARD
       CHARACTER*20  PLEV(11)
