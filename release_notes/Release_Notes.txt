@@ -54,7 +54,7 @@ M fix/bufr_dumplist
   sorc/bufr_duptac.fd/CMakeLists.txt
   sorc/bufr_duptac.fd/duptac.f
   sorc/bufr_edtbfr.fd/CMakeLists.txt
-M sorc/bufr_edtbfr.fd/edtbfr.f
+  sorc/bufr_edtbfr.fd/edtbfr.f
   sorc/bufr_geofil.fd/CMakeLists.txt
   sorc/bufr_geofil.fd/geofil.f
   sorc/bufr_quipc.fd/CMakeLists.txt
@@ -71,7 +71,7 @@ M sorc/bufr_edtbfr.fd/edtbfr.f
   ush/bufr_dump_obs.sh
   ush/check_tanks.sh
   ush/download_fix.sh
-M ush/dumpjb
+  ush/dumpjb
   versions/build.ver
 ------------------------------
 M-modified; A-added; D-deleted
@@ -106,8 +106,7 @@ FIX code changes
  
 Source code changes
 -------------------
- sorc/bufr_edtbfr.fd/edtbfr.f
- Increase array limit MEDT to accomodate growing sdmedit file
+ No changes
 
 Output changes
 --------------
