@@ -99,7 +99,7 @@ VERSIONS file changes
 FIX code changes
 -------------------
  fix/bufr_dumplist
- Introduce new dump groups (gmi1cr,snocvr,saldrn,subpfl) 
+ Introduce new dump groups (gmi1cr, snocvr, saldrn, subpfl) 
  Update dump groups (satwnd, gpsro, nsstbufr)
  Set tamdarb observations to YEL (was RED)
  
@@ -120,8 +120,8 @@ Compute Resource Information
 
 Disk Space Changes
 ------------------
- The newly generated dumps ( *gmi1c*, *snocvr*, *saldrn*, *subpfl* ) vary inn size from 1Mb to 200Mb
- depending on network, cycle time, time dump window. 0 size dumps are possible.
+ The newly generated dumps ( *gmi1cr*, *snocvr*, *saldrn*, *subpfl* ) vary in size from 1Mb to 200Mb
+ depending on network, cycle time, time dump window. 0 size dumps are possible
  The updated dumps (*gpsro*, *satwnd* and *nsstbufr) are up to ~25% larger in size
  For examples, see: /lfs/h2/emc/stmp/iliana.genkova/CRON/RELv1.1.0/com
 
@@ -151,7 +151,7 @@ Dissemination
 Special Instructions
 --------------------
  1.Implement release/obsproc.v1.1.0 and release/bufr-dump.v1.1.0 at the same time
- 2.Implement release/obsproc.v1.1.0 and release/bufr-dump.v1.1.0  before or at the same time as GFS v16.3
+ 2.Implement release/obsproc.v1.1.0 and release/bufr-dump.v1.1.0 before or at the same time as GFS v16.3
 
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -260,7 +260,7 @@ A versions/build.ver
 M-modified; A-added; D-deleted
 
 What changes were made to the above code/scripts to support the new architecture?
- bufr_dump has been removed from the obsproc software package to be a standalone application, installed on WCOSS2 as a module.
+ bufr_dump has been removed from the obsproc software package to be a standalone application, installed on WCOSS2 as a module
  bufr_dump has been moved to github as its own repository. https://github.com/NOAA-EMC/bufr-dump
  bufr_dump utilizes cmake to build and install the code. build bufr-dump repo with cmake
 
