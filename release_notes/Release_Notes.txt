@@ -5,10 +5,10 @@ bufr-dump v1.1.0        -> released to NCO on Aug 17,2022
 
 ---------------------------------------------------
 List of all code/scripts modified with this release
-  CMakeLists.txt
-  README.md
-M VERSION
-  build.sh
+M CMakeLists.txt
+M README.md
+D VERSION
+D build.sh
   fix/CMakeLists.txt
   fix/bufr_bufrtab.sptrmm
   fix/bufr_bufrtab.windsat
@@ -68,11 +68,13 @@ M fix/bufr_dumplist
   sorc/wave_dcodquikscat.fd/CMakeLists.txt
   sorc/wave_dcodquikscat.fd/dcodquikscat.f
   ush/CMakeLists.txt
+A ush/build.sh
   ush/bufr_dump_obs.sh
   ush/check_tanks.sh
   ush/download_fix.sh
   ush/dumpjb
   versions/build.ver
+A versions/VERSION
 ------------------------------
 M-modified; A-added; D-deleted
 
@@ -86,16 +88,19 @@ SCRIPTS file changes
 
 USH script changes
 ------------------
+ ush/build.sh
+ Moved build.sh here to adhere to cmake practices (no files in top leveel dir)
  ush/dumpjb
  Print out name of sdmedit file if LOUD is on
 
 DOCS file changes
 -----------------
- No changes
+ docs/README.md
+ Updated building instructions
 
 VERSIONS file changes
 ----------------
- No changes
+ Moved VERSION file in here
 
 FIX code changes
 -------------------

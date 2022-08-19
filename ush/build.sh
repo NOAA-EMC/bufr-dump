@@ -3,7 +3,7 @@
 set -eux
 
 # Location of PWD and package source directory.
-pkg_root=`dirname $(readlink -f $0)`
+readonly pkg_root=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )/.." && pwd -P)
 
 INSTALL_TARGET=${INSTALL_TARGET:-"wcoss2"}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"$pkg_root/install"}
