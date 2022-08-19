@@ -11,17 +11,17 @@ git clone https://github.com/noaa-emc/bufr-dump
 Move into desired branch and then run:
 
 ```bash
-INSTALL_PREFIX=/path/you/wish/to/install/bufr-dump ./build.sh
+INSTALL_PREFIX=/path/you/wish/to/install/bufr-dump ./ush/build.sh
 ```
 
 or install in local clone space:
 
 ```bash
-./build.sh
+./ush/build.sh
 ```
 
 There is also the option to build and install in your local clone space but install the modulefile elsewhere:
 
 ```bash
-MODULEFILE_INSTALL_PREFIX=/path/you/wish/to/install/bufr-dump/module ./build.sh
+MODULEFILE_INSTALL_PREFIX=/path/you/wish/to/install/bufr-dump/module ./ush/build.sh
 ```
