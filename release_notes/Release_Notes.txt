@@ -89,7 +89,7 @@ SCRIPTS file changes
 USH script changes
 ------------------
  ush/build.sh
- Moved build.sh here to adhere to cmake practices (no files in top leveel dir)
+ Moved build.sh here to adhere to NCO EE2 standards (no files in top level dir)
  ush/dumpjb
  Print out name of sdmedit file if LOUD is on
 
