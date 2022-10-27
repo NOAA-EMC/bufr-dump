@@ -1047,6 +1047,9 @@ echo
 [ -z "$EPRM" ]   && EPRM=${DCOMROOT:-${TANK}:-?}/sdmedit
 [ -z "$QPRM" ]   && QPRM=${DCOMROOT:-${TANK}:-?}/quips
 
+#IG
+echo "IG : SDMEDIT flag file: $EPRM"
+
 if [ -n "$DATA_DUMPJB" ]; then
   data_dumpjb_imported=YES
 else # put DATA_DUMPJB under $TMPDIR
@@ -1733,7 +1736,7 @@ if [ \( $DUMPMD = on -o $DUMPMD = ON \) -o \( -s $FIL1 -a -s $FIL2 \) -o \
 $DUMPJBprocdate
 eof_17
    fi
-   cat<<eof|time $DMDX
+   time $DMDX <<eof
 $RDT1
 $RDT2
 $FIL1
@@ -1761,7 +1764,7 @@ LALO_orig="$LALO"
 if [ "$LALO" != 0 -a $DUPE1 != $SATX ]; then
       set +e
 [ \$input_file != $DIRD/$FILO ]  &&  cp \$input_file $DIRD/$FILO
-cat<<eof|time $GEOX
+time $GEOX <<eof
 $DIRD/$FILO
 $DEST/$FILO
 $LALO
@@ -1778,7 +1781,7 @@ fi
 line3="$RDT1 $RDT2"
 [ $TIME_TRIM = off ]  &&  line3=""
 if [ $DUPC = on ]; then
-   cat<<eof|time $DUPE1
+   time $DUPE1 <<eof
 \$input_file
 $DEST/$FILO
 \$line3
@@ -1805,7 +1808,7 @@ eof
       line3="$RDT1 $RDT2"
       [ $TIME_TRIM = off ]  &&  line3=""
       cp $DEST/$FILO $DIRD/$FILO
-      cat<<eof|time \$DUPE2
+      time \$DUPE2 <<eof
 $DIRD/$FILO
 $DEST/$FILO
 \$line3

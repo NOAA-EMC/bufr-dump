@@ -35,8 +35,8 @@
  
    --> Surface data - land -- TYPE 000
        -------------------------------
-_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
-_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000100 000101 000102
+_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
+_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
 
    --> Surface data - sea -- TYPE 001
        ------------------------------
@@ -60,8 +60,8 @@ _004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 00
 
    --> Single-level upper-air data (satellite) -- TYPE 005
        ---------------------------------------------------
-_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005091
-_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005091
+_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
+_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
 
    --> Radar data -- TYPE 006
        ----------------------
@@ -85,8 +85,8 @@ _012       mgt 012001 012002 012003 012004 012005 012006 012008 012009 012010 01
 
    --> Radiances (satellite measured) -- TYPE 021
        ------------------------------------------
-_radnc     nem 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
-_021       mgt 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
+_radnc     nem 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
+_021       mgt 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
 
    --> Oceanographic data -- TYPE 031
        ------------------------------
@@ -120,6 +120,7 @@ _adpsfc    nem 000000 000001 000002 000007 000100 000101 000102
 _adpupa    nem 002001 002002 002003 002004 002005 004005
 _uprair    nem 002101 002102 002103 002104 002105
 _erswnd    nem 012008
+_snocvr    nem 000015
 _qkscat    nem 012137
 _ascatt    nem 012122
 _wndsat    nem 012138
@@ -129,7 +130,7 @@ _rassda    nem 002012
 _vadwnd    nem 002008 002017
 _goesnd    nem 003002 003003
 _goesfv    nem 003003
-_satwnd    nem 005021 005022 005023 005044 005045 005046 005067 005068 005069 005070 005071 005080 005091
+_satwnd    nem 005021 005022 005023 005044 005045 005046 005067 005068 005069 005070 005071 005080 005081 005091
 _sfcshp    nem 001001 001013 001002 001003 001004 001007 001102 001103 001101 001113 001104
 _sfcbog    nem 001006
 _gpsipw    nem 012004
@@ -146,8 +147,8 @@ _avcl17    nem 021052
 _avcs18    nem 021053
 _avcl18    nem 021054
 _shpall    nem 001001 001013
-_satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130
- 
+_satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130 
+_gmi1cr    nem 021246
 
  ===================================================================================================================================
 
@@ -268,6 +269,7 @@ _synpbr    nem 000100  #> Synoptic - restricted (WMO Res 40)(decoded BUFR) |    
 _synopb    nem 000101  #> Synoptic - fixed manual & auto (decoded fr BUFR) | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | YEL |
 _synpmb    nem 000102  #> Synoptic - mobile manual & auto (decoded fr BUFR)| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
                                                                            |                 |                 |                 |     |     |
+_snocvr    nem 000015  #>SNOW COVER, DEPTH/DENSITY AND WATER EQUIVALENT    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _ships     nem 001001  #> Ship - manual and automatic, restricted          |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _dbuoy     nem 001002  #> Buoys decoded from FM-18 fmt (moored or drifting)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
 _mbuoy     nem 001003  #> Buoys decoded from FM-13 format (moored)         |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
@@ -335,7 +337,7 @@ _tmdarp    nem 004012  #> TAMDAR-PenAir aircraft data (from GSD, netCDF)   | grn
 _tmdarc    nem 004013  #> TAMDAR-Chautauqua aircraft data(from GSD, netCDF)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _famdar    nem 004014  #> French AMDAR aircraft data (decoded from BUFR)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _hdob      nem 004015  #> High Density OBs from reconnaissance acft data   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
-_amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED |     |
+_amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| YEL 50   50 YYYY| YEL 50   50 YYYY| YEL |     |
                                                                            |                 |                 |                 |     |     |
 _visuw     nem 005008  #> GOES/UW-CIMSS visible derived cloud motion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _ptrus     nem 005013  #> GOES/NESDIS picture triplet derived cloud motion | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
@@ -365,6 +367,7 @@ _infmo     nem 005070  #> MODIS (AQUA/TERRA) ir l-wave derived cloud motion|    
 _h20mo     nem 005071  #> MODIS (AQUA/TERRA) wvpr imager derived cld motion|      0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
 _leogeo    nem 005072  #> LEO-GEO satellite AMVs from UWisc.               |      0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _infav     nem 005080  #> AVHRR (NOAA/METOP) ir lg-wave derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_infav1    nem 005081  #> AVHRR (METOP) ir lg-wave derived cld motion      | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _infvr     nem 005090  #> VIIRS (NPP/NOAA-20) ir lg-wave drv cloud motion  | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _ifvrnb    nem 005091  #> VIIRS (NPP/NOAA-20) ir lg-wv drv cloud motion(NB)| grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
                                                                            |                 |                 |                 |     |     |
