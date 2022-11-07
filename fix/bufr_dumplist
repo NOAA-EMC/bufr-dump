@@ -60,8 +60,8 @@ _004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 00
 
    --> Single-level upper-air data (satellite) -- TYPE 005
        ---------------------------------------------------
-_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
-_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
+_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005052 005053 005054 005055 005056 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
+_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005052 005053 005054 005055 005056 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
 
    --> Radar data -- TYPE 006
        ----------------------
@@ -131,6 +131,7 @@ _vadwnd    nem 002008 002017
 _goesnd    nem 003002 003003
 _goesfv    nem 003003
 _satwnd    nem 005021 005022 005023 005044 005045 005046 005067 005068 005069 005070 005071 005080 005081 005091
+_satwhr    nem 005052 005053 005054 005055 005056  
 _sfcshp    nem 001001 001013 001002 001003 001004 001007 001102 001103 001101 001113 001104
 _sfcbog    nem 001006
 _gpsipw    nem 012004
@@ -357,6 +358,11 @@ _visja     nem 005045  #> MTSAT/JMA visible derived cloud motion           | grn
 _h20ja     nem 005046  #> MTSAT/JMA water vapor imager derived cloud motion| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _infjan    nem 005050  #> MTSAT/NESDIS infrared lg-wave derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _h2ijan    nem 005051  #> MTSAT/NESDIS water vapor imger derived cld motion| grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_cinfusr   nem 005052  #> GOES-16&up/NESDIS ir long-wave derived cld motion| grn 40   50 YYYY|     40   50 YYYY|     40   50 YYYY| YEL |     |
+_ch2dusr   nem 005053  #> GOES-16&up/NESDIS wv imgr/deep-lyr derivd cld mtn| grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_cvisusr   nem 005054  #> GOES-16&up/NESDIS visible derived cloud motion   | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
+_ch2tusr   nem 005055  #> GOES-16&up/NESDIS wv imgr/cld-top derived cld mtn| grn 40   50 YYYY|     40   50 YYYY|     40   50 YYYY| YEL |     |
+_c3p9usr   nem 005056  #> GOES-16&up/NESDIS ir short-wv derived cld motion | grn 40   50 YYYY| grn 40   50 YYYY| grn 40   50 YYYY|     |     |
 _infeu     nem 005064  #> METEOSAT/EUMETSAT ir lg-wave derived cloud motion| grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _viseu     nem 005065  #> METEOSAT/EUMETSAT visible derived cloud motion   | grn  0   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _h20eu     nem 005066  #> METEOSAT/EUMETSAT wvpr imager derived cld motion | grn  0   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
