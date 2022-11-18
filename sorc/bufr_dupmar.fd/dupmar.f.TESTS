@@ -421,8 +421,17 @@ C   see which table is used here (IVER_rcptim=0 for pre-2/2004 version,
 C   IVER_rcptim=1 for post-2/2004 version)
 C  -----------------------------------------------------------------
 
-      OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
+C  SUGGESTED by Carlos IG
       CALL ISETPRM('MAXMEM',120000000)
+      CALL ISETPRM('MXLCC',12)
+      CALL ISETPRM('MXCDV',50000)
+      CALL ISETPRM('MAXJL',128000)
+      CALL ISETPRM('MAXSS',150000)
+C      CALL ISETPRM('MXMSGL',2500000)
+      CALL ISETPRM('MXMSGL',480000000)
+      CALL ISETPRM('MXRST',500)
+
+      OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
       CALL OPENBF(LUBFI,'IN',LUBFI)
    78 CONTINUE
       IF(IREADMG(LUBFI,SUBSET,IDATE).NE.0) THEN
@@ -435,7 +444,16 @@ C  -----------------------------------------------------------------
       CALL UFBINT(LUBFI,BID_8,1,1,IVER_bid,'{BID}')
       CALL UFBINT(LUBFI,RCPTIM_8,1,1,IVER_rcptim,'{RCPTIM}')
       CALL CLOSBF(LUBFI)
- 
+
+C  IG SUGGESTED by Carlos IG
+      CALL ISETPRM('MAXMEM',120000000)
+      CALL ISETPRM('MXLCC',12)
+      CALL ISETPRM('MXCDV',50000)
+      CALL ISETPRM('MAXJL',128000)
+      CALL ISETPRM('MAXSS',150000)
+      CALL ISETPRM('MXMSGL',480000000)
+      CALL ISETPRM('MXRST',500)
+
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
 
       CALL MESGBC(LUBFI,MSGT,ICOMP)
@@ -459,12 +477,19 @@ C  -----------------------------------------------------------------
 C  COUNT THE NUMBER OF SUBSETS IN THE FILE TO ALLOCATE SPACE
 C  ---------------------------------------------------------
 
-      OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
+C  SUGGESTED by Carlos IG
       CALL ISETPRM('MAXMEM',120000000)
+      CALL ISETPRM('MXLCC',12)
+      CALL ISETPRM('MXCDV',50000)
+      CALL ISETPRM('MAXJL',128000)
+      CALL ISETPRM('MAXSS',150000)
+      CALL ISETPRM('MXMSGL',480000000)
+      CALL ISETPRM('MXRST',500)
+
+      OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
-      CALL ISETPRM('MAXMEM',120000000)
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
       IF(MXTB.EQ.0) THEN
@@ -482,6 +507,8 @@ C  ---------------------------------------------------------
       ALLOCATE(IWORK(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(IORD(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
 
+      print * ,'IG:: ALLOCATED OK'
+
       TAB_8 = BMISS
       THRPT_8 = BMISS
       RAB_8 = BMISS
@@ -491,6 +518,15 @@ C  ---------------------------------------------------------
 C  MAKE A TABLE OUT OF THE LATS, LONS, AND TIME COORDINATES
 C   check for possible high accuracy LAT/LON (mesonet reports)
 C  -----------------------------------------------------------
+
+C  SUGGESTED by Carlos IG
+      CALL ISETPRM('MAXMEM',120000000)
+      CALL ISETPRM('MXLCC',12)
+      CALL ISETPRM('MXCDV',50000)
+      CALL ISETPRM('MAXJL',128000)
+      CALL ISETPRM('MAXSS',150000)
+      CALL ISETPRM('MXMSGL',480000000)
+      CALL ISETPRM('MXRST',500)
 
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
 C  !!!IG INCREASE MAXMEM FROM DEFAULT 50,000,000 to 120,000,000
@@ -513,8 +549,16 @@ C      CALL ISETPRM('MAXMEM',50000000)
       CALL UFBTAM(RAB_8,MXTS,MXTB,NTAB,RSTR)
       CALL UFBTAM(REC_8,3   ,MXTB,NTAB,'IREC ISUB ITBL')
  
-      OPEN(LUBFJ,FILE=TRIM(FILO),FORM='UNFORMATTED')
+C  SUGGESTED by Carlos IG
       CALL ISETPRM('MAXMEM',120000000)
+      CALL ISETPRM('MXLCC',12)
+      CALL ISETPRM('MXCDV',50000)
+      CALL ISETPRM('MAXJL',128000)
+      CALL ISETPRM('MAXSS',150000)
+      CALL ISETPRM('MXMSGL',480000000)
+      CALL ISETPRM('MXRST',500)
+
+      OPEN(LUBFJ,FILE=TRIM(FILO),FORM='UNFORMATTED')
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
 
       CALL GET_ENVIRONMENT_VARIABLE('DUMMY_MSGS',DUMMY_MSGS)

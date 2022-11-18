@@ -26,6 +26,7 @@ mkdir -p build && cd build
 
 # build and install.
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+      -DCMAKE_BUILD_TYPE=Debug
       -DCMAKE_INSTALL_BINDIR=exec \
       -DMODULEFILE_INSTALL_PREFIX=$MODULEFILE_INSTALL_PREFIX \
       ..
