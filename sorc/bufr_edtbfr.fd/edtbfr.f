@@ -251,6 +251,7 @@ C             their vertical significance qualifier).
 C           - Increased amount of temporary diagnostic print.
 C
 C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
+C 2022-08-15  I. GENKOVA -- INCREASED MEDT SIZE TO ACCOMODATE SDMEDIT
 C
 C USAGE
 C   INPUT FILES:
@@ -671,9 +672,9 @@ C
 C$$$
       PROGRAM BUFR_EDTBFR
 
-      PARAMETER (MEDT=2000)         ! Allows up to 2000 time- and report
-                                    ! type-relevant entries in the
-                                    ! SDMEDIT flag file
+      PARAMETER (MEDT=2000)        ! Allows up to 2000 time- and report
+                                   ! type-relevant entries in the
+                                   ! SDMEDIT flag file
       PARAMETER (MXTS=10)
       PARAMETER (ISTNID_MATCH=3500) ! Allows up to 3500 stn id matches
                                     ! to be listed in stdout when a
@@ -885,7 +886,7 @@ C$$$
 
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_EDTBFR',2021,0245,1100,'NP22')
+      CALL W3TAGB('BUFR_EDTBFR',2022,0227,1100,'NP22')
 
       print *
       print * ,'---> Welcome to BUFR_EDTBFR - Version 09-02-2021'

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # Get the version from the VERSION file.
-file(STRINGS "VERSION" pVersion)
+file(STRINGS "versions/VERSION" pVersion)
 
 project(
   bufrdump
@@ -36,3 +36,4 @@ add_subdirectory(fix)
 
 # Install modulefile for this package.
 add_subdirectory(modulefiles)
+
