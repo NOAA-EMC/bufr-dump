@@ -44,6 +44,17 @@ C
 C 2022-05-25  C. Hill
 C             -  Added station blocks 91 (Pacific islands) and 93 (NZ).
 C
+C 2022-11-30  C. Hill
+C             -  Added station blocks 40 (IL, JD, SD)
+C                and 48 (TH, MY, SG, VN).
+C             -  Added capability to retrieve RPID value from WGOSLID
+C                (local, 4th component of WIGOS ID) if RPID is otherwise
+C                missing and WGOSLID conforms to five-digit format,
+C                allowing preservation of profile data record.  The
+C                capability to formally fill RPID with valid WGOSLID for
+C                prepobs is added, but commented out; it is available
+C                for any future use (may need character variable).
+C
 C     
 C USAGE:
 C   INPUT FILES:
@@ -91,6 +102,7 @@ C$$$
 
       REAL(8),ALLOCATABLE :: TAB_8(:,:)
       REAL(8),ALLOCATABLE :: RAB_8(:,:)
+CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       INTEGER,ALLOCATABLE :: IWORK(:)
       INTEGER,ALLOCATABLE :: IORD(:)
       INTEGER,ALLOCATABLE :: JDUP(:)
@@ -144,7 +156,7 @@ C           -----------------------------------------------------------
 
 C -> BLK #: 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
 C           -----------------------------------------------------------
-     .       0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     .       1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
 C -> BLK #: 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79
 C           -----------------------------------------------------------
@@ -342,10 +354,15 @@ c ----------------------------------------------------------------------
          ENDIF
          DO WHILE(IREADSB(LUBFI).EQ.0)
             CALL UFBINT(LUBFI,RPID_8,1,1,NLV,'RPID')
-            IF(NLV.EQ.0.OR.IBFMS(RPID_8).NE.0)  THEN
+            IF(NLV.EQ.0.OR.IBFMS(RPID_8).NE.0) THEN
+              CALL UFBINT(LUBFI,RPID_8,1,1,NLV,'WGOSLID')
+C             If RPID is absent, then read the local component of WIGOS ID
+C             (if valid - see below) to preserve the data record.
+              IF(NLV.EQ.0.OR.IBFMS(RPID_8).NE.0) THEN
                PRINT *, '#####BUFR_DUPUPR - COULDN''T OBTAIN REPORT ID'
                CALL W3TAGE('BUFR_DUPUPR')
                CALL ERREXIT(99)
+              ENDIF
             ENDIF
             kount = kount + 1
             if(SUBSET(3:8) == "002101") then
@@ -405,12 +422,14 @@ C  ---------------------------------------------------------
 
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
+CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       ALLOCATE(IWORK(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(IORD(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(JDUP(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
 
       TAB_8  = BMISS
       RAB_8  = BMISS
+      WGIDL  = BMISS
       JDUP   = 0
       IORD   = 0
 
@@ -442,6 +461,7 @@ C  ------------------------------------------------------------------
          ENDIF
          OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
          CALL UFBTAB(LUBFI,TAB_8,MXTS,MXTB,NTAB,TSTRH)
+CH       CALL UFBTAB(LUBFI,WGIDL,1,MXTB,NTAB,'WGOSLID')
          IF(IBFMS(TAB_8(1,ITIMES)).EQ.1) THEN    ! data missing
           ! lat missing for this rpt, try lat for next rpt
 cpppppppppp
@@ -481,6 +501,15 @@ C  -----------------------------------------------------------------
 C  SET MISSING MINUTES ("MINU") TO ZERO
 C  ------------------------------------
          IF(IBFMS(TAB_8(6,N)).EQ.1) TAB_8(6,N) = 0
+
+C  IF AVAILABLE (AND IF NECESSARY), SUBSTITUTE WGOSLID FOR MISSING RPID
+C  ------------------------------------
+c       IF(IBFMS(TAB_8(8,N)).NE.0) THEN
+c        IF(IBFMS(WGIDL(N)).EQ.0) THEN
+c         IF ((WGIDL(N).GE.100).AND.(WGIDL(N).LE.99998))
+c    +       TAB_8(8,N) = WGIDL(N)
+c        ENDIF
+c       ENDIF
       ENDDO
  
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
