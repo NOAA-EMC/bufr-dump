@@ -1,5 +1,5 @@
 bufr-dump v1.1.0	RELEASED	AUG 17,2022
-          v1.1.?	IMPLEMENTED	??? ??,2022
+          v1.1.2	IMPLEMENTED	NOV 30,2022
 
 FILE CHANGES
 
