@@ -315,10 +315,8 @@ C  ---------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
-      MAXOUT(25000)
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
-      MAXOUT(25000)
 
       ALLOCATE(TAB_8(MXTS,MXTB) ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(JGEO(MXTB)       ,STAT=I);IF(I.NE.0) GOTO 901
@@ -401,9 +399,7 @@ C  ------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       OPEN(LUBFJ,FILE=FILO(1:NBYTES_FILO),FORM='UNFORMATTED')
       CALL OPENBF(LUBFI,'IN ',LUBFI)
-      MAXOUT(25000)
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
-      MAXOUT(25000)
 
       DO WHILE(IREADMG(LUBFI,SUBSET,IDATE).EQ.0)
          NSUBS = NMSUB(LUBFI)
