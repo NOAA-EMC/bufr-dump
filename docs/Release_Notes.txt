@@ -11,6 +11,7 @@ A docs/README.md
 A docs/Release_Notes.txt
 M fix/bufr_dumplist
 D release_notes/
+M sorc/bufr_dupmar.fd/dupmar.f
 A ush/build.sh
 A versions/VERSION
 (M-modified; A-added; D-deleted)
@@ -30,6 +31,7 @@ USH CHANGES
 
  ush/dumpjb
  Print out name of sdmedit file if LOUD is on
+ Updated syntax of cat and time command use
 
 FIX CHANGES
 
@@ -38,6 +40,11 @@ FIX CHANGES
  Update dump groups (satwnd, gpsro, nsstbufr)
  Set tamdarb observations to YEL (was RED)
 
+SOURCE CHANGES
+ 
+ sorc/bufr_dupmar.fd/dupmar.f
+ Increase MAXMEM via ISETPRM
+ 
 VERSIONS CHANGES
  
  Moved VERSION file in here 
