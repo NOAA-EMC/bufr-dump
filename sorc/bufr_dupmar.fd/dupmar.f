@@ -224,8 +224,11 @@ C     VALUE BMISS AS REAL*8 TO GET A RELIABLE VALUE FOR BMISS IN PRINT
 C     STATEMENTS
 C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
 C     CHANGE THE CODE TO AVOID INTEGER OVERFLOW
-C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
-C     allows for graceful continue in the event of 0 reports.
+C 2022-03-25  I. GENKOVA ADDED CHECK FOR 0 REPORTS IN INPUT FILE AND
+C                ALLOWS CODE TO GRACEFULLY CONTINUE IN THE EVENT 
+C                OF 0 (ZERO) REPORTS
+C 2023-01-31  I. GENKOVA ADD CHECK TO MAKE SURE THE UFBMEM SPACE IS 
+C             BIG ENOUGH FOR FILI (FIXES MSONET SIGSEGV ERROR)
 C
 C USAGE:
 C   INPUT FILES:
@@ -341,11 +344,18 @@ C$$$
  
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_DUPMAR',2022,0084,0062,'NP22')
+      CALL W3TAGB('BUFR_DUPMAR',2023,0084,0062,'NP22')
 
       print *
       print * ,'---> Welcome to BUFR_DUPMAR - Version 03-25-2022'
       print *
+
+C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI (msonet fix)
+C  -------------------------------------------------------------
+      READ(5,'(A)',END=900,ERR=900) FILI
+      INQUIRE(FILE=FILI,SIZE=nsize)
+      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+
 
       CALL DATELEN(10)
 

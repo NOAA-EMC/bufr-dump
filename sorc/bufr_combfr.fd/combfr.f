@@ -59,6 +59,7 @@ C 2013-01-24  D. KEYSER   A FEW MINOR MODS; USE INTRINSIC "TRIM"
 C     CHARACTER STRING FUNCTION TO ELIMINATE NEED TO OBTAIN NUMBER OF
 C     NON-BLANK CHARACTERS IN STRINGS; REPLACED GETENV WITH MORE
 C     STANDARD GET_ENVIRONMENT_VARIABLE.
+C 2023-01-31 I. GENKOVA  COMMENT OUT CALL TO CLOSBF BEFORE OPENBF
 C
 C USAGE:
 C   INPUT FILES:
@@ -122,7 +123,7 @@ C$$$
  
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_COMBFR',2013,0024,0053,'NP22')
+      CALL W3TAGB('BUFR_COMBFR',2023,0024,0053,'NP22')
  
       print *
       print * ,'---> Welcome to BUFR_COMBFR - Version 01-24-2013'
@@ -212,7 +213,8 @@ C  first input file that has an internal table and use this table)
 C  ------------------------------------------------------------------
 
       DO N=1,NFIL
-         CALL CLOSBF(LUNIN)
+C  NCO Bugzilla IG      
+C         CALL CLOSBF(LUNIN)
          OPEN(LUNIN,FILE=TRIM(FILI(N)),FORM='UNFORMATTED')
          CALL OPENBF(LUNIN,'IN ',LUNIN)
          IF(IREADMG(LUNIN,SUBSET,IDATE)==0) THEN
