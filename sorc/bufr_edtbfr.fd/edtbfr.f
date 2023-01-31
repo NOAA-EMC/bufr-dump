@@ -229,9 +229,10 @@ C     (currently only mesonet and TAMDAR aircraft reports have a missing
 C     WMO bulletin header). These no longer match.
 C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
 C     CHANGE THE CODE TO FIX FLOATING INVALID ERROR.
-C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
-C 2022-08-15  I. GENKOVA -- INCREASED MEDT SIZE TO ACCOMODATE SDMEDIT
-C
+C 2021-09-02  D. STOKES COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
+C 2023-01-31  I. GENKOVA INCREASED MEDT TO 5000 FOR SDMEDIT, ALLOWING
+C                5000 STATIONS OF ONE TYPE                     
+C 
 C USAGE
 C   INPUT FILES:
 C     UNIT 05  - STANDARD INPUT - FIRST RECORD CONTAINS TIME-WINDOWING
@@ -651,7 +652,7 @@ C
 C$$$
       PROGRAM BUFR_EDTBFR
 
-      PARAMETER (MEDT=2000)        ! Allows up to 2000 time- and report
+      PARAMETER (MEDT=5000)        ! Allows up to 5000 time- and report
                                    ! type-relevant entries in the
                                    ! SDMEDIT flag file
       PARAMETER (MXTS=10)
@@ -860,7 +861,7 @@ C$$$
 
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL W3TAGB('BUFR_EDTBFR',2022,0227,1100,'NP22')
+      CALL W3TAGB('BUFR_EDTBFR',2023,0227,1100,'NP22')
 
       print *
       print * ,'---> Welcome to BUFR_EDTBFR - Version 09-02-2021'
@@ -2168,7 +2169,7 @@ C
 C$$$
       SUBROUTINE APPLY(LUBFJ,CARD,M,ITYP,JTYP,LPRINT)
 
-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
+      PARAMETER (MEDT=5000) ! Allows up to 5000 time- and report type-
                             ! relevant entries in the SDMEDIT flag file
 
       CHARACTER*128 CARD
@@ -2686,7 +2687,7 @@ C
 C$$$
       SUBROUTINE PRSRNG(CARD,M,IER)
 
-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
+      PARAMETER (MEDT=5000) ! Allows up to 5000 time- and report type-
                             ! relevant entries in the SDMEDIT flag file
 
       CHARACTER*128 CARD
