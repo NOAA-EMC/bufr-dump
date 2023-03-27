@@ -1542,7 +1542,8 @@ do
    rm  $DATA/${n}.out
    if [ -s $DATA/${n}.${FORM} ];then
 ######cp  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
-      mv  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
+      # mv  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
+      cpfs $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d #NCO bugzilla Diane Stokes
       errmvt=$?
 ######rm  $DATA/${n}.${FORM}
       errmvl=$errmv
