@@ -542,6 +542,7 @@ C  --------------------------------------------------------------------
 
          DO I=1,2
             CALL RDMEMM(I,SUBSET,IDATE,IRET)
+            PRINT *, 'IGIGIGIGIG ========= ?? CKTABA after RDMEMM'
             IF(IRET.NE.0) GO TO 902
             IF(NMSUB(LUBFI).EQ.0) CALL COPYMG(LUBFI,LUBFJ)
          ENDDO
