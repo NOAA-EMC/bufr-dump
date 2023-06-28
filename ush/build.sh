@@ -10,9 +10,10 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-"$pkg_root/install"}
 MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"modulefiles"}
 
 target=$(echo $INSTALL_TARGET | tr [:upper:] [:lower:])
-if [[ "$target" =~ ^(wcoss2|hera|orion)$ ]]; then
+if [[ "$target" =~ ^(wcoss2|hera|orion|jet)$ ]]; then
   source $pkg_root/versions/build.ver
   set +x
+  export LMOD_SYSTEM_DEFAULT_MODULES=${LMOD_SYSTEM_DEFAULT_MODULES:-contrib}
   module reset
   module use $pkg_root/modulefiles
   module load bufrdump_$target
