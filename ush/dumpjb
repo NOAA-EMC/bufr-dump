@@ -300,10 +300,10 @@
 #     - Determines current system (and phase if necessary) based on environment
 #       variable SITE and/or NCO utility getsystem.pl.
 #     - TMPDIR is no longer a required imported variable for a developer run if
-#       DATA_DUMPJB is not imported.  If TMPDIR is needed but not yet set, a 
+#       DATA_DUMPJB is not imported.  If TMPDIR is needed but not yet set, a
 #       a suitable location will be assigned based on the system type and phase.
 #       Variable DTMPDIR can also be passed in if the developer wants to
-#       override the default location but has trouble running LSF jobs when 
+#       override the default location but has trouble running LSF jobs when
 #       they have set TMPDIR. (currently an issue with bash on luna and surge)
 #     - Variable "MPMD" no longer points to an mpmd utility script.  Instead it
 #       is used in place of old variable "POE" to toggle mpmd processing.
@@ -324,6 +324,8 @@
 #       (/gpfs/hps2 and /gpfs/hps3 in addition to /gpfs/hps).  The default
 #       TMPDIR location for developer runs on Cray-XC40 is now on the /gpfs/hps3
 #       filesystem rather than /gpfs/hps.
+# 2018-02-23  D. Keyser  New BUFR-feed land RAOBS (002.101) are dup-checked by
+#      new dup-check code BUFR_DUPUPR.
 # 2018-05-04  Y. Ling  Added VIIRS SST mesgtyp/subtyp 012/023, 012/024 012/025 for 
 #       setting the DUPE1 and DUPE2 parameters.
 # 2018-08-29  JWhiting  Updated to run on Dell-p3 platforms: 
@@ -474,7 +476,7 @@
 #                   bufr_dupsst  bufr_dupmrg bufr_edtbfr bufr_quipc
 #                   bufr_chkbfr  bufr_combfr bufr_dupair bufr_dupshp
 #                   bufr_dupmar  bufr_geofil bufr_duprad bufr_dupsyp
-#                   bufr_duptac bufr_dupcman
+#                   bufr_duptac bufr_dupcman bufr_dupupr
 #
 # Remarks:
 #
@@ -583,6 +585,7 @@
 #   CMANX  -  path to DUPCMAN executable            (default:$DUEX/bufr_dupcman)
 #   SYPX   -  path to DUPSYP executable             (default:$DUEX/bufr_dupsyp)
 #   TACX   -  path to DUPTAC executable             (default:$DUEX/bufr_duptac)
+#   UPRX   -  path to DUPUPR executable             (default:$DUEX/bufr_dupupr)
 #   EDTX   -  path to EDTBFR executable             (default:$DUEX/bufr_edtbfr)
 #   QPCX   -  path to QUIPC  executable             (default:$DUEX/bufr_quipc)
 #   CHKX   -  path to CHKBFR executable             (default:$DUEX/bufr_chkbfr)
@@ -1002,6 +1005,7 @@ echo
 [ -z "$CMANX" ]  && CMANX=$DUEX/bufr_dupcman
 [ -z "$SYPX" ]   && SYPX=$DUEX/bufr_dupsyp
 [ -z "$TACX" ]   && TACX=$DUEX/bufr_duptac
+[ -z "$UPRX" ]   && UPRX=$DUEX/bufr_dupupr
 [ -z "$EDTX" ]   && EDTX=$DUEX/bufr_edtbfr
 [ -z "$QPCX" ]   && QPCX=$DUEX/bufr_quipc
 [ -z "$CHKX" ]   && CHKX=$DUEX/bufr_chkbfr
@@ -1181,6 +1185,7 @@ SHPX = $SHPX
 CMANX = $CMANX
 SYPX = $SYPX
 TACX = $TACX
+UPRX = $UPRX
 EDTX = $EDTX
 QPCX = $QPCX
 CHKX = $CHKX
@@ -1660,6 +1665,7 @@ DUPE2=NONE
 [ $mt -eq 000 -a $st -eq 007                               ] && DUPE1=$MARX
 [ $mt -eq 001                                              ] && DUPE1=$MARX
 [ $mt -eq 002 -a \( $st -le 005 -o $st -eq 009 \)          ] && DUPE1=$MRGX
+[ $mt -eq 002 -a \( $st -ge 101 -a $st -le 105 \)          ] && DUPE1=$UPRX
 [ $mt -eq 003 -o $mt -eq 005 -o $mt -eq 012 -o $mt -eq 021 ] && DUPE1=$SATX
 [ $mt -eq 012 -a \( $st -ge 010 -a $st -le 012 \)          ] && DUPE1=$SSTX
 [ $mt -eq 012 -a \( $st -ge 017 -a $st -le 018 \)          ] && DUPE1=$SSTX

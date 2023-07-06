@@ -41,7 +41,7 @@ C       SATELLITE-DERIVED WINDS {ABS(OBS. DAT - ENTRY DATE)} INCREASED
 C       TO 2.01 HOURS IN ORDER TO MARK ALL WINDS IN THE DUMP (STILL
 C       0.01 HOURS FOR ALL OTHER TYPES); CORRECTED ERROR IN CALCULATING
 C       DATE TOLERANCE WHEN .GE. 1.00 HOURS; ONLY ATTEMPTS TO ENCODE
-C       NEW Q.M.'S (STRING PQMST) IF THERE ARE .GT. 0 UPPER-AIR LEVELS
+C       NEW Q.M.`S (STRING PQMST) IF THERE ARE .GT. 0 UPPER-AIR LEVELS
 C       READ IN (PREVENTS BUFRLIB WARNING MESSAGE FROM BEING PRINTED)
 C 2004-05-17  D. KEYSER  -- NO LONGER ABORTS IF PRESSURE LEVEL INFO IN
 C       AN ENTRY IS ENTERED INCORRECTLY, IN FACT NOW CHECKS FOR VALID
@@ -95,7 +95,7 @@ C     1 FOLLOWED BY 7 BLANK CHARACTERS - ALL REPORTS ARE CONSIDERED TO
 C     HAVE A MATCHING REPORT ID (SUBJECT TO CONDITIONS), "*" IN
 C     CHARACTER 1 FOLLOWED BY 1-7 VALID CHARACTERS - ALL REPORTS ENDING
 C     WITH THE CHARACTERS MATCHING THOSE AFTER "*" IN FLAG FILE ARE
-C     CONSIDERED TO HAVE A MATCHING REPORT ID, ONE OR MORE "?"'S IN ANY
+C     CONSIDERED TO HAVE A MATCHING REPORT ID, ONE OR MORE "?"`S IN ANY
 C     CHARACTER - ALL REPORTS MATCHING NON-"?" CHARACTERS IN FLAG FILE
 C     AND WITH ANY VALID CHARACTER IN "?" POSITION(S) ARE CONSIDERED TO
 C     HAVE A MATCHING REPORT ID (THIS ALSO APPLIES FOR REPORTS IN THE
@@ -128,7 +128,7 @@ C     FOR MATCHING - FROM COLUMNS 110-128 OF EACH SDMEDIT FLAG FILE
 C     ENTRY - IF FOUND (I.E, NOT "-------------------" OR
 C     "                   "), THEN AN ADDITIONAL REQUIREMENT FOR A
 C     MATCH IS THAT THE REPORT EITHER BE FROM ONE OF UP TO FOUR
-C     NETWORKS LISTED IN COLUMNS 110-128 (WHERE THE REPORT'S NETWORK IS
+C     NETWORKS LISTED IN COLUMNS 110-128 (WHERE THE REPORT`S NETWORK IS
 C     DEFINED BY THE ENVIRONMENT VARIABLE "NET" SET IN THE PARENT
 C     SCRIPT) OR, IF COLUMN 110 IS SET TO "!", THAT THE REPORT NOT BE
 C     FROM THE SINGLE NETWORK LISTED IN COLUMNS 111-114; THE OPTION TO
@@ -158,7 +158,7 @@ C 2015-03-06  D. A. KEYSER -- INCREASED THE MAXIMUM NUMBER OF ID
 C     MATCHES THAT CAN BE LISTED IN STDOUT WHEN A WILDCARD ID ENTRY IS
 C     SPECIFIED FROM 3000 TO 3500 (DUE TO > 3000 MEXICAN MDCRS REPORTS
 C     CURRENTLY FLAGGED VIA AN ENTRY WITH A WILDCARD ID); THE PRINT
-C     STATEMENT STOPS LISTING ID'S IF THIS MAXIMUM IS HIT AND PRINTS
+C     STATEMENT STOPS LISTING ID`S IF THIS MAXIMUM IS HIT AND PRINTS
 C     A WARNING MESSAGE (BEFORE, NO WARNING AND ARRAY OVERFLOW OCCURRED
 C     FOR THE MEXICAN MDCRS LISTING).  THE WILDCARD ID-MATCH LISTING
 C     NOW INCLUDES A PRINT OF THE COMPLETE SDMEDIT ENTRY CARD (TO
@@ -227,8 +227,29 @@ C     header had ended up matching this entry and their quality markers
 C     were updated based on those specified in this flag file entry
 C     (currently only mesonet and TAMDAR aircraft reports have a missing
 C     WMO bulletin header). These no longer match.
-C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
-C     CHANGE THE CODE TO FIX FLOATING INVALID ERROR.
+C 2017-11-27  D. A. Keyser --  Recognizes new GOES-16 derived motion
+C     wind types in message type 005 (IR/long-wave in subtype 030, WV
+C     imager/deep-layer in subtype 031, visible in subtype 032, WV
+C     imager/cloud-top in subtype 034 and IR/short-wave in subtype 039).
+C 2018-02-21  D. A. KEYSER --  Modified to handle BUFR-feed upper-air
+C     reports in tanks b002/xx101-xx105:
+C        - Output message length increased from 10K (default) TO 200K
+C          via call to BUFRLIB subroutine MAXOUT.
+C        - Maximum number of data values in an uncompressed BUFR subset
+C          (MAXSS) increased from 80K (default) to 300K via use of
+C          BUFRLIB function ISETPRM (note: must link to dynamic
+C          allocation version of BUFRLIB).
+C        - Subroutine APPLY:
+C           - Increased arrays holding level data from 255 to 9000 (to
+C             account for high vertical resolution in many reports now
+C             in these tanks).
+C           - Reads mnemonic "VSIGX" from these tanks rather than "VSIG"
+C             which is only in TAC-feed tanks, and then translates its
+C             value into "VSIG" value associated with "SURF", "MAND",
+C             "SIGT" and "SIGW" levels (for editing Q.M. of levels by
+C             their vertical significance qualifier).
+C           - Increased amount of temporary diagnostic print.
+C
 C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
 C 2022-08-15  I. GENKOVA -- INCREASED MEDT=5000 TO ALLOW 5000 STATIONS
 C                OF ONE TYPE IN SDMEDIT FILE      
@@ -238,7 +259,7 @@ C   INPUT FILES:
 C     UNIT 05  - STANDARD INPUT - FIRST RECORD CONTAINS TIME-WINDOWING
 C                SPECIFICATIONS (THE YYYYMMDDHH<.HH> DATE OF THE
 C                EARLIEST TIME TO DUMP AND THE YYYYMMDDHH<.HH> DATE OF
-C                THE LATEST TIME TO DUMP), SECOND THROUGH N'TH RECORDS
+C                THE LATEST TIME TO DUMP), SECOND THROUGH N`TH RECORDS
 C                CONTAIN THE WORKING INPUT FILE NAMES FOR ALL DUMP
 C                TYPES BEING COMBINED INTO A SINGLE DUMP FILE
 C     UNIT 20  - SDMEDIT FLAG TEXT FILE (SEE REMARKS)
@@ -265,7 +286,7 @@ C       BUFRLIB  - DATELEN  OPENBF   COPYMG   UFBTAB   OPENMB
 C                  COPYBF   COPYSB   CLOSMG   CLOSBF   IREADMG
 C                  IREADSB  UFBCPY   WRITSB   UFBINT   MESGBC
 C                  PARSTR   NMSUB    IBFMS    CAPIT    NEMSPECS
-C                  GETBMISS
+C                  GETBMISS ISETPRM  IGETPRM  MAXOUT
 C
 C   EXIT STATES:
 C     COND =   0 - SUCCESSFUL RUN
@@ -752,8 +773,13 @@ C$$$
      .           'OZONESONDE (HIGH-RES) (FROM ASCII)      ', ! 002.015
      .           'EUROPEAN PROFILER WINDS                 ', ! 002.016
      .           'NeXRaD VAD WINDS FROM LEVEL 2 DECODER   ', ! 002.017
-     .       238*'                                        ',
-     .       256*'                                        ',
+     .        83*'                                        ',
+     .           'RAWINSONDE - FIXED LAND (FROM BUFR)     ', ! 002.101
+     .           'RAWINSONDE - MOBIL LAND (FROM BUFR)     ', ! 002.102
+     .           'RAWINSONDE - SHIP (FROM BUFR)           ', ! 002.103
+     .           'DROPWINSONDE (FROM BUFR)                ', ! 002.104
+     .           'PIBAL (FROM BUFR)                       ', ! 002.105
+     .       150*'                                        ',
      .         1*'                                        ',
      .           'MANUAL AIREP FORMAT AIRCRAFT            ', ! 004.001
      .           'MANUAL PIREP FORMAT AIRCRAFT            ', ! 004.002
@@ -867,6 +893,21 @@ C-----------------------------------------------------------------------
       print * ,'---> Welcome to BUFR_EDTBFR - Version 09-02-2021'
       print * ,'IG: MEDT=5000'
       print *
+
+C  Override current BUFRLIB maximum number of data values in an
+C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
+C -------------------------------------------------------------
+      IRET=ISETPRM('MAXSS',300000 )  ! must use DA version of BUFRLIB
+      IF(IRET.EQ.0)  THEN
+        IMAXSS=IGETPRM('MAXSS')
+        PRINT'(/" MAXIMUM NUMBER OF DATA VALUES IN AN UNCOMPRESSED",
+     $    " BUFR SUBSET (MAXSS) SET TO ",I0)', IMAXSS
+      ELSE
+        PRINT'(/25("*"),"ABORT",25("*")/"ATTEMPT TO SET MAXSS FAILED ",
+     $    " -- STOP 94"/25("*"),"ABORT",25("*")/)'
+C       CALL CW3TAGE('BUFR_EDTBFR')
+        call errexit(94)
+      ENDIF
 
 C  ASSIGN DEFAULT VALUE FOR 'MISSING' TO LOCAL BMISS VARIABLE
 C  ----------------------------------------------------------
@@ -1128,7 +1169,7 @@ C  ------------------------------------------
       ELSEIF(MAX(NEDT(0),NEDT(1),NEDT(2),NEDT(4),NEDT(5),NEDT(6)).EQ.0)
      .  THEN
 
-C  Flag file doesn't contain any time-relevant rec. entries - all done
+C  Flag file doesn`t contain any time-relevant rec. entries - all done
 C  -------------------------------------------------------------------
 
          PRINT'(/"#####SDMEDIT FLAG FILE IN UNIT",I3," DOESN''T ",
@@ -1801,6 +1842,7 @@ C  -------------------------------------------------------------------
          OPEN(LUBFJ,FILE='.EBTMP',FORM='UNFORMATTED')
          CALL OPENBF(LUBFI,'IN ',LUBFI)
          CALL OPENBF(LUBFJ,'OUT',LUBFI)
+         call maxout(200000)
          ISUB = 0
 
          STNID_MATCH = '99999999'
@@ -2088,7 +2130,7 @@ C    . '"**UNABLE TO DEALLOCATE ARRAYS - ABNORMAL EXIT"')
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C
 C SUBPROGRAM:    APPLY
-C   PRGMMR: KEYSER           ORG: NP22       DATE: 2016-08-15
+C   PRGMMR: KEYSER           ORG: NP22       DATE: 2018-02-21
 C
 C ABSTRACT: ENCODES SDMEDIT Q.C. FLAGS (KEEP, REJECT OR PURGE) INTO
 C   BUFR REPORTS.  THE FOLLOWING DATA TYPES CAN ENCODE Q.C. FLAGS
@@ -2136,6 +2178,17 @@ C 2016-08-15  D. A. Keyser --  Added ability to apply QC flags to
 C     mesonet reports originally in the b255 tanks (that eventually go
 C     into the "msonet" dump). These are entered in the sdmedit flag
 C     text file with report type "MSO".
+C 2018-02-21  D. A. KEYSER --  Modified to handle BUFR-feed upper-air
+C     reports in tanks b002/xx101-xx105:
+C        - Increased arrays holding level data from 255 to 9000 (to
+C          account for high vertical resolution in many reports now in
+C          these tanks).
+C        - Reads mnemonic "VSIGX" from these tanks rather than "VSIG"
+C          which is only in TAC-feed tanks, and then translates its
+C          value into "VSIG" value associated with "SURF", "MAND",
+C          "SIGT" and "SIGW" levels (for editing Q.M. of levels by their
+C          vertical significance qualifier).
+C        - Increased amount of temporary diagnostic print.
 C
 C USAGE:    CALL APPLY (LUBFJ, CARD, M, ITYP, JTYP, LPRINT)
 C   INPUT ARGUMENT LIST:
@@ -2174,21 +2227,23 @@ C$$$
                             ! relevant entries in the SDMEDIT flag file
 
       CHARACTER*128 CARD
-      CHARACTER*80  PQMST
+      CHARACTER*80  PQMST, PQMSTX
 
-      DIMENSION    PQMS(10,255),ZQMS(7),JFIRST(5),KFIRST(0:255)
+      DIMENSION    PQMS(10,9000),ZQMS(7),JFIRST(5),KFIRST(0:255)
+      INTEGER      IBIT(32)
 
       LOGICAL      EDIT_UPA,EDIT_ACF,ALL,LPRINT
 
-      REAL(8)      PQMS_8(10,255),ZQMS_8(7),UFBINT_8,HOUR_8,MINU_8,
-     .             HGHT_8,BMISS
+      REAL(8)      PQMS_8(10,9000),ZQMS_8(7),UFBINT_8,HOUR_8,MINU_8,
+     .             HGHT_8,R8VAL,R82I,BMISS
 
       COMMON /UEDIT/  IVSG(MEDT),PMIN(MEDT),PMAX(MEDT)
       COMMON /COUNTS/ IPQM(0:6,0:14),IWQM(0:6,0:14),ITQM(0:6,0:14),
      .                IGQM(0:6,0:14),IMQM(0:6,0:14)
       COMMON /BUFRLIB_MISSING/BMISS
 
-      DATA PQMST /'VSIG PRLC GP07 GP10 QMPR QMGP QMAT QMDD QMWN'/
+      DATA PQMST  /'VSIG  PRLC GP07 GP10 QMPR QMGP QMAT QMDD QMWN'/
+      DATA PQMSTX /'VSIGX PRLC GP07 GP10 QMPR QMGP QMAT QMDD QMWN'/
 
       DATA KFIRST/256*0/
       DATA FILL  / 10E5/
@@ -2198,6 +2253,9 @@ C-----------------------------------------------------------------------
       PRS1(Z) = 1013.25 * (((288.15 - (.0065 * Z))/288.15)**5.256)
       PRS2(Z) = 226.3 * EXP(1.576106E-4 * (11000. - Z))
 C-----------------------------------------------------------------------
+
+      mxib  = 100
+      nbits =  18
 
 C  PRINT SDMEDIT FLAG FILE RECORD USED TO APPLY Q.C. MARKS FOR THIS RPT
 C  --------------------------------------------------------------------
@@ -2368,7 +2426,7 @@ C  Read back report data from aircraft BUFR file
      .             REAL(IQMAT)
                ELSE
                   print'("    ... QMAT set to ",F3.0," on ALL pressure",
-CDONG     .             " levels between",I5," and",I5," mb, inclusive")',
+C DONG  .            '" levels between",I5," and",I5," mb, inclusive")',
      .             " levels between",I12," and",I5," mb, inclusive")',
      .             REAL(IQMAT),NINT(PMAX(M)),NINT(PMIN(M))
                ENDIF
@@ -2435,11 +2493,77 @@ C        "Catch-all" AMDAR subtypes do encode moisture q.m.
 C  Upper-air reports encode all q.m.
 
 C  Read back report data from upper-air BUFR file
-         CALL UFBINT(-LUBFJ,PQMS_8,10,255,NLEV,PQMST); PQMS=PQMS_8
+         IF(ITYP.EQ.002.AND.(JTYP.GE.101.AND.JTYP.LE.105)) THEN
+            CALL UFBINT(-LUBFJ,PQMS_8,10,9000,NLEV,PQMSTX)
+         ELSE
+            CALL UFBINT(-LUBFJ,PQMS_8,10,255,NLEV,PQMST)
+         ENDIF
+         PQMS=PQMS_8
          ALL = PMIN(M).LE.0 .AND. PMAX(M).GE.BMISS
          JFIRST = 0
          IF(NLEV.GT.0) THEN
          DO N=1,NLEV    ! Loop through all levels in report BUFR file
+            if(ITYP.EQ.002.AND.(JTYP.GE.101.AND.JTYP.LE.105)) then
+cppppp
+               print *, 'unpacked value for VSIGX is ',pqms(1,n)
+cppppp
+               if(pqms(1,n).ne.0.) then
+                  nib = 0
+                  DO I=(NBITS-1),0,-1
+                     R82I = (2.)**I
+                     R8VAL = pqms(1,n)
+                     IF(ABS(R8VAL-R82I).LT.(0.005)) THEN
+                        NIB = NIB + 1
+                        IF(NIB.GT.MXIB) THEN
+                        print *,'IBIT ARRAY OVERFLOW set pqms(1,n) to 0'
+                           pqms(1,n) = 0.
+                           go to 110
+                        ENDIF
+                        IBIT(NIB) = NBITS-I
+                        go to 100
+                     ELSEIF(R82I.LT.R8VAL) THEN
+                        NIB = NIB + 1
+                        IF(NIB.GT.MXIB) THEN
+                        print *,'IBIT ARRAY OVERFLOW set pqms(1,n) to 0'
+                           pqms(1,n) = 0.
+                           go to 110
+                        ENDIF
+                        IBIT(NIB) = NBITS-I
+                        R8VAL = R8VAL - R82I
+                     ENDIF
+                  ENDDO
+  100             continue
+                  print *, nib,' bits are on'
+                  do i = 1,nib
+                     print *, 'bit number ',ibit(i),' is on'
+                     if(ibit(i).eq.1) then
+                        pqms(1,n) = 64. ! surface
+                        go to 110
+                     elseif(ibit(i).eq.2) then
+                        pqms(1,n) = 32. ! mandatory
+                        go to 110
+                     elseif(ibit(i).eq.5) then
+                        pqms(1,n) = 4.  ! sig temp
+                        go to 110
+                     elseif(ibit(i).eq.6) then
+                        pqms(1,n) = 4.  ! sig humidity
+                        go to 110
+                     elseif(ibit(i).eq.7) then
+                        pqms(1,n) = 2.  ! sig wind
+                        go to 110
+                     endif
+                  enddo
+  903             continue
+                  print *, 'SURF, MAND, SIGT, SIGW bits all off, ',
+     .             'set pqms(1,n) to 0'
+                  pqms(1,n) = 0.
+               endif
+  110          continue
+cppppp
+               print *, 'translated value for VSIGX is ',pqms(1,n)
+cppppp
+            endif
+c
             JVSG = NINT(PQMS(1,N))  ! Report level vert. significance
             IF(IVSG(M).NE.JVSG .AND. IVSG(M).NE.0) CYCLE
             HGHT_8 = MIN(PQMS_8(3,N),PQMS_8(4,N)) ! Rpt lvl geopot./hght
@@ -2625,7 +2749,7 @@ cppppp
          IF(MAX(JFIRST(1),JFIRST(2),JFIRST(3),JFIRST(4),JFIRST(5)).GT.0)
      .    THEN
             PQMS_8=PQMS
-C  Encode any new q.m.'s
+C  Encode any new q.m.`s
             IF(NLEV.GT.0) CALL UFBINT(LUBFJ,PQMS_8,10,NLEV,IRET,PQMST)
          ENDIF
       ENDIF
