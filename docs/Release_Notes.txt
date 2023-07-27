@@ -1,3 +1,133 @@
+bufr-dump v1.2.0        RELEASED        AUG ??,2023
+          v1.2.?        IMPLEMENTED     ??? ??,2023
+
+PRELUDE
+
+ This update supports obsproc.v1.2.0 and prepobs.v1.1.0 releases
+
+ It introduces two new dump files: 
+ *satwhr* - satellite AMVs tailored for hurricates, developed at UW/CIMSS, use tank b005/xx099
+          - CONUS domain AMVs at time resolution of 15-20 minutes, NESDIS prouct, use tanks b005/xx052..xx056 
+ *uprair* - BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
+          - *uprair* data is added to prepbufr files,to the prepbufr's ADPUPA component
+
+ The SDMEDIT file now supports up to 5000 entries per observation type
+
+ Other minor code fixes:
+ - removes duplicate dumping of *gmi1cr*
+
+
+FILE CHANGES
+
+M docs/Release_Notes.txt
+M fix/bufr_dumplist 
+A modulefiles/bufrdump_jet.lua
+M sorc/bufr_combfr.fd/combfr.f 
+M sorc/bufr_dupcor.fd/dupcor.f 
+M sorc/bufr_dupcor.fd/dupmar.f
+A sorc/bufr_dupupr.fd
+M sorc/bufr_edtbfr.fd/edtbfr.f 
+M sorc/CMakeLists.txt 
+M ush/bufr_dump_obs.sh 
+M ush/build.sh
+M ush/dumpjb 
+M versions/VERSION  
+(M-modified; A-added; D-deleted)
+
+DOCS CHANGES
+
+ docs/Release_Notes.txt
+ Updated for this release.
+
+FIX CHANGES
+
+ fix/bufr_dumplist
+ Introduce new observation types for dumping: 
+ *satwhr* - satellite AMVs tailored for hurricates, developed at UW/CIMSS, use tank b005/xx099
+          - CONUS domain AMVs at time resolution of 15-20 minutes, NESDIS prouct, use tanks b005/xx052..xx056
+ *uprair* - BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
+          - *uprair* data is added to prepbufr files,to the prepbufr's ADPUPA component
+ Removes duplicate dumping of *gmi1cr*
+
+MODULEFILES
+
+ bufrdump_jet.lua
+ Support obsproc functionality to jet
+
+SOURCE CHANGES
+
+ sorc/bufr_combfr.fd/combfr.f 
+ Minor tag update
+
+ sorc/bufr_dupcor.fd/dupcor.f
+ Related to the new uprair dump, increase the maximum number of data values in an uncompressed BUFR subset (MAXSS)
+ 
+ sorc/bufr_dupcor.fd/dupmar.f
+ Increase array maximum sizes to accomodate more obsdata (MAXMEM,MXMSGL)
+
+ sorc/bufr_dupupr.fd
+ Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
+
+ sorc/bufr_edtbfr.fd/edtbfr.f 
+ Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes), add comments on the upper-air processing for posterity 
+ Increase MEDT to accomodate 5000 entries per observatin type in the SDMEDIT file
+
+ sorc/CMakeLists.txt 
+ Reflect the addition of sorc/bufr_dupupr.fd
+
+USH CHANGES
+
+ ush/bufr_dump_obs.sh
+ Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes) 
+ Replaced mv with cpfs per NCO request.
+ 
+ ush/build.sh
+ Support obsproc functionality to jet
+
+ ush/dumpjb
+ Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes) 
+ 
+VERSIONS CHANGES
+
+ version/VERSION
+ Updated to this release's version
+
+CHANGES TO OUTPUT AND FILE SIZES
+
+ Generate new dumps:
+ *satwhr*, *uprair*
+ Update dumps:
+ *prepbufr* (when this release is synced with obsproc.v1.2.0 and prepobs.v1.1.0)
+
+ The newly generated dumps (*satwhr*, *uprair*) vary in size from 20Mb to 500Mb depending on network, cycle time, and season.
+ *uprair* will be largest for 00UTC and 12UTC. 
+ *satwhr* will be largest during hurricane season.
+ 
+ The updated *prepbur* files  are up to ~20% larger in size
+ For examples, see: /lfs/h2/emc/stmp/iliana.genkova/CRON/R12/com
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+
+ obsproc needs modules bufr-dump and prepobs in order to run
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS
+
+DISSEMINATION INFORMATION
+
+ No changes to dissemination on WCOSS2
+ For NOMAD proposed changes, a SCN will be issued/submitted to Data Flow
+
+SPECIAL INSTRUCTIONS
+
+ 1.Implement release/obsproc.v1.2.0, release/bufr-dump.v1.2.0, and release/prepobs.v1.1.0 at the same time
+
+ 2.Implement release/obsproc.v1.2.0, release/bufr-dump.v1.2.0, and release/prepobs.v1.1.0 after confirming GFS global-workflow is ready for the new versions (first 2 digits)
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.1.0	RELEASED	AUG 17,2022
           v1.1.2	IMPLEMENTED	NOV 30,2022
 
