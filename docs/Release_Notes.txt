@@ -25,6 +25,7 @@ A modulefiles/bufrdump_jet.lua
 M sorc/bufr_combfr.fd/combfr.f 
 M sorc/bufr_dupcor.fd/dupcor.f 
 M sorc/bufr_dupcor.fd/dupmar.f
+M sorc/bufr_geofil.fd/geofil.f
 A sorc/bufr_dupupr.fd
 M sorc/bufr_edtbfr.fd/edtbfr.f 
 M sorc/CMakeLists.txt 
@@ -60,10 +61,13 @@ SOURCE CHANGES
  Minor tag update
 
  sorc/bufr_dupcor.fd/dupcor.f
- Related to the new uprair dump, increase the maximum number of data values in an uncompressed BUFR subset (MAXSS)
+ Related to the new uprair dump, increase the maximum number of data values in an uncompressed BUFR subset (MAXSS,MAXOUT,MXCDV)
  
  sorc/bufr_dupcor.fd/dupmar.f
  Increase array maximum sizes to accomodate more obsdata (MAXMEM,MXMSGL)
+
+ sorc/bufr_geofil.fd/geofil.f
+ Increase array maximum sizes to accomodate more obsdata (MAXOUT)
 
  sorc/bufr_dupupr.fd
  Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105

@@ -315,8 +315,10 @@ C  ---------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
+      CALL MAXOUT(70000) !IG Try to fix CPYUPD ABORT
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
+      CALL MAXOUT(70000) !IG Try to fix CPYUPD ABORT
 
       ALLOCATE(TAB_8(MXTS,MXTB) ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(JGEO(MXTB)       ,STAT=I);IF(I.NE.0) GOTO 901
@@ -395,11 +397,14 @@ C  --------------------------------------------------------------
  
 C  WRITE THE GEOGRAPHICALLY FILTERED FILE TO SCRATCH FILE
 C  ------------------------------------------------------
- 
+
+
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       OPEN(LUBFJ,FILE=FILO(1:NBYTES_FILO),FORM='UNFORMATTED')
       CALL OPENBF(LUBFI,'IN ',LUBFI)
+      CALL MAXOUT(70000) !IG Try to fix CPYUPD ABORT
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
+      CALL MAXOUT(70000) !IG Try to fix CPYUPD ABORT
 
       DO WHILE(IREADMG(LUBFI,SUBSET,IDATE).EQ.0)
          NSUBS = NMSUB(LUBFI)
@@ -431,7 +436,8 @@ cppppp
  
 C  COPY THE GEOGRAPHICALLY FILTERED REPORTS TO OUTPUT FILE
 C  -------------------------------------------------------
- 
+
+
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       OPEN(LUBFJ,FILE=FILO(1:NBYTES_FILO),FORM='UNFORMATTED')
       CALL COPYBF(LUBFJ,LUBFI)
