@@ -349,9 +349,9 @@ C-----------------------------------------------------------------------
 
 C  JACK WOOLEN 20 Nnov 2022 MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
 C  -------------------------------------------------
-C      READ(5,'(A)',END=900,ERR=900) FILI
-C      INQUIRE(FILE=FILI,SIZE=nsize)
-C      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+      READ(5,'(A)',END=900,ERR=900) FILI
+      INQUIRE(FILE=FILI,SIZE=nsize)
+      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
 C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
 
 
