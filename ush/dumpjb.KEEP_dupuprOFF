@@ -1781,11 +1781,11 @@ fi
 line3="$RDT1 $RDT2"
 [ $TIME_TRIM = off ]  &&  line3=""
 
- # #IG test runtime with DUPUPR off
- # if [ "$thread" = "002.101.sh" ]; then
- #         echo " IG Turn BUFR_DUPUPR off,SORRY! Reduces uprair dump time,see 01_002.101.out"
- #         DUPC="off" 
- # fi 
+ # IG test runtime with DUPUPR off
+ if [ "$thread" = "002.101.sh" ]; then
+         echo " IG Turn BUFR_DUPUPR off,SORRY! Reduces uprair dump time,see 01_002.101.out"
+         DUPC="off" 
+ fi 
  echo "ILIANA DUPC = " \$DUPC 
 
 if [ \$DUPC = on ]; then

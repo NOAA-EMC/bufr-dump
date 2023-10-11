@@ -137,7 +137,9 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       DATA DDAY  /0/
       DATA DOUR  /0/
       DATA DMIN  /0/
- 
+C-----IG_TIME_sections_of_this_code
+      REAL(8)     TTT1,TTT2,TTT3,TTT4,TTT5
+      REAL(8)     tt21, tt22, tt23, tt24, tt25, tt26, tt27 
 C-----------------------------------------------------------------------
 
 C IBLK_NUM determines which WMO block numbers will be accepted for
@@ -177,6 +179,8 @@ C-----------------------------------------------------------------------
       print * ,'---> Welcome to BUFR_DUPUPR - Version 03-20-2020'
       print *
 
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TTT1)
 
 C  Override current BUFRLIB maximum number of data values in an
 C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
@@ -243,6 +247,9 @@ cppppp
 
     1 CONTINUE
 
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt21)
+
       IF(BDATE.NE.99999999.00_8) THEN
          PRINT 200, ADATE,BDATE
       ELSE
@@ -292,6 +299,9 @@ C  ------------------------------------------------------------------
      .    'MESSAGE TYPE FOUND IS",I5/)', MSGT
       ENDIF
 
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt22)
+
       CALL OPENBF(LUBFI,'IN',LUBFI)
       if(ireadmg(lubfi,subset,idate).ne.0) then
          print *, '===> BUFR_DUPUPR - NO DATA IN INPUT FILE'
@@ -328,6 +338,9 @@ c ----------------------------------------------------------------------
          if(IBLK_NUM(k).eq.1) print'(15x,i3.2)', k
       enddo
       print *
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt23)
 
       kount = 0
       kept = 0
@@ -390,6 +403,9 @@ C             (if valid - see below) to preserve the data record.
       CALL CLOSMG(LUBFJ)
       CALL CLOSBF(LUBFJ)
 
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt24)
+
       print *
       print *, ' ==> total number of reports read in            ',
      . '            = ',kount
@@ -408,6 +424,8 @@ C             (if valid - see below) to preserve the data record.
       print *
       print *, ' ===> Move on to dup-checking'
       print *
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TTT2)
 c=======================================================================
 c=======================================================================
 
@@ -434,6 +452,9 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       IORD   = 0
 
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt25)
 
 C  MAKE A TABLE OUT OF THE LATS, LONS, ID'S, OBS TIME COORDINATES AND
 C   RECEIPT TIME COORDINATES
@@ -487,6 +508,9 @@ cpppppppppp
          EXIT
       ENDDO
 
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt26)
+
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
 
@@ -511,24 +535,35 @@ c    +       TAB_8(8,N) = WGIDL(N)
 c        ENDIF
 c       ENDIF
       ENDDO
- 
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(tt27)
+
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
 C   REPORT ID, OBS TIME, RECEIPT TIME, CORRECTION INDICATOR
 C  ----------------------------------------------------------------
- 
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TTT3)
+
+      print * ,'ILIANA=6 out of 13 ORDERS' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
+c  IG skip some sorting 
+c      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
+c      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
+c      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
+c      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
+c      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
-      CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
-      CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
+c      CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
+c      CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
       CALL ORDERS(10,IWORK,TAB_8(8,1),IORD,NTAB,MXTS,8,2) ! report id
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TTT4)
 
 C  GO THROUGH THE REPORTS IN ORDER, MARKING DUPLICATES AND CORRECTIONS
 C  -------------------------------------------------------------------
@@ -708,7 +743,11 @@ C  -------------------------------------------------------------------
      .    'MESSAGE TYPE FOUND IS",I5/)', MSGT
       ENDIF
       CLOSE(LUBFJ)
- 
+
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TTT5)
+      print *, 'ILIANA IG TIMERS TTT ',TTT1, TTT2,TTT3,TTT4,TTT5
+      print *, 'ILIANA IG TIMERStt',tt21,tt22,tt23,tt24,tt25,tt26,tt27
 C  GENERATE REPORT
 C  ---------------
  
