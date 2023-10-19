@@ -138,8 +138,7 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       DATA DOUR  /0/
       DATA DMIN  /0/
 C-----IG_TIME_sections_of_this_code
-      REAL(8)     TTT1,TTT2,TTT3,TTT4,TTT5
-      REAL(8)     tt21, tt22, tt23, tt24, tt25, tt26, tt27 
+      REAL(8)     TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
 C-----------------------------------------------------------------------
 
 C IBLK_NUM determines which WMO block numbers will be accepted for
@@ -180,7 +179,7 @@ C-----------------------------------------------------------------------
       print *
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(TTT1)
+      call cpu_time(TT1)
 
 C  Override current BUFRLIB maximum number of data values in an
 C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
@@ -248,7 +247,7 @@ cppppp
     1 CONTINUE
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt21)
+      call cpu_time(TT2)
 
       IF(BDATE.NE.99999999.00_8) THEN
          PRINT 200, ADATE,BDATE
@@ -300,7 +299,7 @@ C  ------------------------------------------------------------------
       ENDIF
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt22)
+      call cpu_time(TT3)
 
       CALL OPENBF(LUBFI,'IN',LUBFI)
       if(ireadmg(lubfi,subset,idate).ne.0) then
@@ -340,7 +339,7 @@ c ----------------------------------------------------------------------
       print *
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt23)
+      call cpu_time(TT4)
 
       kount = 0
       kept = 0
@@ -404,7 +403,7 @@ C             (if valid - see below) to preserve the data record.
       CALL CLOSBF(LUBFJ)
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt24)
+      call cpu_time(TT5)
 
       print *
       print *, ' ==> total number of reports read in            ',
@@ -425,7 +424,7 @@ C-----IG_TIME_sections_of_this_code
       print *, ' ===> Move on to dup-checking'
       print *
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(TTT2)
+      call cpu_time(TT6)
 c=======================================================================
 c=======================================================================
 
@@ -454,16 +453,18 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt25)
-
+      call cpu_time(TT7)
+CC      IF(0.EQ.1) THEN !IG TEST
 C  MAKE A TABLE OUT OF THE LATS, LONS, ID'S, OBS TIME COORDINATES AND
 C   RECEIPT TIME COORDINATES
 C  ------------------------------------------------------------------
- 
+      print * ,'ILIANA in first slow down' 
       DO ITIMES=1,MXTB ! Look thru up to 25 rpts to find a valid lat
-         IF(ITIMES.EQ.26.OR.ITIMES.EQ.MXTB) THEN
-            IF(ITIMES.EQ.26) THEN
-               PRINT 1858
+         !IF(ITIMES.EQ.26.OR.ITIMES.EQ.MXTB) THEN
+            !IF(ITIMES.EQ.26) THEN
+         IF(ITIMES.EQ.5.OR.ITIMES.EQ.MXTB) THEN
+            IF(ITIMES.EQ.5) THEN
+              PRINT 1858
  1858 FORMAT(/'##WARNING: THE FIRST 25 REPORTS IN INPUT FILE HAVE A ',
      . 'MISSING LATITUDE, ALL REPORTS MAY HAVE MISSING LAT/LON'/)
                CALL SYSTEM('[ -n "$jlogfile" ] && $DATA/postmsg'//
@@ -508,10 +509,13 @@ cpppppppppp
          EXIT
       ENDDO
 
-C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt26)
+C      ENDIF ! IG TEST_end
 
-      OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+C-----IG_TIME_sections_of_this_code
+      call cpu_time(TT8)
+      IF(0.EQ.1) THEN !IG TEST 2
+      print * ,'ILIANA in second slow down'
+              OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
 
 
@@ -536,34 +540,36 @@ c        ENDIF
 c       ENDIF
       ENDDO
 
+      ENDIF ! IG test2
+
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(tt27)
+      call cpu_time(TT9)
 
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
 C   REPORT ID, OBS TIME, RECEIPT TIME, CORRECTION INDICATOR
 C  ----------------------------------------------------------------
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(TTT3)
+      call cpu_time(TT10)
 
-      print * ,'ILIANA=6 out of 13 ORDERS' 
-      CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
+      print * ,'ILIANA= runs the MINIMUM (6)  out of 13 ORDERS' 
+      !CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
 c  IG skip some sorting 
-c      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-c      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-c      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-c      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-c      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
+      !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
+      !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
+      !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
+      !CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
+      !CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
-c      CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
-c      CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
+      CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
+      !CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
       CALL ORDERS(10,IWORK,TAB_8(8,1),IORD,NTAB,MXTS,8,2) ! report id
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(TTT4)
+      call cpu_time(TT11)
 
 C  GO THROUGH THE REPORTS IN ORDER, MARKING DUPLICATES AND CORRECTIONS
 C  -------------------------------------------------------------------
@@ -745,9 +751,9 @@ C  -------------------------------------------------------------------
       CLOSE(LUBFJ)
 
 C-----IG_TIME_sections_of_this_code
-      call cpu_time(TTT5)
-      print *, 'ILIANA IG TIMERS TTT ',TTT1, TTT2,TTT3,TTT4,TTT5
-      print *, 'ILIANA IG TIMERStt',tt21,tt22,tt23,tt24,tt25,tt26,tt27
+      call cpu_time(TT12)
+      print *, 'ILIANA IG TIMERS TT 1-12: '
+      print *, 'ILIANA',TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
 C  GENERATE REPORT
 C  ---------------
  
