@@ -454,7 +454,7 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
 
 C-----IG_TIME_sections_of_this_code
       call cpu_time(TT7)
-CC      IF(0.EQ.1) THEN !IG TEST
+C      IF(0.EQ.1) THEN ! IG TEST 1 start
 C  MAKE A TABLE OUT OF THE LATS, LONS, ID'S, OBS TIME COORDINATES AND
 C   RECEIPT TIME COORDINATES
 C  ------------------------------------------------------------------
@@ -509,11 +509,11 @@ cpppppppppp
          EXIT
       ENDDO
 
-C      ENDIF ! IG TEST_end
+C      ENDIF ! IG TEST 1 end
 
 C-----IG_TIME_sections_of_this_code
       call cpu_time(TT8)
-      IF(0.EQ.1) THEN !IG TEST 2
+      IF(0.EQ.0) THEN ! IG TEST 2 start
       print * ,'ILIANA in second slow down'
               OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
@@ -540,7 +540,7 @@ c        ENDIF
 c       ENDIF
       ENDDO
 
-      ENDIF ! IG test2
+      ENDIF ! IG TEST 2 end
 
 C-----IG_TIME_sections_of_this_code
       call cpu_time(TT9)
@@ -553,7 +553,7 @@ C-----IG_TIME_sections_of_this_code
       call cpu_time(TT10)
 
       print * ,'ILIANA= runs the MINIMUM (6)  out of 13 ORDERS' 
-      !CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
+      CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
 c  IG skip some sorting 
       !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
       !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
@@ -563,7 +563,7 @@ c  IG skip some sorting
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
       CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
-      !CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
+      CALL ORDERS(12,IWORK,TAB_8(3,1),IORD,NTAB,MXTS,8,2) ! obs month
       CALL ORDERS(10,IWORK,TAB_8(8,1),IORD,NTAB,MXTS,8,2) ! report id
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude

@@ -349,11 +349,17 @@ C-----------------------------------------------------------------------
 
 C  JACK WOOLEN 20 Nnov 2022 MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
 C  -------------------------------------------------
-      READ(5,'(A)',END=900,ERR=900) FILI
-      INQUIRE(FILE=FILI,SIZE=nsize)
-      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+C  IG !!! - it seems to get in the way of sfcshp(gdas,cdas) 
+C  and tideg,msonet(cdas) !!! Thus commented out
+C      READ(5,'(A)',END=900,ERR=900) FILI
+C      INQUIRE(FILE=FILI,SIZE=nsize)
+C      print *, 'BUFR_DUPMAR IG nsize= ',nsize
+C      print *, 'BUFR_DUPMAR IG MAXMEM= ',MAXMEM
+C      print *, 'WHAT NOW?'
+C      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
 C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
-
+C      CALL ISETPRM('MAXMEM',200000000) !long run time,255/030incomplete
+      CALL ISETPRM('MAXMEM',100000000) 
 
       CALL DATELEN(10)
 
@@ -513,9 +519,11 @@ CC      CALL ISETPRM('MAXMEM',50000000)
       END IF
 
       PRINT *, '###BUFR_DUPMAR IG: Pre UFBTAM call'
-      PRINT *, '###BUFR_DUPMAR IG: MXTS MXTB TSTR', MXTS, MXTB, TSTR
-C      PRINT *, 'MAXMEM= ', MAXMEM
-C      PRINT *, 'MXMSGL= ', MXMSGL
+      PRINT *, '###BUFR_DUPMAR IG: MXTS=', MXTS
+      PRINT *, '###BUFR_DUPMAR IG: MXTB=', MXTB
+      PRINT *, '###BUFR_DUPMAR IG: TSTR=', TSTR
+      PRINT *, 'MAXMEM= ', MAXMEM
+      PRINT *, 'MXMSGL= ', MXMSGL
 
       CALL UFBTAM(TAB_8,MXTS,MXTB,NTAB,TSTR)
       IF(SUBSET.EQ.'NC000007') CALL UFBTAM(THRPT_8,1,MXTB,NTAB,'THRPT')
