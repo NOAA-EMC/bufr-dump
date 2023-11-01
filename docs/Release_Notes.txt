@@ -48,6 +48,8 @@ FIX CHANGES
           - CONUS domain AMVs at time resolution of 15-20 minutes, NESDIS prouct, use tanks b005/xx052..xx056
  *uprair* - BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
           - *uprair* data is added to prepbufr files,to the prepbufr's ADPUPA component
+ *msone1* - take 255030 out of *msonet* and into a new dump group
+
  Removes duplicate dumping of *gmi1cr*
 
 MODULEFILES
@@ -71,6 +73,7 @@ SOURCE CHANGES
 
  sorc/bufr_dupupr.fd
  Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
+ Reduce run time by speeding up the checks for missing latitude, reduce the calls to a sorting routine, skip check for correction
 
  sorc/bufr_edtbfr.fd/edtbfr.f 
  Introduce processing capablity for *uprair* BUFR formated high-res rawinsondes(radiosondes), add comments on the upper-air processing for posterity 
