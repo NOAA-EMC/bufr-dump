@@ -300,10 +300,10 @@
 #     - Determines current system (and phase if necessary) based on environment
 #       variable SITE and/or NCO utility getsystem.pl.
 #     - TMPDIR is no longer a required imported variable for a developer run if
-#       DATA_DUMPJB is not imported.  If TMPDIR is needed but not yet set, a 
+#       DATA_DUMPJB is not imported.  If TMPDIR is needed but not yet set, a
 #       a suitable location will be assigned based on the system type and phase.
 #       Variable DTMPDIR can also be passed in if the developer wants to
-#       override the default location but has trouble running LSF jobs when 
+#       override the default location but has trouble running LSF jobs when
 #       they have set TMPDIR. (currently an issue with bash on luna and surge)
 #     - Variable "MPMD" no longer points to an mpmd utility script.  Instead it
 #       is used in place of old variable "POE" to toggle mpmd processing.
@@ -324,6 +324,8 @@
 #       (/gpfs/hps2 and /gpfs/hps3 in addition to /gpfs/hps).  The default
 #       TMPDIR location for developer runs on Cray-XC40 is now on the /gpfs/hps3
 #       filesystem rather than /gpfs/hps.
+# 2018-02-23  D. Keyser  New BUFR-feed land RAOBS (002.101) are dup-checked by
+#      new dup-check code BUFR_DUPUPR.
 # 2018-05-04  Y. Ling  Added VIIRS SST mesgtyp/subtyp 012/023, 012/024 012/025 for 
 #       setting the DUPE1 and DUPE2 parameters.
 # 2018-08-29  JWhiting  Updated to run on Dell-p3 platforms: 
@@ -474,7 +476,7 @@
 #                   bufr_dupsst  bufr_dupmrg bufr_edtbfr bufr_quipc
 #                   bufr_chkbfr  bufr_combfr bufr_dupair bufr_dupshp
 #                   bufr_dupmar  bufr_geofil bufr_duprad bufr_dupsyp
-#                   bufr_duptac bufr_dupcman
+#                   bufr_duptac bufr_dupcman bufr_dupupr bufr_dupsno
 #
 # Remarks:
 #
@@ -582,7 +584,9 @@
 #   SHPX   -  path to DUPSHP executable             (default:$DUEX/bufr_dupshp)
 #   CMANX  -  path to DUPCMAN executable            (default:$DUEX/bufr_dupcman)
 #   SYPX   -  path to DUPSYP executable             (default:$DUEX/bufr_dupsyp)
+#   SNOX   -  path to DUPSNO executable             (default:$DUEX/bufr_dupsno)
 #   TACX   -  path to DUPTAC executable             (default:$DUEX/bufr_duptac)
+#   UPRX   -  path to DUPUPR executable             (default:$DUEX/bufr_dupupr)
 #   EDTX   -  path to EDTBFR executable             (default:$DUEX/bufr_edtbfr)
 #   QPCX   -  path to QUIPC  executable             (default:$DUEX/bufr_quipc)
 #   CHKX   -  path to CHKBFR executable             (default:$DUEX/bufr_chkbfr)
@@ -1001,7 +1005,9 @@ echo
 [ -z "$SHPX" ]   && SHPX=$DUEX/bufr_dupshp
 [ -z "$CMANX" ]  && CMANX=$DUEX/bufr_dupcman
 [ -z "$SYPX" ]   && SYPX=$DUEX/bufr_dupsyp
+[ -z "$SNOX" ]   && SNOX=$DUEX/bufr_dupsno
 [ -z "$TACX" ]   && TACX=$DUEX/bufr_duptac
+[ -z "$UPRX" ]   && UPRX=$DUEX/bufr_dupupr
 [ -z "$EDTX" ]   && EDTX=$DUEX/bufr_edtbfr
 [ -z "$QPCX" ]   && QPCX=$DUEX/bufr_quipc
 [ -z "$CHKX" ]   && CHKX=$DUEX/bufr_chkbfr
@@ -1180,7 +1186,9 @@ AIRX = $AIRX
 SHPX = $SHPX
 CMANX = $CMANX
 SYPX = $SYPX
+SNOX = $SNOX
 TACX = $TACX
+UPRX = $UPRX
 EDTX = $EDTX
 QPCX = $QPCX
 CHKX = $CHKX
@@ -1383,7 +1391,7 @@ fi
 
 pos=`expr $pos + 1`
 
-thread=$mt.$st.sh
+export thread=$mt.$st.sh
 >$thread
 [ $LOUD = on ]  &&  echo " thread name is $thread"
 
@@ -1660,6 +1668,7 @@ DUPE2=NONE
 [ $mt -eq 000 -a $st -eq 007                               ] && DUPE1=$MARX
 [ $mt -eq 001                                              ] && DUPE1=$MARX
 [ $mt -eq 002 -a \( $st -le 005 -o $st -eq 009 \)          ] && DUPE1=$MRGX
+[ $mt -eq 002 -a \( $st -ge 101 -a $st -le 105 \)          ] && DUPE1=$UPRX
 [ $mt -eq 003 -o $mt -eq 005 -o $mt -eq 012 -o $mt -eq 021 ] && DUPE1=$SATX
 [ $mt -eq 012 -a \( $st -ge 010 -a $st -le 012 \)          ] && DUPE1=$SSTX
 [ $mt -eq 012 -a \( $st -ge 017 -a $st -le 018 \)          ] && DUPE1=$SSTX
@@ -1730,7 +1739,7 @@ if [ \( $DUMPMD = on -o $DUMPMD = ON \) -o \( -s $FIL1 -a -s $FIL2 \) -o \
 $DUMPJBprocdate
 eof_17
    fi
-   cat<<eof|time $DMDX
+   time $DMDX <<eof
 $RDT1
 $RDT2
 $FIL1
@@ -1758,7 +1767,7 @@ LALO_orig="$LALO"
 if [ "$LALO" != 0 -a $DUPE1 != $SATX ]; then
       set +e
 [ \$input_file != $DIRD/$FILO ]  &&  cp \$input_file $DIRD/$FILO
-cat<<eof|time $GEOX
+time $GEOX <<eof
 $DIRD/$FILO
 $DEST/$FILO
 $LALO
@@ -1774,8 +1783,16 @@ fi
 
 line3="$RDT1 $RDT2"
 [ $TIME_TRIM = off ]  &&  line3=""
-if [ $DUPC = on ]; then
-   cat<<eof|time $DUPE1
+
+ # #IG test runtime with DUPUPR off
+ # if [ "$thread" = "002.101.sh" ]; then
+ #         echo " IG Turn BUFR_DUPUPR off,SORRY! Reduces uprair dump time,see 01_002.101.out"
+ #         DUPC="off" 
+ # fi 
+ echo "ILIANA DUPC = " \$DUPC 
+
+if [ \$DUPC = on ]; then
+   time $DUPE1 <<eof
 \$input_file
 $DEST/$FILO
 \$line3
@@ -1802,7 +1819,7 @@ eof
       line3="$RDT1 $RDT2"
       [ $TIME_TRIM = off ]  &&  line3=""
       cp $DEST/$FILO $DIRD/$FILO
-      cat<<eof|time \$DUPE2
+      time \$DUPE2 <<eof
 $DIRD/$FILO
 $DEST/$FILO
 \$line3
@@ -2029,7 +2046,7 @@ dupsyp_run=no
 grep -q -e "000.000" -e "000.001" -e "000.002" -e "000.100" -e "000.101" \
 -e "000.102" $FILES
 errgreps=$?
-if [ $errgreps -eq 0 ]; then
+if [[ $errgreps -eq 0 && $NAME = "adpsfc" ]]; then
    if [ $DUPC = on ]; then
      echo "--------------------------------------------------------------------"
       echo "Duplicate check combined synoptic reports in \
@@ -2049,6 +2066,36 @@ if [ $errgreps -eq 0 ]; then
      echo "--------------------------------------------------------------------"
       echo "Duplicate check of combined synoptic reports in \
 000.000 - 000.002, 000.100 - 000.102 \ 
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+rc_dupsno=0
+dupsno_run=no
+grep -q -e "000.000" -e "000.001" -e "000.002" -e "000.100" -e "000.101" \
+-e "000.102" $FILES
+errgreps=$?
+if [[ $errgreps -eq 0 && $NAME = "sfcsno" ]]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102"
+      echo "Duplicate check program: $SNOX"
+     echo "--------------------------------------------------------------------"
+      echo $FILES
+      cat $FILES
+      time cat $FILES | $SNOX
+      if [ ! -s fort.60 ]; then
+	 rc_dupsno=99
+      else
+         dupsno_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102 \
 NOT PERFORMED (turned off by user)"
      echo "--------------------------------------------------------------------"
    fi
@@ -2191,6 +2238,11 @@ if [ $dupsyp_run = yes ]; then
    echo "Duplicate checking completed for combined synoptic \
 reports in 000.000 - 000.002, 000.100 - 000.102"
 fi
+if [ $dupsno_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined synoptic \
+reports in 000.000 - 000.002, 000.100 - 000.102"
+fi
 if [ $dupshp_run = yes ]; then
    echo
    echo "Duplicate checking completed for combined ship reports in 001.001 \
@@ -2318,7 +2370,7 @@ NFIN=`ls *.fin 2>/dev/null|wc -w`
 [ $NFIN -lt $NOUT ] && RETG=99
 [ $rc_dupair -eq 99 -o $rc_dupshp -eq 99 -o $rc_dupsyp -eq 99 -o \
   $rc_duptac -eq 99 -o $rc_edtbfr -eq 99 -o $rc_quipc  -eq 99 -o \
-  $rc_chkbfr -eq 99 -o $rc_dupcman -eq 99 ]  && RETG=99
+  $rc_chkbfr -eq 99 -o $rc_dupcman -eq 99 -o $rc_dupsno -eq 99 ]  && RETG=99
 
 ###########if [ $RETG -ge 22 ]
 if [ $RETG -gt 22 ]; then
