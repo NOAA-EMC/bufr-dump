@@ -211,6 +211,11 @@
 #      Note: ERS scatterometer wind reprocessing executables (dcodcloc, dataqc,
 #       datasort) have not been ported to current WCOSS systems and would fail
 #       if invoked.
+#
+# 2018-12-07  C. Hill -- Each subtype of FM42-based sonde data (002.00[1-5]) is
+#      paired with its corresponding subtype of BUFR-based data (002.10[1-5])
+#      within the 'pattern' list of potentially missing subtypes (i.e. tanks).
+#
 # 2021-03-09 SMelchior -- Included gpsro among the data types whose dump files
 #    are restricted.
 #
@@ -735,6 +740,11 @@
 #          002.004 (dropw)      All                     All
 #          002.005 (pibal)      NAM,NDAS,RAP,RUC        All
 #          002.009 (prflrp)     All                     All
+#          002.101 (raobf)      RAP,RUC                 02-05,08-11,14-17,20-23
+#          002.102 (raobm)      All                     All
+#          002.103 (raobs)      RAP,RUC                 All
+#          002.104 (dropw)      All                     All
+#          002.105 (pibal)      RAP,RUC                 All
 #          004.005 (recco)      All                     All
 #          004.007 (acarsa)     All                     All
 #          004.008 (tamdar)     All                     All
@@ -902,6 +912,8 @@ cat <<\EOFp > pattern
 002.002
 002.004
 002.009
+002.102
+002.104
 004.005
 004.007
 004.008
@@ -1104,6 +1116,7 @@ EOFp5p2p3
 #  ruc2a_dump at center dump times 02-05Z, 08-11Z, 14-17Z, or 20-23Z
 cat <<\EOFp5p2p4 >> pattern
 002.001
+002.101
 EOFp5p2p4
    fi
 
@@ -1542,7 +1555,8 @@ do
    rm  $DATA/${n}.out
    if [ -s $DATA/${n}.${FORM} ];then
 ######cp  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
-      mv  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
+      #mv  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
+      cpfs $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d #NCO bugzilla Diane Stokes
       errmvt=$?
 ######rm  $DATA/${n}.${FORM}
       errmvl=$errmv
@@ -3090,15 +3104,16 @@ EOFblank
 
    > updated_counts.out
    rm status2.out
-   grep -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
+   #tr -cd '[:print:]\n\r'  < $pgmout_this > $pgmout_this #IG
+   grep --text -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
     > cutLv.allout
-   grep "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
+   grep --text "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
    paste -d"\0\n" cutLv.allout cutRv.allout > pasteB.allout
    cut -c1-64 pasteB.allout > cutLv.allout
    cut -c65-  pasteB.allout > cutRv.allout
    rm pasteB.allout
    paste -d"\0" cutLv.allout cutRv.allout > paste.part1
-   grep -e "Domain for [0-2]" $pgmout_this > paste.part2
+   grep --text -e "Domain for [0-2]" $pgmout_this > paste.part2
    paste -d"\n\n" paste.part1 paste.part2 blank > counts.out
    nindx=`cat <counts.out | wc -l`
    mindx=0
@@ -3106,7 +3121,7 @@ EOFblank
    do
       mindx=`expr $mindx + 1`
       head -n${mindx} counts.out | tail -n1 > temp1
-      grep -e "in data group" temp1 | grep -v -e "Domain"
+      grep --text -e "in data group" temp1 | grep -v -e "Domain"
       err_grep=$?
       if [ $err_grep -ne 0 ]; then
          cat temp1 >> updated_counts.out
@@ -3256,7 +3271,8 @@ cat <<\EOFs2 >> status.out
 ###############################################################################
 EOFs2
 
-   grep -q -e " SAT. ID " -e "          %#" $pgmout 
+   #tr -cd '[:print:]\n\r' < $pgmout > $pgmout #IG
+   grep --text -q -e " SAT. ID " -e "          %#" $pgmout 
    errgrep=$?
    if [ $errgrep -eq 0 ]; then
 cat <<\EOFs3 >> status.out
@@ -3268,11 +3284,11 @@ cat <<\EOFs3 >> status.out
 
 EOFs3
 
-      grep -e " SAT. ID " -e "          %#" $pgmout | sed "s/%#/  /g" \
+      grep --text -e " SAT. ID " -e "          %#" $pgmout | sed "s/%#/  /g" \
        >> status.out
    fi
 
-   grep -q -e " replicated observations" -e "          #%" $pgmout
+   grep --text -q -e " replicated observations" -e "          #%" $pgmout
    errgrep=$?
    if [ $errgrep -eq 0 ]; then
 cat <<\EOFs4 >> status.out
@@ -3284,7 +3300,7 @@ cat <<\EOFs4 >> status.out
 
 EOFs4
 
-      grep -e " replicated observations" -e "          #%" $pgmout | \
+      grep --text -e " replicated observations" -e "          #%" $pgmout | \
        sed "s/#%/  /g" >> status.out
    fi
 

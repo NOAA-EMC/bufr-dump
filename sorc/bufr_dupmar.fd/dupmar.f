@@ -347,6 +347,20 @@ C-----------------------------------------------------------------------
       print * ,'---> Welcome to BUFR_DUPMAR - Version 03-25-2022'
       print *
 
+C  JACK WOOLEN 20 Nnov 2022 MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
+C  -------------------------------------------------
+C  IG !!! - it seems to get in the way of sfcshp(gdas,cdas) 
+C  and tideg,msonet(cdas) !!! Thus commented out
+C      READ(5,'(A)',END=900,ERR=900) FILI
+C      INQUIRE(FILE=FILI,SIZE=nsize)
+C      print *, 'BUFR_DUPMAR IG nsize= ',nsize
+C      print *, 'BUFR_DUPMAR IG MAXMEM= ',MAXMEM
+C      print *, 'WHAT NOW?'
+C      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI
+C      CALL ISETPRM('MAXMEM',200000000) !long run time,255/030incomplete
+C-IG      CALL ISETPRM('MAXMEM',80000000) !100000000) !add  min runtime 
+
       CALL DATELEN(10)
 
 ccccc CALL OPENBF(0,'QUIET',2) ! Uncomment for extra print from bufrlib
@@ -420,8 +434,10 @@ C   replicates sequence "RCPTIM" (report receipt time data) - check to
 C   see which table is used here (IVER_rcptim=0 for pre-2/2004 version,
 C   IVER_rcptim=1 for post-2/2004 version)
 C  -----------------------------------------------------------------
-
+      
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
+C      CALL ISETPRM('MAXMEM',75000000)
+c      CALL ISETPRM('MXMSGL', 16777215)
       CALL OPENBF(LUBFI,'IN',LUBFI)
    78 CONTINUE
       IF(IREADMG(LUBFI,SUBSET,IDATE).NE.0) THEN
@@ -459,9 +475,11 @@ C  COUNT THE NUMBER OF SUBSETS IN THE FILE TO ALLOCATE SPACE
 C  ---------------------------------------------------------
 
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
+C      CALL ISETPRM('MAXMEM',75000000)
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
+C      CALL ISETPRM('MAXMEM',75000000)
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
       IF(MXTB.EQ.0) THEN
@@ -490,14 +508,22 @@ C   check for possible high accuracy LAT/LON (mesonet reports)
 C  -----------------------------------------------------------
 
       OPEN(LUBFI,FILE=TRIM(FILI),FORM='UNFORMATTED')
-C  IG INCREASE MAXMEM FROM DEFAULT 50,000,000 to 120,000,000
-      CALL ISETPRM(MAXMEM,120000000)
+C  !!!IG INCREASE MAXMEM FROM DEFAULT 50,000,000 to 120,000,000
+C      CALL ISETPRM('MAXMEM',75000000)
+CC      CALL ISETPRM('MAXMEM',50000000)     
       CALL UFBMEM(LUBFI,0,IMSG,MUNIT)
       IF(MUNIT.EQ.0) THEN
          PRINT *, '###BUFR_DUPMAR - NO DATA IN INPUT FILE - STOP'
          CALL W3TAGE('BUFR_DUPMAR')
          CALL ERREXIT(00)
       END IF
+
+      PRINT *, '###BUFR_DUPMAR IG: Pre UFBTAM call'
+      PRINT *, '###BUFR_DUPMAR IG: MXTS=', MXTS
+      PRINT *, '###BUFR_DUPMAR IG: MXTB=', MXTB
+      PRINT *, '###BUFR_DUPMAR IG: TSTR=', TSTR
+      PRINT *, 'MAXMEM= ', MAXMEM
+      PRINT *, 'MXMSGL= ', MXMSGL
 
       CALL UFBTAM(TAB_8,MXTS,MXTB,NTAB,TSTR)
       IF(SUBSET.EQ.'NC000007') CALL UFBTAM(THRPT_8,1,MXTB,NTAB,'THRPT')
@@ -510,6 +536,7 @@ C  IG INCREASE MAXMEM FROM DEFAULT 50,000,000 to 120,000,000
       CALL UFBTAM(REC_8,3   ,MXTB,NTAB,'IREC ISUB ITBL')
  
       OPEN(LUBFJ,FILE=TRIM(FILO),FORM='UNFORMATTED')
+C      CALL ISETPRM('MAXMEM',75000000)
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
 
       CALL GET_ENVIRONMENT_VARIABLE('DUMMY_MSGS',DUMMY_MSGS)
@@ -523,6 +550,7 @@ C  --------------------------------------------------------------------
 
          DO I=1,2
             CALL RDMEMM(I,SUBSET,IDATE,IRET)
+            PRINT *, 'IGIGIGIGIG ========= ?? CKTABA after RDMEMM'
             IF(IRET.NE.0) GO TO 902
             IF(NMSUB(LUBFI).EQ.0) CALL COPYMG(LUBFI,LUBFJ)
          ENDDO

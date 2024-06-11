@@ -1,0 +1,253 @@
+diff --git a/CHANGES b/CHANGES
+deleted file mode 100644
+index 2c56535..0000000
+--- a/CHANGES
++++ /dev/null
+@@ -1,2 +0,0 @@
+-- change versions
+-- comment premature CLOSBF in b-d bufr_combfr.fd
+diff --git a/MESO_CLOSBF_changes b/MESO_CLOSBF_changes
+new file mode 100644
+index 0000000..870a6de
+--- /dev/null
++++ b/MESO_CLOSBF_changes
+@@ -0,0 +1,85 @@
++diff --git a/CHANGES b/CHANGES
++new file mode 100644
++index 0000000..2c56535
++--- /dev/null
+++++ b/CHANGES
++@@ -0,0 +1,2 @@
+++- change versions
+++- comment premature CLOSBF in b-d bufr_combfr.fd
++diff --git a/sorc/bufr_combfr.fd/combfr.f b/sorc/bufr_combfr.fd/combfr.f
++index f54540a..6e50cdf 100644
++--- a/sorc/bufr_combfr.fd/combfr.f
+++++ b/sorc/bufr_combfr.fd/combfr.f
++@@ -59,6 +59,7 @@ C 2013-01-24  D. KEYSER   A FEW MINOR MODS; USE INTRINSIC "TRIM"
++ C     CHARACTER STRING FUNCTION TO ELIMINATE NEED TO OBTAIN NUMBER OF
++ C     NON-BLANK CHARACTERS IN STRINGS; REPLACED GETENV WITH MORE
++ C     STANDARD GET_ENVIRONMENT_VARIABLE.
+++C 2023-01-31 I. GENKOVA  COMMENT OUT CALL TO CLOSBF BEFORE OPENBF
++ C
++ C USAGE:
++ C   INPUT FILES:
++@@ -122,7 +123,7 @@ C$$$
++  
++ C----------------------------------------------------------------------
++ C----------------------------------------------------------------------
++-      CALL W3TAGB('BUFR_COMBFR',2013,0024,0053,'NP22')
+++      CALL W3TAGB('BUFR_COMBFR',2023,0024,0053,'NP22')
++  
++       print *
++       print * ,'---> Welcome to BUFR_COMBFR - Version 01-24-2013'
++@@ -212,7 +213,8 @@ C  first input file that has an internal table and use this table)
++ C  ------------------------------------------------------------------
++ 
++       DO N=1,NFIL
++-         CALL CLOSBF(LUNIN)
+++C  NCO Bugzilla IG      
+++C         CALL CLOSBF(LUNIN)
++          OPEN(LUNIN,FILE=TRIM(FILI(N)),FORM='UNFORMATTED')
++          CALL OPENBF(LUNIN,'IN ',LUNIN)
++          IF(IREADMG(LUNIN,SUBSET,IDATE)==0) THEN
++diff --git a/sorc/bufr_dupmar.fd/dupmar.f b/sorc/bufr_dupmar.fd/dupmar.f
++index 3fae9be..76a1491 100644
++--- a/sorc/bufr_dupmar.fd/dupmar.f
+++++ b/sorc/bufr_dupmar.fd/dupmar.f
++@@ -224,8 +224,11 @@ C     VALUE BMISS AS REAL*8 TO GET A RELIABLE VALUE FOR BMISS IN PRINT
++ C     STATEMENTS
++ C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
++ C     CHANGE THE CODE TO AVOID INTEGER OVERFLOW
++-C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
++-C     allows for graceful continue in the event of 0 reports.
+++C 2022-03-25  I. GENKOVA ADDED CHECK FOR 0 REPORTS IN INPUT FILE AND
+++C                ALLOWS CODE TO GRACEFULLY CONTINUE IN THE EVENT 
+++C                OF 0 (ZERO) REPORTS
+++C 2023-01-31  I. GENKOVA ADD CHECK TO MAKE SURE THE UFBMEM SPACE IS 
+++C             BIG ENOUGH FOR FILI (FIXES MSONET SIGSEGV ERROR)
++ C
++ C USAGE:
++ C   INPUT FILES:
++@@ -341,12 +344,19 @@ C$$$
++  
++ C-----------------------------------------------------------------------
++ C-----------------------------------------------------------------------
++-      CALL W3TAGB('BUFR_DUPMAR',2022,0084,0062,'NP22')
+++      CALL W3TAGB('BUFR_DUPMAR',2023,0084,0062,'NP22')
++ 
++       print *
++       print * ,'---> Welcome to BUFR_DUPMAR - Version 03-25-2022'
++       print *
++ 
+++C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI (msonet fix)
+++C  -------------------------------------------------------------
+++      READ(5,'(A)',END=900,ERR=900) FILI
+++      INQUIRE(FILE=FILI,SIZE=nsize)
+++      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+++
+++
++       CALL DATELEN(10)
++ 
++ ccccc CALL OPENBF(0,'QUIET',2) ! Uncomment for extra print from bufrlib
++diff --git a/versions/VERSION b/versions/VERSION
++index 45a1b3f..26aaba0 100644
++--- a/versions/VERSION
+++++ b/versions/VERSION
++@@ -1 +1 @@
++-1.1.2
+++1.2.0
+diff --git a/fix/bufr_dumplist b/fix/bufr_dumplist
+index 708c623..bacb836 100644
+--- a/fix/bufr_dumplist
++++ b/fix/bufr_dumplist
+@@ -60,8 +60,8 @@ _004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 00
+ 
+    --> Single-level upper-air data (satellite) -- TYPE 005
+        ---------------------------------------------------
+-_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
+-_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091
++_sluas     nem 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005052 005053 005054 005055 005056 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091 005099
++_005       mgt 005008 005013 005021 005022 005023 005030 005031 005032 005034 005039 005044 005045 005046 005050 005051 005052 005053 005054 005055 005056 005064 005065 005066 005067 005068 005069 005070 005071 005072 005080 005081 005091 005099
+ 
+    --> Radar data -- TYPE 006
+        ----------------------
+@@ -149,6 +149,7 @@ _avcl18    nem 021054
+ _shpall    nem 001001 001013
+ _satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130 
+ _gmi1cr    nem 021246
++_satwhr    nem 005052 005053 005054 005055 005056 005099
+ 
+  ===================================================================================================================================
+ 
+diff --git a/sorc/bufr_combfr.fd/combfr.f b/sorc/bufr_combfr.fd/combfr.f
+index 6e50cdf..f54540a 100644
+--- a/sorc/bufr_combfr.fd/combfr.f
++++ b/sorc/bufr_combfr.fd/combfr.f
+@@ -59,7 +59,6 @@ C 2013-01-24  D. KEYSER   A FEW MINOR MODS; USE INTRINSIC "TRIM"
+ C     CHARACTER STRING FUNCTION TO ELIMINATE NEED TO OBTAIN NUMBER OF
+ C     NON-BLANK CHARACTERS IN STRINGS; REPLACED GETENV WITH MORE
+ C     STANDARD GET_ENVIRONMENT_VARIABLE.
+-C 2023-01-31 I. GENKOVA  COMMENT OUT CALL TO CLOSBF BEFORE OPENBF
+ C
+ C USAGE:
+ C   INPUT FILES:
+@@ -123,7 +122,7 @@ C$$$
+  
+ C----------------------------------------------------------------------
+ C----------------------------------------------------------------------
+-      CALL W3TAGB('BUFR_COMBFR',2023,0024,0053,'NP22')
++      CALL W3TAGB('BUFR_COMBFR',2013,0024,0053,'NP22')
+  
+       print *
+       print * ,'---> Welcome to BUFR_COMBFR - Version 01-24-2013'
+@@ -213,8 +212,7 @@ C  first input file that has an internal table and use this table)
+ C  ------------------------------------------------------------------
+ 
+       DO N=1,NFIL
+-C  NCO Bugzilla IG      
+-C         CALL CLOSBF(LUNIN)
++         CALL CLOSBF(LUNIN)
+          OPEN(LUNIN,FILE=TRIM(FILI(N)),FORM='UNFORMATTED')
+          CALL OPENBF(LUNIN,'IN ',LUNIN)
+          IF(IREADMG(LUNIN,SUBSET,IDATE)==0) THEN
+diff --git a/sorc/bufr_dupmar.fd/dupmar.f b/sorc/bufr_dupmar.fd/dupmar.f
+index 76a1491..3fae9be 100644
+--- a/sorc/bufr_dupmar.fd/dupmar.f
++++ b/sorc/bufr_dupmar.fd/dupmar.f
+@@ -224,11 +224,8 @@ C     VALUE BMISS AS REAL*8 TO GET A RELIABLE VALUE FOR BMISS IN PRINT
+ C     STATEMENTS
+ C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
+ C     CHANGE THE CODE TO AVOID INTEGER OVERFLOW
+-C 2022-03-25  I. GENKOVA ADDED CHECK FOR 0 REPORTS IN INPUT FILE AND
+-C                ALLOWS CODE TO GRACEFULLY CONTINUE IN THE EVENT 
+-C                OF 0 (ZERO) REPORTS
+-C 2023-01-31  I. GENKOVA ADD CHECK TO MAKE SURE THE UFBMEM SPACE IS 
+-C             BIG ENOUGH FOR FILI (FIXES MSONET SIGSEGV ERROR)
++C 2022-03-25  I. Genkova  Added check for 0 reports in input file and
++C     allows for graceful continue in the event of 0 reports.
+ C
+ C USAGE:
+ C   INPUT FILES:
+@@ -344,19 +341,12 @@ C$$$
+  
+ C-----------------------------------------------------------------------
+ C-----------------------------------------------------------------------
+-      CALL W3TAGB('BUFR_DUPMAR',2023,0084,0062,'NP22')
++      CALL W3TAGB('BUFR_DUPMAR',2022,0084,0062,'NP22')
+ 
+       print *
+       print * ,'---> Welcome to BUFR_DUPMAR - Version 03-25-2022'
+       print *
+ 
+-C  MAKE SURE THE UFBMEM SPACE IS BIG ENOUGH FOR FILI (msonet fix)
+-C  -------------------------------------------------------------
+-      READ(5,'(A)',END=900,ERR=900) FILI
+-      INQUIRE(FILE=FILI,SIZE=nsize)
+-      if (igetprm('MAXMEM')<nsize) CALL ISETPRM('MAXMEM',nsize)
+-
+-
+       CALL DATELEN(10)
+ 
+ ccccc CALL OPENBF(0,'QUIET',2) ! Uncomment for extra print from bufrlib
+diff --git a/sorc/bufr_edtbfr.fd/edtbfr.f b/sorc/bufr_edtbfr.fd/edtbfr.f
+index ddc1452..2cc981c 100644
+--- a/sorc/bufr_edtbfr.fd/edtbfr.f
++++ b/sorc/bufr_edtbfr.fd/edtbfr.f
+@@ -230,7 +230,8 @@ C     WMO bulletin header). These no longer match.
+ C 2020-08-20  J. DONG   ADDED SETBMISS CALL TO SET BMISS TO 10E8 AND
+ C     CHANGE THE CODE TO FIX FLOATING INVALID ERROR.
+ C 2021-09-02  D. STOKES -- COMMENTED SYSTEM CALLS OF POSTMSG TO JLOGFILE
+-C 2022-08-15  I. GENKOVA -- INCREASED MEDT SIZE TO ACCOMODATE SDMEDIT
++C 2022-08-15  I. GENKOVA -- INCREASED MEDT=5000 TO ALLOW 5000 STATIONS
++C                OF ONE TYPE IN SDMEDIT FILE      
+ C
+ C USAGE
+ C   INPUT FILES:
+@@ -651,7 +652,7 @@ C
+ C$$$
+       PROGRAM BUFR_EDTBFR
+ 
+-      PARAMETER (MEDT=2000)        ! Allows up to 2000 time- and report
++      PARAMETER (MEDT=5000)        ! Allows up to 5000 time- and report
+                                    ! type-relevant entries in the
+                                    ! SDMEDIT flag file
+       PARAMETER (MXTS=10)
+@@ -860,10 +861,11 @@ C$$$
+ 
+ C-----------------------------------------------------------------------
+ C-----------------------------------------------------------------------
+-      CALL W3TAGB('BUFR_EDTBFR',2022,0227,1100,'NP22')
++      CALL W3TAGB('BUFR_EDTBFR',2023,0321,1100,'NP22')
+ 
+       print *
+       print * ,'---> Welcome to BUFR_EDTBFR - Version 09-02-2021'
++      print * ,'IG: MEDT=5000'
+       print *
+ 
+ C  ASSIGN DEFAULT VALUE FOR 'MISSING' TO LOCAL BMISS VARIABLE
+@@ -2168,7 +2170,7 @@ C
+ C$$$
+       SUBROUTINE APPLY(LUBFJ,CARD,M,ITYP,JTYP,LPRINT)
+ 
+-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
++      PARAMETER (MEDT=5000) ! Allows up to 5000 time- and report type-
+                             ! relevant entries in the SDMEDIT flag file
+ 
+       CHARACTER*128 CARD
+@@ -2686,7 +2688,7 @@ C
+ C$$$
+       SUBROUTINE PRSRNG(CARD,M,IER)
+ 
+-      PARAMETER (MEDT=2000) ! Allows up to 2000 time- and report type-
++      PARAMETER (MEDT=5000) ! Allows up to 5000 time- and report type-
+                             ! relevant entries in the SDMEDIT flag file
+ 
+       CHARACTER*128 CARD
+diff --git a/versions/VERSION b/versions/VERSION
+index 26aaba0..45a1b3f 100644
+--- a/versions/VERSION
++++ b/versions/VERSION
+@@ -1 +1 @@
+-1.2.0
++1.1.2
