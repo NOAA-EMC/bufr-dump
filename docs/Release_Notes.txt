@@ -1,5 +1,60 @@
+bufr-dump v1.2.1        RELEASED        JUN 26,2024
+          v1.2.1        IMPLEMENTED     ??? ??,2024
+
+PRELUDE
+ This update will continue to support obsproc.v1.2.0 and prepobs.v1.1.0 releases (it won't work with earlier obsproc and prepbufr versions!)
+
+ It augments the contents of two existing files:
+ *gpsro*  - relax collocation criteria to eliminate near-duplicates in the EUMETSAT SPIRE data
+ *msonet* - all South Dacota mesonet data (SD DOT)
+
+FILE CHANGES
+M docs/Release_Notes.txt
+M fix/bufr_dumplist
+M sorc/bufr_dupsat.fd/dupsat.f
+M versions/VERSION
+(M-modified; A-added; D-deleted)
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+FIX CHANGES
+ fix/bufr_dumplist
+ _msonet: add data from tank b255/xx034
+
+SOURCE CHANGES
+ sorc/bufr_dupsat.fd/dupsat.f
+ Relax the collocation criteria for duplicates (DEXY,DSEC)
+
+VERSIONS CHANGES
+ version/VERSION
+ Updated to this release's version
+
+CHANGES TO OUTPUT AND FILE SIZES
+ Update dumps:
+ *msonet* - add subset NC255034, size is not impacted noticeably b/c of recent decoders updates which reduced the size of tanks 255/003,004,030 and *msonet* dumps. 
+ *gpsro*  - add the EUMETSAT SPIRE data w.out duplicates
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+ obsproc v1.2.0 needs modules bufr-dump v1.2.* and prepobs v1.1.0 in order to run
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS
+ 
+ Diference in file size should be seen only for the *msonet* and *gpsro* bufr dumps.
+
+DISSEMINATION INFORMATION
+ No changes to dissemination on WCOSS2
+
+SPECIAL INSTRUCTIONS
+ None
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.2.0        RELEASED        AUG ??,2023
-          v1.2.?        IMPLEMENTED     ??? ??,2023
+          v1.2.0        IMPLEMENTED     MAY 22,2024
 
 PRELUDE
 
