@@ -50,7 +50,14 @@ DISSEMINATION INFORMATION
  No changes to dissemination on WCOSS2
 
 SPECIAL INSTRUCTIONS
- None
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.2.0        RELEASED        AUG ??,2023
