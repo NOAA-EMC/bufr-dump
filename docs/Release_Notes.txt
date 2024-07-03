@@ -50,7 +50,12 @@ DISSEMINATION INFORMATION
  No changes to dissemination on WCOSS2
 
 SPECIAL INSTRUCTIONS
- Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+ 1)Update the DF-related parsing.tbl and pqact.conf
+ at the same time or shortly after this bufr-dump v1.2.1 is set as Default module version
+ Instructions:
+ https://docs.google.com/document/d/1nuqUG-t7w0s2qXXAPyK9V559Xm1tR72d/edit
+
+ 2)Make sure that the following binary fix files (from the old VLab repo) are downloaded:
     nam_expdomain_halfdeg_imask.gbl
     nam_expdomain_guam_halfdeg_imask.gbl
     wave_landchxh
