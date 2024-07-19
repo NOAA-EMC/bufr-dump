@@ -3104,15 +3104,16 @@ EOFblank
 
    > updated_counts.out
    rm status2.out
-   grep -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
+   #tr -cd '[:print:]\n\r'  < $pgmout_this > $pgmout_this #IG
+   grep --text -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
     > cutLv.allout
-   grep "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
+   grep --text "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
    paste -d"\0\n" cutLv.allout cutRv.allout > pasteB.allout
    cut -c1-64 pasteB.allout > cutLv.allout
    cut -c65-  pasteB.allout > cutRv.allout
    rm pasteB.allout
    paste -d"\0" cutLv.allout cutRv.allout > paste.part1
-   grep -e "Domain for [0-2]" $pgmout_this > paste.part2
+   grep --text -e "Domain for [0-2]" $pgmout_this > paste.part2
    paste -d"\n\n" paste.part1 paste.part2 blank > counts.out
    nindx=`cat <counts.out | wc -l`
    mindx=0
@@ -3120,7 +3121,7 @@ EOFblank
    do
       mindx=`expr $mindx + 1`
       head -n${mindx} counts.out | tail -n1 > temp1
-      grep -e "in data group" temp1 | grep -v -e "Domain"
+      grep --text -e "in data group" temp1 | grep -v -e "Domain"
       err_grep=$?
       if [ $err_grep -ne 0 ]; then
          cat temp1 >> updated_counts.out
@@ -3270,7 +3271,8 @@ cat <<\EOFs2 >> status.out
 ###############################################################################
 EOFs2
 
-   grep -q -e " SAT. ID " -e "          %#" $pgmout 
+   #tr -cd '[:print:]\n\r' < $pgmout > $pgmout #IG
+   grep --text -q -e " SAT. ID " -e "          %#" $pgmout 
    errgrep=$?
    if [ $errgrep -eq 0 ]; then
 cat <<\EOFs3 >> status.out
@@ -3282,11 +3284,11 @@ cat <<\EOFs3 >> status.out
 
 EOFs3
 
-      grep -e " SAT. ID " -e "          %#" $pgmout | sed "s/%#/  /g" \
+      grep --text -e " SAT. ID " -e "          %#" $pgmout | sed "s/%#/  /g" \
        >> status.out
    fi
 
-   grep -q -e " replicated observations" -e "          #%" $pgmout
+   grep --text -q -e " replicated observations" -e "          #%" $pgmout
    errgrep=$?
    if [ $errgrep -eq 0 ]; then
 cat <<\EOFs4 >> status.out
@@ -3298,7 +3300,7 @@ cat <<\EOFs4 >> status.out
 
 EOFs4
 
-      grep -e " replicated observations" -e "          #%" $pgmout | \
+      grep --text -e " replicated observations" -e "          #%" $pgmout | \
        sed "s/#%/  /g" >> status.out
    fi
 

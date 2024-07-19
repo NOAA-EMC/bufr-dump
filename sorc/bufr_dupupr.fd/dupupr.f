@@ -513,7 +513,7 @@ C      ENDIF ! IG TEST 1 end
 
 C-----IG_TIME_sections_of_this_code
       call cpu_time(TT8)
-      IF(0.EQ.0) THEN ! IG TEST 2 start
+      IF(0.EQ.1) THEN ! IG TEST 2 start !turn off CORN rewrite
       print * ,'ILIANA in second slow down'
               OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
@@ -554,7 +554,7 @@ C-----IG_TIME_sections_of_this_code
 
       print * ,'ILIANA= runs the MINIMUM (6)  out of 13 ORDERS' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-c  IG skip some sorting 
+      !IG skip unnecessary sorting by receipt time 
       !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
       !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
       !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
