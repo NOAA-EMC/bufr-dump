@@ -476,7 +476,7 @@
 #                   bufr_dupsst  bufr_dupmrg bufr_edtbfr bufr_quipc
 #                   bufr_chkbfr  bufr_combfr bufr_dupair bufr_dupshp
 #                   bufr_dupmar  bufr_geofil bufr_duprad bufr_dupsyp
-#                   bufr_duptac bufr_dupcman bufr_dupupr
+#                   bufr_duptac bufr_dupcman bufr_dupupr bufr_dupsno
 #
 # Remarks:
 #
@@ -584,6 +584,7 @@
 #   SHPX   -  path to DUPSHP executable             (default:$DUEX/bufr_dupshp)
 #   CMANX  -  path to DUPCMAN executable            (default:$DUEX/bufr_dupcman)
 #   SYPX   -  path to DUPSYP executable             (default:$DUEX/bufr_dupsyp)
+#   SNOX   -  path to DUPSNO executable             (default:$DUEX/bufr_dupsno)
 #   TACX   -  path to DUPTAC executable             (default:$DUEX/bufr_duptac)
 #   UPRX   -  path to DUPUPR executable             (default:$DUEX/bufr_dupupr)
 #   EDTX   -  path to EDTBFR executable             (default:$DUEX/bufr_edtbfr)
@@ -1004,6 +1005,7 @@ echo
 [ -z "$SHPX" ]   && SHPX=$DUEX/bufr_dupshp
 [ -z "$CMANX" ]  && CMANX=$DUEX/bufr_dupcman
 [ -z "$SYPX" ]   && SYPX=$DUEX/bufr_dupsyp
+[ -z "$SNOX" ]   && SNOX=$DUEX/bufr_dupsno
 [ -z "$TACX" ]   && TACX=$DUEX/bufr_duptac
 [ -z "$UPRX" ]   && UPRX=$DUEX/bufr_dupupr
 [ -z "$EDTX" ]   && EDTX=$DUEX/bufr_edtbfr
@@ -1184,6 +1186,7 @@ AIRX = $AIRX
 SHPX = $SHPX
 CMANX = $CMANX
 SYPX = $SYPX
+SNOX = $SNOX
 TACX = $TACX
 UPRX = $UPRX
 EDTX = $EDTX
@@ -2043,7 +2046,7 @@ dupsyp_run=no
 grep -q -e "000.000" -e "000.001" -e "000.002" -e "000.100" -e "000.101" \
 -e "000.102" $FILES
 errgreps=$?
-if [ $errgreps -eq 0 ]; then
+if [[ $errgreps -eq 0 && $NAME = "adpsfc" ]]; then
    if [ $DUPC = on ]; then
      echo "--------------------------------------------------------------------"
       echo "Duplicate check combined synoptic reports in \
@@ -2063,6 +2066,36 @@ if [ $errgreps -eq 0 ]; then
      echo "--------------------------------------------------------------------"
       echo "Duplicate check of combined synoptic reports in \
 000.000 - 000.002, 000.100 - 000.102 \ 
+NOT PERFORMED (turned off by user)"
+     echo "--------------------------------------------------------------------"
+   fi
+   echo "--------------------------------------------------------------------"
+fi
+rc_dupsno=0
+dupsno_run=no
+grep -q -e "000.000" -e "000.001" -e "000.002" -e "000.100" -e "000.101" \
+-e "000.102" $FILES
+errgreps=$?
+if [[ $errgreps -eq 0 && $NAME = "sfcsno" ]]; then
+   if [ $DUPC = on ]; then
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102"
+      echo "Duplicate check program: $SNOX"
+     echo "--------------------------------------------------------------------"
+      echo $FILES
+      cat $FILES
+      time cat $FILES | $SNOX
+      if [ ! -s fort.60 ]; then
+	 rc_dupsno=99
+      else
+         dupsno_run=yes
+      fi
+      rm fort.60 2>/dev/null
+   else
+     echo "--------------------------------------------------------------------"
+      echo "Duplicate check of combined synoptic reports in \
+000.000 - 000.002, 000.100 - 000.102 \
 NOT PERFORMED (turned off by user)"
      echo "--------------------------------------------------------------------"
    fi
@@ -2205,6 +2238,11 @@ if [ $dupsyp_run = yes ]; then
    echo "Duplicate checking completed for combined synoptic \
 reports in 000.000 - 000.002, 000.100 - 000.102"
 fi
+if [ $dupsno_run = yes ]; then
+   echo
+   echo "Duplicate checking completed for combined synoptic \
+reports in 000.000 - 000.002, 000.100 - 000.102"
+fi
 if [ $dupshp_run = yes ]; then
    echo
    echo "Duplicate checking completed for combined ship reports in 001.001 \
@@ -2332,7 +2370,7 @@ NFIN=`ls *.fin 2>/dev/null|wc -w`
 [ $NFIN -lt $NOUT ] && RETG=99
 [ $rc_dupair -eq 99 -o $rc_dupshp -eq 99 -o $rc_dupsyp -eq 99 -o \
   $rc_duptac -eq 99 -o $rc_edtbfr -eq 99 -o $rc_quipc  -eq 99 -o \
-  $rc_chkbfr -eq 99 -o $rc_dupcman -eq 99 ]  && RETG=99
+  $rc_chkbfr -eq 99 -o $rc_dupcman -eq 99 -o $rc_dupsno -eq 99 ]  && RETG=99
 
 ###########if [ $RETG -ge 22 ]
 if [ $RETG -gt 22 ]; then
