@@ -451,7 +451,7 @@ C-----------------------------------------------------------------------
       CALL W3TAGB('BUFR_DUPSAT',2022,0084,1100,'NP22')
 
       print *
-      print * ,'---> Welcome to BUFR_DUPSAT - Version 03-25-2022'
+      print * ,'---> Welcome to BUFR_DUPSAT - Version 06-07-2024'
       print *
 
       CALL DATELEN(10)
@@ -586,6 +586,16 @@ C  -------------------------------------------------------------------
       ELSE
          TEXT = 'TOLERANCE FOR LAT/LON CHECKS (IN DEGREES) .. '
          IF(ATOVS.AND..NOT.DEXY_READ) DEXY = 0.01
+      ENDIF
+
+
+C  RELAX GPS-RO DEXY and DSEC to "catch" and remove SPIRE EUMS and EKMI near-duplicates
+C      print *, 'SUBSET IS ', SUBSET
+      IF(SUBSET.EQ.'NC003010')  THEN
+         DEXY = 0.05
+         DSEC = 50
+C         print *, '--> BUFR_DUPSAT:  GPS RO is relaxed due to SPIRE :'
+C         print *, ' ILIANA DEXY=0.05, DSEC=50'
       ENDIF
 
       IF(BDATE.NE.99999999.00_8) THEN
