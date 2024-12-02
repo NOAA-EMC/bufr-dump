@@ -31,7 +31,9 @@ FIX CHANGES
   snomad - snow from with MADIS msonet tank containing snow info
   wndtwr - wind from US wind towers observation
   sofarw - marine wave SOFAR observations
-  Splits satwnd - satwnd,satwn1,satwn2 to speed up processing
+  Splits satwnd to satwnd0,satwn1,satwn2 for global(gfs,gdas) and cdas, to speed up processing;
+  Concat satwn0,satwnd1,satwn2 to satwnd in $COMROOT
+  Regional networks continue to use satwnd, augmented with "ADD_satwind"       
 
 SOURCE CHANGES
  sorc/bufr_dupsno.fd/dupsno.f
