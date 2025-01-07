@@ -55,8 +55,8 @@ _003       mgt 003001 003002 003003 003010 003101 003102 003104
 
    --> Single level upper-air data (other than satellite) -- TYPE 004
        --------------------------------------------------------------
-_sluan     nem 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004103
-_004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004103
+_sluan     nem 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004017 004103
+_004       mgt 004001 004002 004003 004004 004005 004006 004007 004008 004009 004010 004011 004012 004013 004014 004015 004017 004103
 
    --> Single-level upper-air data (satellite) -- TYPE 005
        ---------------------------------------------------
@@ -115,7 +115,7 @@ _255       mgt 255001 255002 255003 255004 255005 255006 255007 255008 255009 25
          proper columnar convention.
 
 _aircar    nem 004004 004007
-_aircft    nem 004001 004002 004003 004006 004009 004010 004011 004103
+_aircft    nem 004001 004002 004003 004006 004009 004010 004011 004017 004103
 _adpsfc    nem 000000 000001 000002 000007 000100 000101 000102
 _adpupa    nem 002001 002002 002003 002004 002005 004005
 _uprair    nem 002101 002102 002103 002104 002105
@@ -343,6 +343,7 @@ _tmdarp    nem 004012  #> TAMDAR-PenAir aircraft data (from GSD, netCDF)   | grn
 _tmdarc    nem 004013  #> TAMDAR-Chautauqua aircraft data(from GSD, netCDF)| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _famdar    nem 004014  #> French AMDAR aircraft data (decoded from BUFR)   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _hdob      nem 004015  #> High Density OBs from reconnaissance acft data   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_affir     nem 004017  #> AFFIRS AMDAR acft data                           | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _amdarb    nem 004103  #> AMDAR aircraft data (decoded from BUFR)          |     50   50 YYYY| YEL 50   50 YYYY| YEL 50   50 YYYY| YEL |     |
                                                                            |                 |                 |                 |     |     |
 _visuw     nem 005008  #> GOES/UW-CIMSS visible derived cloud motion       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
