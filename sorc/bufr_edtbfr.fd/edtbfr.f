@@ -780,7 +780,7 @@ C$$$
      .           'DROPWINSONDE (FROM BUFR)                ', ! 002.104
      .           'PIBAL (FROM BUFR)                       ', ! 002.105
      .       150*'                                        ',
-     .         1*'                                        ',
+     .       256*'                                        ',
      .           'MANUAL AIREP FORMAT AIRCRAFT            ', ! 004.001
      .           'MANUAL PIREP FORMAT AIRCRAFT            ', ! 004.002
      .           'AUTOMATED AMDAR FORMAT AIRCRAFT         ', ! 004.003

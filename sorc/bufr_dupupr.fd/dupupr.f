@@ -437,6 +437,15 @@ C  ---------------------------------------------------------
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
+      IF(MXTB.EQ.0) THEN
+         PRINT *
+         PRINT *, '### WARNING: A total of ZERO input reports'
+         PRINT *
+         GO TO 400
+      ENDIF
+
+      NTAB = 0
+
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
 CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
@@ -754,6 +763,9 @@ C-----IG_TIME_sections_of_this_code
       call cpu_time(TT12)
       print *, 'ILIANA IG TIMERS TT 1-12: '
       print *, 'ILIANA',TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
+
+  400 CONTINUE
+
 C  GENERATE REPORT
 C  ---------------
  

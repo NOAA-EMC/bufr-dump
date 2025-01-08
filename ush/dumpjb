@@ -2159,6 +2159,7 @@ fi
 # -------------------------------------------------------
 
 # -- moored buoy data (TAC:mbuoy/001.003 & BUFR:mbuoyb/001.103)
+rc_duptac=0
 if [ $DUPC = on -a $DUPC_TAC = on ]; then
 
 TACtyps='001.003 001.002'
@@ -2175,7 +2176,6 @@ esac
 MTST1=$(echo $MTSTs | cut -c-7)   ; MTST2=$(echo $MTSTs | cut -c9-15)  
 f1=$(egrep "$MTST1" $FILES) ; f2=$(egrep "$MTST2" $FILES)              # db
 
-rc_duptac=0
 duptac_run=no
 
 FILES_T2B=$DATA_DUMPJB/files_t2b
