@@ -56,7 +56,7 @@ PRE-IMPLEMENTATION TESTING REQUIREMENTS
  See versions/build.ver and versions/run.ver for libaries
 
  Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
- for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS and RRFS
+ for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS
 
  Diference in file size should be seen only for the *msonet* and *gpsro* bufr dumps.
 
