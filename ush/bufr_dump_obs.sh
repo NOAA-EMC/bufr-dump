@@ -1568,7 +1568,7 @@ do
    if [ "$CHGRP_RSTPROD" = 'YES' ]; then
       if [ $n = adpsfc -o $n = aircar -o $n = aircft -o $n = msonet -o \
            $n = sfcshp -o $n = lghtng -o $n = gpsipw -o $n = saphir -o \
-           $n = gpsro  -o $n = sofarw ]; then
+           $n = gpsro  -o $n = sofarw -o $n = msone0 -o $n = msone1 ]; then
          chgrp rstprod ${COMSP}${n}.${tmmark}.bufr_d
          errch=$?
          if [ $errch -eq 0 ]; then
