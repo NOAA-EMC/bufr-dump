@@ -17,6 +17,7 @@ FILE CHANGES
  A sorc/bufr_dupsno.fd (dupsno.f, CMakeLists.txt)
  M sorc/CMakeLists.txt
  M ush/dumpjb
+ M ush/bufr_dump_obs.sh
  M versions/VERSION
  (M-modified; A-added; D-deleted)
 
@@ -42,6 +43,10 @@ SOURCE CHANGES
  sorc/CMakeLists.txt
  Add bufr_dumpsno.fd
 
+USH
+ ush/bufr_dump_obs.sh
+ adpsfc and snosfc use the same tanks, skip snosfc counts to prevent double counts
+ 
 VERSIONS CHANGES
  version/VERSION
  Updated to this release's version

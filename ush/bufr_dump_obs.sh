@@ -3124,6 +3124,8 @@ EOFblank
       grep --text -e "in data group" temp1 | grep -v -e "Domain"
       err_grep=$?
       if [ $err_grep -ne 0 ]; then
+	 # adpsfc and sfcsno use same tanks, prevent double counts  
+	 sed --in-place '/sfcsno/d' temp1
          cat temp1 >> updated_counts.out
       else
          group=`cut -f5 -d" " temp1`
@@ -3164,9 +3166,13 @@ COUNT TO 9999999"
                cut -c67-  temp1 > cutRv.allout.temp1
                paste -d"\0" cutLv.allout.temp1 cutRv.allout.temp1 > temp1
             fi
+	    # adpsfc and sfcsno use same tanks, prevent double counts
+	    sed --in-place '/sfcsno/d' temp1
             cat temp1 >> updated_counts.out
          else
             sed "s/HAS......... REPORTS/HAS      0 REPORTS/g" temp1 > temp2
+	    # adpsfc and sfcsno use same tanks, prevent double counts
+	    sed --in-place '/sfcsno/d' temp2
             cat temp2 >> updated_counts.out
          fi
       fi
