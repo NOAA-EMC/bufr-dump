@@ -1,5 +1,5 @@
 bufr-dump v1.2.1        RELEASED        JUN 26,2024
-          v1.2.1        IMPLEMENTED     ??? ??,2024
+          v1.2.1        IMPLEMENTED     JUL 03,2024
 
 PRELUDE
  This update will continue to support obsproc.v1.2.0 and prepobs.v1.1.0 releases (it won't work with earlier obsproc and prepbufr versions!)
