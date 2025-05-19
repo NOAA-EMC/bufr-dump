@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 [ $# -lt 3 -a "$1" != env ] && { cat <<'####'; exit 99; }
 
 ####  UNIX Script Documentation Block
@@ -924,7 +924,7 @@
 #
 # Attributes:
 #
-#   Language: ksh script
+#   Language: bash script
 #   Machine:  WCOSS Cray-EX
 ####
  
@@ -1372,8 +1372,7 @@ eval DTIM_latest=\$DTIM_latest_${NAME}
 #  Otherwise, loop will process each subtype serially.
 #------------------------------------------------------------------------------
  
-typeset -Z2 pos
-pos=00
+pos=$(printf "%02d" 00)
 for mtst in $MTST
 do
 
@@ -1685,7 +1684,7 @@ NODE=`expr $NODE + 1`
 #  -------------------------------------------------------
  
 cat<<EOFthread>$thread
-#!/bin/ksh
+#!/bin/bash
 set -e
 [ $LOUD = on ] && set -x
  
@@ -1893,7 +1892,7 @@ if [ -s $DATA_DUMPJB/mpmd.cmd ]; then
                split --number l/$DUMPJBprocs -e $DATA_DUMPJB/mpmd.cmd $DATA_DUMPJB/tmpCHUNK
                chmod +x $DATA_DUMPJB/tmpCHUNK*
                ls -1 $DATA_DUMPJB/tmpCHUNK* > $DATA_DUMPJB/mpmd.cmd
-	       sed -i 's/^/ksh /' $DATA_DUMPJB/mpmd.cmd
+	       sed -i 's/^/bash /' $DATA_DUMPJB/mpmd.cmd
             fi
             mpiexec --cpu-bind core --configfile $DATA_DUMPJB/mpmd.cmd
             errmpmd=$?
@@ -2191,7 +2190,7 @@ NOT PERFORMED (turned off by user)"
 
 fi # DUPC && DUPC_TAC == on
 
- [ "$LOUD" -ne "on" ] && set +x
+ [ "$LOUD" != "on" ] && set +x
  } >>$DATA/$NAME.out 2>&1
 
 if [ $dupair_run = yes ]; then

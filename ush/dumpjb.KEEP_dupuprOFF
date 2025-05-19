@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 [ $# -lt 3 -a "$1" != env ] && { cat <<'####'; exit 99; }
 
 ####  UNIX Script Documentation Block

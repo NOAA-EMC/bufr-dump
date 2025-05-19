@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 # Run under ksh
 
 ####  UNIX Script Documentation Block
@@ -895,8 +895,7 @@ fi
 #.......................................................................
 
 errt=0
-typeset -Z2 chr
-chr=`expr $icendat % 100`     # use center date w/ fractional hours removed
+chr=$(printf "%02d" $(expr $icendat % 100))     # use center date w/ fractional hours removed
 
 # Note: The following subtypes are EXPECTED to OFTEN be missing regardless
 #       of the center dump time or the data dump network - if only these types
@@ -2131,8 +2130,7 @@ cat << EOFdat2 > datefile
       $cendat
 EOFdat2
 
-               typeset -Z2 dumhr
-               dumhr=`expr $icendat % 100`
+               dumhr=$(printf "%02d" $(expr $icendat % 100))
                echo $dumhr > coloc.parm
 
                cat datefile
@@ -3335,8 +3333,13 @@ EOFs6
 
 fi
 
-if [ "$JOB_NUMBER" -ne 2 -a -s ${COMSP}status${JOB_NUMBER}.${tmmark}.bufr_d -a \
-     -f ${COMSP}aircar.${tmmark}.bufr_d ]; then
+#if [ "$JOB_NUMBER" -ne 2 -a -s ${COMSP}status${JOB_NUMBER}.${tmmark}.bufr_d -a \
+#     -f ${COMSP}aircar.${tmmark}.bufr_d ]; then
+#if [ "$JOB_NUMBER" -ne 2 -a -s ${COMSP}status${JOB_NUMBER}.${tmmark}.bufr_d -a \
+#     -f ${COMSP}aircar.${tmmark}.bufr_d ]; then
+if [ "$JOB_NUMBER" -ne 2 ] && \
+   [ -s ${COMSP}status${JOB_NUMBER}.${tmmark}.bufr_d ] && \
+   [ -f ${COMSP}aircar.${tmmark}.bufr_d ]; then
 
 # Compare AFWA ACARS vs. ARINC ACARS report counts in AIRCAR dump and generate
 #  a flag file (*aircar_status_flag*) in $COMSP path indicating which type
