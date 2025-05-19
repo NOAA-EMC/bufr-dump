@@ -6,10 +6,8 @@ PRELUDE
  introduces the following new dump files configuration:
   sfcsno - snow from synoptic tanks messages containing snow info
   snomad - snow from with MADIS msonet tank containing snow info
-  wndtwr - wind from US wind towers observation (dev tanks to be promo to prod)
   sofarw - marine wave SOFAR observations
- and splits 
-  satwnd - satwnd,satwn1,satwn2 to speed up processing
+  gsbpfl - global sounding balloon profiles
 
 FILE CHANGES
  M docs/Release_Notes.txt
@@ -30,11 +28,8 @@ FIX CHANGES
   Introduce new dump files configuration:
   sfcsno - snow from synoptic tanks messages containing snow info
   snomad - snow from with MADIS msonet tank containing snow info
-  wndtwr - wind from US wind towers observation
   sofarw - marine wave SOFAR observations
-  Splits satwnd to satwnd0,satwn1,satwn2 for global(gfs,gdas) and cdas, to speed up processing;
-  Concat satwn0,satwnd1,satwn2 to satwnd in $COMROOT
-  Regional networks continue to use satwnd, augmented with "ADD_satwind"       
+  gsbpfl - global sounding balloon profiles
 
 SOURCE CHANGES
  sorc/bufr_dupsno.fd/dupsno.f
