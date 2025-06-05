@@ -35,18 +35,18 @@
  
    --> Surface data - land -- TYPE 000
        -------------------------------
-_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000015 000021 000100 000101 000102
-_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000015 000021 000100 000101 000102
+_sflnd     nem 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
+_000       mgt 000000 000001 000002 000007 000008 000010 000011 000012 000015 000100 000101 000102
 
    --> Surface data - sea -- TYPE 001
        ------------------------------
-_sfmar     nem 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104 001121
-_001       mgt 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104 001121
+_sfmar     nem 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104 001120 001121
+_001       mgt 001001 001002 001003 001004 001005 001006 001007 001008 001009 001010 001011 001012 001013 001102 001103 001101 001113 001104 001120 001121
 
    --> Vertical soundings (other than satellite) -- TYPE 002
        -----------------------------------------------------
-_vsndn     nem 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002020 002021 002101 002102 002103 002104 002105 002109
-_002       mgt 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002020 002021 002101 002102 002103 002104 002105 002109
+_vsndn     nem 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002101 002102 002103 002104 002105 002109
+_002       mgt 002001 002002 002003 002004 002005 002006 002007 002008 002009 002010 002011 002012 002013 002014 002015 002016 002017 002101 002102 002103 002104 002105 002109
 
    --> Vertical soundings (satellite) -- TYPE 003
        ------------------------------------------
@@ -120,7 +120,6 @@ _adpsfc    nem 000000 000001 000002 000007 000100 000101 000102
 _adpupa    nem 002001 002002 002003 002004 002005 004005
 _uprair    nem 002101 002102 002103 002104 002105
 _erswnd    nem 012008
-_snocvr    nem 000015
 _qkscat    nem 012137
 _ascatt    nem 012122
 _wndsat    nem 012138
@@ -151,7 +150,6 @@ _avcl18    nem 021054
 _shpall    nem 001001 001013
 _satmar    nem 031104 031106 031110 031112 031113 031114 031115 031117 031118 031119 031120 031121 031122 031123 031124 031125 031126 031127 031130 
 _satwhr    nem 005052 005053 005054 005055 005056 005099
-_sofarw    nem 001121
 _sfcsno    nem 000000 000001 000002 000007 000100 000101 000102
 _snomad    nem 255161
  ===================================================================================================================================
@@ -272,7 +270,7 @@ _scd       nem 000012  #> Aviation - supplementary climatological data     | grn
 _synpbr    nem 000100  #> Synoptic - restricted (WMO Res 40)(decoded BUFR) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _synopb    nem 000101  #> Synoptic - fixed manual & auto (decoded fr BUFR) | RED 50   50 YYYY| RED 50   50 YYYY| RED 50   50 YYYY| RED | YEL |
 _synpmb    nem 000102  #> Synoptic - mobile manual & auto (decoded fr BUFR)| grn 50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
-_snocvr    nem 000015  #>SNOW COVER, DEPTH/DENSITY AND WATER EQUIVALENT    | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_snocvr    nem 000015  #> Snow cover, depth/density and water equivalent   | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 
 _ships     nem 001001  #> Ship - manual and automatic, restricted          |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _dbuoy     nem 001002  #> Buoys decoded from FM-18 fmt (moored or drifting)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
@@ -293,7 +291,7 @@ _mbuoyb    nem 001103  #> Moored buoys (decoded from BUFR)                 | grn
 _cmanb     nem 001104  #> Surface Marine CMAN rpts decoded from BUFR format|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| RED | RED |
 _shipub    nem 001113  #> Ship - manual and automatic, unrestricted (BUFR) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL | YEL |
 _saldrn    nem 001120  #> Surface Marine Saildrone (decoded from BUFR)     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
-_sofarw    nem 001121  #> Surgave Marine SOFAR (decoded from BUFR)         | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_sofarw    nem 001121  #> Surface Marine SOFAR (decoded from BUFR)         | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
                                                                            |                 |                 |                 |     |     |
 _raobf     nem 002001  #> Rawinsonde - fixed land (from TEMP or PILOT)     | RED 80   50 YYYY| RED 80   50 YYYY| RED 80   50 YYYY| RED | RED |
 _raobm     nem 002002  #> Rawinsonde - mobile land (from TEMP/PILOT MOBIL) |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |

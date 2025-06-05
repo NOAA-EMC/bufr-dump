@@ -30,6 +30,7 @@ FIX CHANGES
   snomad - snow from with MADIS msonet tank containing snow info
   sofarw - marine wave SOFAR observations
   gsbpfl - global sounding balloon profiles
+  Cleaned up bufr_dumplist following SPA suggestions 
 
 SOURCE CHANGES
  sorc/bufr_dupsno.fd/dupsno.f
@@ -45,10 +46,6 @@ USH
 VERSIONS CHANGES
  version/VERSION
  Updated to this release's version
-
-CHANGES TO OUTPUT AND FILE SIZES
- New dumps:
- sfcsno(30MB), snomad(2MB), wndtwr (500kb), sofarw (500KB, often less) 
 
 PRE-IMPLEMENTATION TESTING REQUIREMENTS
  obsproc v1.3.0 needs modules bufr-dump v1.3.0 and prepobs v1.2.0 in order to run properly
