@@ -1728,8 +1728,8 @@ done
 
 [ "$kflag" -eq '0' ]  &&  kindx=3
 
-cpfs /dev/null sstgrb
-cpfs /dev/null sstgrb.index
+cp /dev/null sstgrb
+cp /dev/null sstgrb.index
 
 errsmi=0
 msg1=NO
@@ -1771,14 +1771,14 @@ do
 
          cd $DATA/job${DUMP_NUMBER}
 
-         cpfs ${COMSP}$ssmif.${tmmark}.bufr_d ssmif_in
+         cp ${COMSP}$ssmif.${tmmark}.bufr_d ssmif_in
          SSMI_IN=ssmif_in
          ssmiOU=${COMSP}spssmi.${tmmark}.bufr_d
 
          if [ "$PREPSSMI_PROD_TYPE" = 'COMBINATION' ];then
             ssmiOU_save=$ssmiOU
             ssmiOU=$ssmiOU_save.$ssmif
-            cpfs /dev/null $ssmiOU
+            cp /dev/null $ssmiOU
          fi
 
          DATA_save=$DATA
@@ -1812,7 +1812,7 @@ do
          [ -s msg1_file ]  && msg1="`cat msg1_file` from input $ssmif dump"
          [ -s msg2_file ]  && msg2="`cat msg2_file` from input $ssmif dump"
 
-         cpfs ssmi.bufr  $ssmiOU
+         cp ssmi.bufr  $ssmiOU
          errmvt=$?
          errmvl=$errmv
          errmv=`expr $errmvl + $errmvt`
@@ -1880,8 +1880,8 @@ set -u
 #  ------------------------------------------------------------------
 
    if [ -s $ssmiOU_save.ssmipn -a -s $ssmiOU_save.ssmip ];then
-      cpfs $ssmiOU_save.ssmipn bufr1
-      cpfs $ssmiOU_save.ssmip  bufr2
+      cp $ssmiOU_save.ssmipn bufr1
+      cp $ssmiOU_save.ssmip  bufr2
       cat <<EOFd > cards
 bufr1
 bufr2
@@ -1936,18 +1936,18 @@ generated"
       echo "    " >> $pgmout_this
       [ "$err" -gt '0' ]  &&  exit 99
    elif [ -s $ssmiOU_save.ssmipn ];then
-      cpfs $ssmiOU_save.ssmipn combfr.spssmi
+      cp $ssmiOU_save.ssmipn combfr.spssmi
       err=$?
    elif [ -s $ssmiOU_save.ssmip ];then
-      cpfs $ssmiOU_save.ssmip combfr.spssmi
+      cp $ssmiOU_save.ssmip combfr.spssmi
       err=$?
    else
-      cpfs /dev/null combfr.spssmi
+      cp /dev/null combfr.spssmi
       err=$?
    fi
    rm $ssmiOU_save.ssmipn $ssmiOU_save.ssmip
    if [ $err -eq 0 ];then
-      cpfs combfr.spssmi $ssmiOU_save
+      cp combfr.spssmi $ssmiOU_save
       if [ -s ssmi_count ];then
          n1=`head -n1 ssmi_count`
          n2=`tail -n1 ssmi_count`
@@ -2003,7 +2003,7 @@ echo "*******************************************************************\
 
             cd $DATA/job${DUMP_NUMBER}
 
-            cpfs ${COMSP}erswnd.${tmmark}.bufr_d erswnd_bufr
+            cp ${COMSP}erswnd.${tmmark}.bufr_d erswnd_bufr
             ersIN=erswnd_bufr
             ersOU=${COMSP}erscat.${tmmark}.bufr_d
 
@@ -2260,7 +2260,7 @@ echo "------------------------------------------------------------"
 WAVE_DATASORT  all completed normally"
 
 ########################cp ers2.so ${COMSP}ers2.sort
-                        cpfs erscat_bufr $ersOU
+                        cp erscat_bufr $ersOU
                         errcpy=$?
                         if [ "$errcpy" -eq '0' ];then
 msg2="ERS scatterometer data reprocessed successfully into NCEP BUFR file"
@@ -2358,7 +2358,7 @@ qkscat dump) due to above PGM FAIL --> non-fatal"
 
             cd $DATA/job${DUMP_NUMBER}
 
-            cpfs ${COMSP}qkscat.${tmmark}.bufr_d qkscat_bufr
+            cp ${COMSP}qkscat.${tmmark}.bufr_d qkscat_bufr
             qksIN=qkscat_bufr
             qksOU=${COMSP}qkswnd.${tmmark}.bufr_d
 
@@ -2392,7 +2392,7 @@ qkscat dump) due to above PGM FAIL --> non-fatal"
 #  -----------------------------------------------------------------
 
             if [ -s $DQKC ]; then
-               cpfs $DQKC dcodquikscat.parm
+               cp $DQKC dcodquikscat.parm
             else
 cat <<EOFd > dcodquikscat.parm
  &RDATA
@@ -2461,7 +2461,7 @@ echo "------------------------------------------------------------"
                msg1="program WAVE_DCODQUIKSCAT completed normally, qkswnd \
 file generated from input qkscat dump"
 
-               cpfs qkswnd_bufr $qksOU
+               cp qkswnd_bufr $qksOU
                errcpy=$?
                msg2=NO
                [ "$errcpy" -ne '0' ] && msg2="**NO QUIKSCAT SCATTEROMETER \
@@ -2554,7 +2554,7 @@ dump) due to above PGM FAIL --> non-fatal"
 
             cd $DATA/job${DUMP_NUMBER}
 
-            cpfs ${COMSP}ascatt.${tmmark}.bufr_d ascatt_bufr
+            cp ${COMSP}ascatt.${tmmark}.bufr_d ascatt_bufr
             ascIN=ascatt_bufr
             ascOU=${COMSP}ascatw.${tmmark}.bufr_d
 
@@ -2588,7 +2588,7 @@ dump) due to above PGM FAIL --> non-fatal"
 #  -----------------------------------------------------------------
 
             if [ -s $DASC ]; then
-               cpfs $DASC dcodascat.parm
+               cp $DASC dcodascat.parm
             else
 cat <<EOFd > dcodascat.parm
  &RDATA
@@ -2658,7 +2658,7 @@ echo "------------------------------------------------------------"
                msg1="program WAVE_DCODQUIKSCAT completed normally, ascatw \
 file generated from input ascatt dump"
 
-               cpfs ascatw_bufr $ascOU
+               cp ascatw_bufr $ascOU
                errcpy=$?
                msg2=NO
                [ "$errcpy" -ne '0' ] && msg2="**NO ASCAT SCATTEROMETER DATA \
@@ -2750,7 +2750,7 @@ status1.out
 
             cd $DATA/job${DUMP_NUMBER}
 
-            cpfs ${COMSP}trmm.${tmmark}.bufr_d trmm_bufr
+            cp ${COMSP}trmm.${tmmark}.bufr_d trmm_bufr
             tmiIN=trmm_bufr
             tmiOU=${COMSP}sptrmm.${tmmark}.bufr_d
 
@@ -2781,7 +2781,7 @@ status1.out
 #  -----------------------------------------------------------------
 
             if [ -s $DTMC ]; then
-               cpfs $DTMC supertmi.parm
+               cp $DTMC supertmi.parm
             else
 cat <<EOFd > supertmi.parm
  &INPUT
@@ -2840,7 +2840,7 @@ echo "------------------------------------------------------------"
                msg1="program BUFR_SUPERTMI completed normally, sptrmm file \
 generated from input trmm dump"
 
-               cpfs sptrmm_bufr $tmiOU
+               cp sptrmm_bufr $tmiOU
                errcpy=$?
                msg2=NO
                [ "$errcpy" -ne '0' ] && msg2="**NO TRMM TMI DATA reprocessed \
@@ -2932,7 +2932,7 @@ dump) due to above PGM FAIL --> non-fatal"
 
             cd $DATA/job${DUMP_NUMBER}
 
-            cpfs ${COMSP}wndsat.${tmmark}.bufr_d wndsat_bufr
+            cp ${COMSP}wndsat.${tmmark}.bufr_d wndsat_bufr
             wnsIN=wndsat_bufr
             wnsOU=${COMSP}wdsatr.${tmmark}.bufr_d
 
@@ -2966,7 +2966,7 @@ dump) due to above PGM FAIL --> non-fatal"
 #  ----------------------------------------------------------------
 
             if [ -s $DWSC ]; then
-               cpfs $DWSC dcodwindsat.parm
+               cp $DWSC dcodwindsat.parm
             else
 cat <<EOFd > dcodwindsat.parm
  &RDATA
@@ -3027,7 +3027,7 @@ echo "------------------------------------------------------------"
                msg1="program BUFR_DCODWINDSAT completed normally, wdsatr file \
 generated from input wndsat dump"
 
-               cpfs wdsatr_bufr $wnsOU
+               cp wdsatr_bufr $wnsOU
                errcpy=$?
                msg2=NO
                [ "$errcpy" -ne '0' ] && msg2="**NO WINDSAT SCATTEROMETER \
