@@ -13,6 +13,7 @@ FILE CHANGES
  M docs/Release_Notes.txt
  M fix/bufr_dumplist
  A sorc/bufr_dupsno.fd (dupsno.f, CMakeLists.txt)
+ M sorc/bufr_edtbfr.fd/edtbfr.f
  M sorc/CMakeLists.txt
  M ush/dumpjb
  M ush/bufr_dump_obs.sh
@@ -36,8 +37,11 @@ SOURCE CHANGES
  sorc/bufr_dupsno.fd/dupsno.f
  Introduce new duplicate check prioritizing snow-containing messages from the synop tanks
 
+ sorc/bufr_edtbfr.fd/edtbfr.f
+ Added one more CTYPE initialization entry for 004.000
+
  sorc/CMakeLists.txt
- Add bufr_dumpsno.fd
+ Add bufr_dumpsno.fd for sfcsno dup check
 
 USH
  ush/bufr_dump_obs.sh
