@@ -1,5 +1,5 @@
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
-          v1.3.0        IMPLEMENTED     ??? ??,2024
+          v1.3.0        IMPLEMENTED     AUG 11,2024 (tbc)
 
 PRELUDE
  This update (obsproc v1.3.0, bufr-dump v1.3.0, prepobs v1.2.0) 
