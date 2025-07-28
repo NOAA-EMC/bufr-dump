@@ -35,7 +35,7 @@ FIX CHANGES
   gsbpfl - global sounding balloon profiles
   Cleaned up bufr_dumplist following SPA suggestions 
   255030 was added back to _msonet (for non-obsproc applications using fix/bufr_dumplist)
-  new groups _msone0 and _msone1 were added to fix/bufr_dumplist for obsrpoc processing
+  new groups _msone0 were added to fix/bufr_dumplist for obsproc processing
 
 SOURCE CHANGES
  sorc/bufr_dupsno.fd/dupsno.f
@@ -51,7 +51,7 @@ SOURCE CHANGES
  Increase MAXOUT to secure successful domain selection
 
  sorc/CMakeLists.txt
- Added bufr_dumpsno.fd for sfcsno dup check
+ Added bufr_dupsno.fd for sfcsno dup check
 
 USH
  ush/bufr_dump_obs.sh
