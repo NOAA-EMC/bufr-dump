@@ -123,6 +123,8 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       REAL(8)       ADATE,BDATE,CDATE,DDATE,RDATE,UFBTAB_8
       REAL(8)       TAB8_IREC_8,TAB8_JREC_8
 
+      INTEGER      NTAB
+
       LOGICAL       DUPES
 
       EQUIVALENCE   (TAB8_IREC_8,CAB8_IREC),(TAB8_JREC_8,CAB8_JREC)
@@ -137,9 +139,7 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       DATA DDAY  /0/
       DATA DOUR  /0/
       DATA DMIN  /0/
-C-----IG_TIME_sections_of_this_code
       REAL(8)     TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
-C-----------------------------------------------------------------------
 
 C IBLK_NUM determines which WMO block numbers will be accepted for
 c processing here (=1) and which will be rejected (=0)
@@ -178,7 +178,7 @@ C-----------------------------------------------------------------------
       print * ,'---> Welcome to BUFR_DUPUPR - Version 03-20-2020'
       print *
 
-C-----IG_TIME_sections_of_this_code
+C  Time the code, monitor bottlenecks    
       call cpu_time(TT1)
 
 C  Override current BUFRLIB maximum number of data values in an
@@ -246,7 +246,6 @@ cppppp
 
     1 CONTINUE
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT2)
 
       IF(BDATE.NE.99999999.00_8) THEN
@@ -298,7 +297,6 @@ C  ------------------------------------------------------------------
      .    'MESSAGE TYPE FOUND IS",I5/)', MSGT
       ENDIF
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT3)
 
       CALL OPENBF(LUBFI,'IN',LUBFI)
@@ -338,7 +336,6 @@ c ----------------------------------------------------------------------
       enddo
       print *
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT4)
 
       kount = 0
@@ -402,7 +399,6 @@ C             (if valid - see below) to preserve the data record.
       CALL CLOSMG(LUBFJ)
       CALL CLOSBF(LUBFJ)
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT5)
 
       print *
@@ -423,7 +419,7 @@ C-----IG_TIME_sections_of_this_code
       print *
       print *, ' ===> Move on to dup-checking'
       print *
-C-----IG_TIME_sections_of_this_code
+
       call cpu_time(TT6)
 c=======================================================================
 c=======================================================================
@@ -461,13 +457,12 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
 
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT7)
-C      IF(0.EQ.1) THEN ! IG TEST 1 start
+C      IF(0.EQ.1) THEN ! Timing TEST 1 - start
 C  MAKE A TABLE OUT OF THE LATS, LONS, ID'S, OBS TIME COORDINATES AND
 C   RECEIPT TIME COORDINATES
 C  ------------------------------------------------------------------
-      print * ,'ILIANA in first slow down' 
+C      print * ,'In the first slow down' 
       DO ITIMES=1,MXTB ! Look thru up to 25 rpts to find a valid lat
          !IF(ITIMES.EQ.26.OR.ITIMES.EQ.MXTB) THEN
             !IF(ITIMES.EQ.26) THEN
@@ -518,12 +513,12 @@ cpppppppppp
          EXIT
       ENDDO
 
-C      ENDIF ! IG TEST 1 end
+C      ENDIF ! Timing TEST 1 - end
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT8)
-      IF(0.EQ.1) THEN ! IG TEST 2 start !turn off CORN rewrite
-      print * ,'ILIANA in second slow down'
+
+      IF(0.EQ.1) THEN ! Timing TEST 2 - start (turn off CORN rewrite)
+C      print * ,'In the second slow down'
               OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
 
@@ -549,21 +544,19 @@ c        ENDIF
 c       ENDIF
       ENDDO
 
-      ENDIF ! IG TEST 2 end
+      ENDIF !  Timing TEST 2 - end (turn off CORN rewrite)
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT9)
 
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
 C   REPORT ID, OBS TIME, RECEIPT TIME, CORRECTION INDICATOR
 C  ----------------------------------------------------------------
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT10)
 
-      print * ,'ILIANA= runs the MINIMUM (6)  out of 13 ORDERS' 
+      print * ,'==>Run the MINIMUM (6 out of 13) ORDERS()' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      !IG skip unnecessary sorting by receipt time 
+      !Save time - skip unnecessary sorting by receipt time 
       !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
       !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
       !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
@@ -577,7 +570,6 @@ C-----IG_TIME_sections_of_this_code
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT11)
 
 C  GO THROUGH THE REPORTS IN ORDER, MARKING DUPLICATES AND CORRECTIONS
@@ -759,10 +751,9 @@ C  -------------------------------------------------------------------
       ENDIF
       CLOSE(LUBFJ)
 
-C-----IG_TIME_sections_of_this_code
       call cpu_time(TT12)
-      print *, 'ILIANA IG TIMERS TT 1-12: '
-      print *, 'ILIANA',TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
+      print *, 'Print Bottleneck timers TT1 thru Tt12: '
+      print *, TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
 
   400 CONTINUE
 

@@ -1,3 +1,109 @@
+bufr-dump v1.3.1        RELEASED        NOV ??,2025
+          v1.3.1        IMPLEMENTED     ??? ??,2026 (before RRFS model)
+
+PRELUDE
+ This update (obsproc v1.2.7, bufr-dump v1.3.1, prepobs v1.1.3)
+ -simplifies compiling the code in Debug mode
+ -cleans the code from development/troubleshooting code and comments (i.e.IG,ILIANA)
+
+FILE CHANGES
+
+cleans the code from development/troubleshooting code and comments (i.e.IG,ILIANA)
+in:
+sorc/bufr_dupcor.fd/dupcor.f
+sorc/bufr_dupsat.fd/dupsat.f
+sorc/bufr_dupupr.fd/dupupr.f
+ush/bufr_dump_obs.sh
+ush/dumpjb
+
+
+
+sorc/bufr_dupmrg.fd/dupmrg.f - define varibale NTAB
+
+ ush/build.sh - simplified the Debug mode biild: cd ush && BUILD_TYPE=Debug ./ush/build.sh
+
+
+-below is not edited/updated....
+
+
+ M docs/Release_Notes.txt
+ M fix/bufr_dumplist
+ M sorc/bufr_dupupr.fd/dupupr.f
+ A sorc/bufr_dupsno.fd (dupsno.f, CMakeLists.txt)
+ M sorc/bufr_edtbfr.fd/edtbfr.f
+ M sorc/bufr_geofil.fd/geofil.f
+ M sorc/CMakeLists.txt
+ M ush/dumpjb
+ M ush/bufr_dump_obs.sh
+ M versions/VERSION
+ (M-modified; A-added; D-deleted)
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+FIX CHANGES
+ fix/bufr_dumplist
+  Introduce new dump files configuration:
+  sfcsno - snow from synoptic tanks messages containing snow info
+  snomad - snow from with MADIS msonet tank containing snow info
+  sofarw - marine wave SOFAR observations
+  gsbpfl - global sounding balloon profiles
+  Cleaned up bufr_dumplist following SPA suggestions
+  255030 was added back to _msonet (for non-obsproc applications using fix/bufr_dumplist)
+  new groups _msone0 were added to fix/bufr_dumplist for obsproc processing
+
+SOURCE CHANGES
+ sorc/bufr_dupsno.fd/dupsno.f
+ Introduce new duplicate check prioritizing snow-containing messages from the synop tanks
+
+ sorc/bufr_dupupr.fd/dupupr.f
+ Added gracious exit if no subsets/records are found
+
+ sorc/bufr_edtbfr.fd/edtbfr.f
+ Added missing entry in CTYPE initialization
+
+ sorc/bufr_geofil.fd/geofil.f
+ Increase MAXOUT to secure successful domain selection
+
+ sorc/CMakeLists.txt
+ Added bufr_dupsno.fd for sfcsno dup check
+
+USH
+ ush/bufr_dump_obs.sh
+ addition of sfcsno; adpsfc and sfcsno use the same tanks, thus skip sfcsno counts to prevent double counts
+ addition of msone0 and msone1 (replacing msonet), sofarw, sfcsno, gsbpfl to RSTPROD logic
+ use cpfs instead of cp when sending dump file to comout
+
+ ush/dumpjb
+ addition of dup check (SNOX) for sfcsno, see sorc/bufr_dupsno.fd/dupsno.f
+
+VERSIONS CHANGES
+ version/VERSION
+ Updated to this release's version
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+ obsproc v1.2.6 needs modules bufr-dump v1.3.0 and prepobs v1.1.2 in order to run properly
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS
+
+DISSEMINATION INFORMATION
+ No changes to dissemination on WCOSS2
+
+SPECIAL INSTRUCTIONS
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
           v1.3.0        IMPLEMENTED     AUG 11,2025 (tbc)
 

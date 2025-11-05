@@ -3105,7 +3105,6 @@ EOFblank
 
    > updated_counts.out
    rm status2.out
-   #tr -cd '[:print:]\n\r'  < $pgmout_this > $pgmout_this #IG
    grep --text -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
     > cutLv.allout
    grep --text "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
