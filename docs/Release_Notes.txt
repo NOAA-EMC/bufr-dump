@@ -1,40 +1,81 @@
-bufr-dump v1.3.1        RELEASED        NOV ??,2025
+bufr-dump v1.3.1        RELEASED        NOV 10,2025
           v1.3.1        IMPLEMENTED     ??? ??,2026 (before RRFS model)
 
 PRELUDE
- This update (obsproc v1.2.7, bufr-dump v1.3.1, prepobs v1.1.3)
+ This update (obsproc v1.2.8, bufr-dump v1.3.1, prepobs v1.1.3)
  -simplifies compiling the code in Debug mode
- -cleans the code from development/troubleshooting code and comments (i.e.IG,ILIANA)
+ -cleans the code from development/troubleshooting code and comments (i.e. IG,ILIANA)
 
 FILE CHANGES
 
-cleans the code from development/troubleshooting code and comments (i.e.IG,ILIANA)
-in:
-sorc/bufr_dupcor.fd/dupcor.f
-sorc/bufr_dupsat.fd/dupsat.f
-sorc/bufr_dupupr.fd/dupupr.f
-ush/bufr_dump_obs.sh
-ush/dumpjb
-
-
-
-sorc/bufr_dupmrg.fd/dupmrg.f - define varibale NTAB
-
- ush/build.sh - simplified the Debug mode biild: cd ush && BUILD_TYPE=Debug ./ush/build.sh
-
-
--below is not edited/updated....
-
+ Additional RRFS files generated: 
+ rrfs.tCCz.variablename.tm00.bufr_d [and may include *.listing / *.bufr_d.nr files] where variablename could be the following:
+  1bamua
+  1bhrs4
+  1bmhs
+  adpsfc [.listing,.nr]
+  adpupa [.listing]
+  aircar_status_flag
+  aircar [.listing,.nr]
+  aircft [.listing,.nr]
+  airsev
+  amsr2
+  ascatt
+  ascatw [.listing]
+  atmsdb
+  atms
+  crisf4
+  crsfdb
+  esamua
+  esatms
+  eshrs3
+  esiasi
+  esmhs
+  gmi1cr
+  gpsipw [.listing,.nr]
+  gpsro [.nr]
+  gsbpfl
+  gsrasr
+  gsrcsr
+  iasidb
+  lghtng [.nr]
+  lgycld
+  msonet [listing,.nr]
+  mtiasi
+  nexrad
+  osbuv8
+  prepbufr.acft_profiles_sfc
+  prepbufr.acft_profiles
+  prepbufr_pre-qc [.nr]
+  prepbufr [.nr]
+  proflr [.listing]
+  rassda [.listing]
+  saldrn
+  saphir [.nr]
+  satwhr
+  satwnd [.listing]
+  sevasr
+  sevcsr
+  sfcshp [.listing,.nr]
+  snocvr
+  ssmisu
+  status
+  subpfl
+  tedeg
+  uprair
+  vadwnd
+  wndtwr
 
  M docs/Release_Notes.txt
- M fix/bufr_dumplist
+ M sorc/bufr_dupcor.fd/dupcor.f
+ M sorc/bufr_dupmar.fd/dupmar.f
+ M sorc/bufr_dupmrg.fd/dupmrg.f
+ M sorc/bufr_dupsat.fd/dupsat.f
  M sorc/bufr_dupupr.fd/dupupr.f
- A sorc/bufr_dupsno.fd (dupsno.f, CMakeLists.txt)
- M sorc/bufr_edtbfr.fd/edtbfr.f
- M sorc/bufr_geofil.fd/geofil.f
- M sorc/CMakeLists.txt
- M ush/dumpjb
  M ush/bufr_dump_obs.sh
+ M ush/build.sh
+ M ush/dumpjb
+ M versions/build.ver
  M versions/VERSION
  (M-modified; A-added; D-deleted)
 
@@ -42,56 +83,69 @@ DOCS CHANGES
  docs/Release_Notes.txt
  Updated for this release.
 
-FIX CHANGES
- fix/bufr_dumplist
-  Introduce new dump files configuration:
-  sfcsno - snow from synoptic tanks messages containing snow info
-  snomad - snow from with MADIS msonet tank containing snow info
-  sofarw - marine wave SOFAR observations
-  gsbpfl - global sounding balloon profiles
-  Cleaned up bufr_dumplist following SPA suggestions
-  255030 was added back to _msonet (for non-obsproc applications using fix/bufr_dumplist)
-  new groups _msone0 were added to fix/bufr_dumplist for obsproc processing
-
 SOURCE CHANGES
- sorc/bufr_dupsno.fd/dupsno.f
- Introduce new duplicate check prioritizing snow-containing messages from the synop tanks
+ sorc/bufr_dupcor.fd/dupcor.f
+ code cleaned from development/troubleshooting code and comments
+
+ sorc/bufr_dupmar.fd/dupmar.f
+ code cleaned from development/troubleshooting code and comments
+
+ sorc/bufr_dupmrg.fd/dupmrg.f
+ variable NTAB has been defined to alleviate debug run
+
+ sorc/bufr_dupsat.fd/dupsat.f
+ code cleaned from development/troubleshooting code and comments
 
  sorc/bufr_dupupr.fd/dupupr.f
- Added gracious exit if no subsets/records are found
-
- sorc/bufr_edtbfr.fd/edtbfr.f
- Added missing entry in CTYPE initialization
-
- sorc/bufr_geofil.fd/geofil.f
- Increase MAXOUT to secure successful domain selection
-
- sorc/CMakeLists.txt
- Added bufr_dupsno.fd for sfcsno dup check
+ code cleaned from development/troubleshooting code and comments
 
 USH
  ush/bufr_dump_obs.sh
- addition of sfcsno; adpsfc and sfcsno use the same tanks, thus skip sfcsno counts to prevent double counts
- addition of msone0 and msone1 (replacing msonet), sofarw, sfcsno, gsbpfl to RSTPROD logic
- use cpfs instead of cp when sending dump file to comout
+ code cleaned from development/troubleshooting code and comments
+
+ ush/build.sh
+ simplified the Debug mode build: BUILD_TYPE=Debug ./ush/build.sh
 
  ush/dumpjb
- addition of dup check (SNOX) for sfcsno, see sorc/bufr_dupsno.fd/dupsno.f
+ code cleaned from development/troubleshooting code and comments
 
 VERSIONS CHANGES
- version/VERSION
+ versions/build.ver
+ updated version number of module PrgEnv_intel_ver
+
+ versions/VERSION
  Updated to this release's version
 
 PRE-IMPLEMENTATION TESTING REQUIREMENTS
- obsproc v1.2.6 needs modules bufr-dump v1.3.0 and prepobs v1.1.2 in order to run properly
+ obsproc v1.2.8 needs modules bufr-dump v1.3.1 and prepobs v1.1.3 in order to run properly
  See docs/README.md for build instructions
  See versions/build.ver and versions/run.ver for libaries
+ How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh 
 
  Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
- for the following networkname values: GLOBAL, NAM, RAP, URMA, RTMA, CDAS
+ for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
+
+ RRFS crons were tested and approved my users with the following schedule:
+
+# RRFS_P
+00 7,19 * * * jtyp=rrfs_p cyc=`date --date="-4 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+00 7,8,19,20 * * * jtyp=rrfs_p cyc=`date --date="-3 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+00 8,9,20,21 * * * jtyp=rrfs_p cyc=`date --date="-2 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+00 9,21 * * * jtyp=rrfs_p cyc=`date --date="-1 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+
+# RRFS_E
+26 0,12 * * * jtyp=rrfs_e cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_e bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+
+# RRFS
+17 1-11 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+17 13-23 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1 
+49 0,12 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
+
+RRFS runs can be validated against User approved output:
+/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/com/obsproc/v1.3  (ignore that it's v1.3)
 
 DISSEMINATION INFORMATION
- No changes to dissemination on WCOSS2
+ RRFS observational network will generate ~200GB per day per rrfs, ~100Gb rrfs_p, ~16GB rrfs_e
 
 SPECIAL INSTRUCTIONS
  Make sure that the following binary fix files (from the old VLab repo) are downloaded:
@@ -103,6 +157,10 @@ SPECIAL INSTRUCTIONS
  They can be downloaded manually and into the cloned
  repository by executing: ./ush/download_fix.sh
 
+ NOTE that obsproc/bufr-dump/prepobs new versions need to be propagated to
+     i) GFS global workflow (rahul.mahajan@noaa.gov@noaa.gov)
+     ii) SDM and thanks (kelly.kempisty@noaa.gov )
+     iii) EVS (alicia.bentley@noaa.gov@noaa.gov)
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
           v1.3.0        IMPLEMENTED     AUG 11,2025 (tbc)
