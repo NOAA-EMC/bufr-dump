@@ -433,14 +433,14 @@ C  ---------------------------------------------------------
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
+      NTAB = 0
+
       IF(MXTB.EQ.0) THEN
          PRINT *
          PRINT *, '### WARNING: A total of ZERO input reports'
          PRINT *
          GO TO 400
       ENDIF
-
-      NTAB = 0
 
       ALLOCATE(TAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(RAB_8(MXTS,MXTB),STAT=I);IF(I.NE.0) GOTO 901
@@ -622,15 +622,15 @@ c greater than 10e7) "missing" values are encountered.
             JDUP(IREC) = 2
 cpppppppppp
             print 1799, irec,CAB8_IREC,(tab_8(ii,irec),ii=1,2),
-     .       (nint(tab_8(ii,irec)),ii=4,6),
-     .       (nint(rab_8(ii,irec)),ii=1,5),nint(tab_8(7,irec))
+     .       (kidnnt(tab_8(ii,irec)),ii=4,6),
+     .       (kidnnt(rab_8(ii,irec)),ii=1,5),kidnnt(tab_8(7,irec))
  1799       format('===> DUPL. FOUND:'/'TOSSED:   --> IREC: ',I6,
      .       ';{ ID: ',A8,'; LAT: ',F9.5,'; LON: ',F10.5,
      .       '; RPRT DD HH MM ',3I2.2,'; RCPT YYYYMMDDHHMM: ',I4,4I2.2,
      .       '; CORN: ',I3,'}')
             print 1800, jrec,CAB8_JREC,(tab_8(ii,jrec),ii=1,2),
-     .       (nint(tab_8(ii,jrec)),ii=4,6),
-     .       (nint(rab_8(ii,jrec)),ii=1,5),nint(tab_8(7,jrec))
+     .       (kidnnt(tab_8(ii,jrec)),ii=4,6),
+     .       (kidnnt(rab_8(ii,jrec)),ii=1,5),kidnnt(tab_8(7,jrec))
  1800       format('KEPT:     --> JREC: ',I6,';{ ID: ',A8,'; LAT: ',
      .       F9.5,'; LON: ',F10.5,'; RPRT DD HH MM ',3I2.2,
      .       '; RCPT YYYYMMDDHHMM: ',I4,4I2.2,'; CORN: ',I3,'}')

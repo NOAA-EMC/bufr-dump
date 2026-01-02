@@ -5,11 +5,6 @@ PRELUDE
  This update (obsproc v1.2.8, bufr-dump v1.3.1, prepobs v1.1.3)
  -simplifies compiling the code in Debug mode
  -cleans the code from development/troubleshooting code and comments (i.e. IG,ILIANA)
-<<<<<<< HEAD
-
-
-diff -r -x docs -x .git -x install -x exec -x build /apps/ops/prod/nco/intel/19.1.3.304/bufr_dump.v1.3.0/versions/build.ver ../bufr-dump.REL/versions/build.ver
-diff -r -x docs -x .git -x install -x exec -x build /apps/ops/prod/nco/intel/19.1.3.304/bufr_dump.v1.3.0/versions/VERSION ../bufr-dump.REL/versions/VERSION
 
 FILE CHANGES
  M docs/Release_Notes.txt
@@ -44,6 +39,8 @@ SOURCE CHANGES
 
  sorc/bufr_dupupr.fd/dupupr.f
  code cleaned from development/troubleshooting code and comments
+ nint changed to kidnnt to improve runtime / error correction
+ NTAB initilization shifted earlier to alleviate conditional errors in print statements
 
 USH
  ush/bufr_dump_obs.sh
@@ -167,7 +164,7 @@ SPECIAL INSTRUCTIONS
      iii) EVS (alicia.bentley@noaa.gov@noaa.gov)
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
-          v1.3.0        IMPLEMENTED     AUG 11,2025 (tbc)
+          v1.3.0        IMPLEMENTED     AUG 11,2025
 
 PRELUDE
  This update (obsproc v1.2.6, bufr-dump v1.3.0, prepobs v1.1.2) 
