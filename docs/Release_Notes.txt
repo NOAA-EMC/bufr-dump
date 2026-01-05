@@ -39,8 +39,6 @@ SOURCE CHANGES
 
  sorc/bufr_dupupr.fd/dupupr.f
  code cleaned from development/troubleshooting code and comments
- nint changed to kidnnt to improve runtime / error correction
- NTAB initilization shifted earlier to alleviate conditional errors in print statements
 
 USH
  ush/bufr_dump_obs.sh
@@ -68,86 +66,6 @@ PRE-IMPLEMENTATION TESTING REQUIREMENTS
  Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
  for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
 
- RRFS crons were tested and approved my users with the following schedule:
-
-# RRFS_P
-00 7,19 * * * jtyp=rrfs_p cyc=`date --date="-4 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-00 7,8,19,20 * * * jtyp=rrfs_p cyc=`date --date="-3 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-00 8,9,20,21 * * * jtyp=rrfs_p cyc=`date --date="-2 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-00 9,21 * * * jtyp=rrfs_p cyc=`date --date="-1 hours" +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_p bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-
-# RRFS_E
-26 0,12 * * * jtyp=rrfs_e cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs_e bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-
-# RRFS
-17 1-11 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-17 13-23 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1 
-49 0,12 * * * jtyp=rrfs cyc=`date +\%H` PDY=`date +\%Y\%m\%d` desc=rrfs bash /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/cycqsub /lfs/h2/emc/lam/noscrub/emc.lam/obsproc/triggers/jrrfs_dump.wc2.pbs.126 > /dev/null 2>&1
-
-RRFS generated files:
- rrfs.tCCz.variablename.tm00.bufr_d [and may include *.listing / *.bufr_d.nr files] where variablename could be the following:
-  1bamua
-  1bhrs4
-  1bmhs
-  adpsfc [.listing,.nr]
-  adpupa [.listing]
-  aircar_status_flag
-  aircar [.listing,.nr]
-  aircft [.listing,.nr]
-  airsev
-  amsr2
-  ascatt
-  ascatw [.listing]
-  atmsdb
-  atms
-  crisf4
-  crsfdb
-  esamua
-  esatms
-  eshrs3
-  esiasi
-  esmhs
-  gmi1cr
-  gpsipw [.listing,.nr]
-  gpsro [.nr]
-  gsbpfl
-  gsrasr
-  gsrcsr
-  iasidb
-  lghtng [.nr]
-  lgycld
-  msonet [listing,.nr]
-  mtiasi
-  nexrad
-  osbuv8
-  prepbufr.acft_profiles_sfc
-  prepbufr.acft_profiles
-  prepbufr_pre-qc [.nr]
-  prepbufr [.nr]
-  proflr [.listing]
-  rassda [.listing]
-  saldrn
-  saphir [.nr]
-  satwhr
-  satwnd [.listing]
-  sevasr
-  sevcsr
-  sfcshp [.listing,.nr]
-  snocvr
-  ssmisu
-  status
-  subpfl
-  tedeg
-  uprair
-  vadwnd
-  wndtwr
-
-RRFS runs can be validated against User approved output:
-/lfs/h2/emc/lam/noscrub/emc.lam/obsproc.DATA/CRON/com/obsproc/v1.3  (ignore that it's v1.3)
-
-DISSEMINATION INFORMATION
- RRFS observational network will generate ~200GB per day per rrfs, ~100Gb rrfs_p, ~16GB rrfs_e
-
 SPECIAL INSTRUCTIONS
  Make sure that the following binary fix files (from the old VLab repo) are downloaded:
     nam_expdomain_halfdeg_imask.gbl
@@ -164,7 +82,7 @@ SPECIAL INSTRUCTIONS
      iii) EVS (alicia.bentley@noaa.gov@noaa.gov)
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
-          v1.3.0        IMPLEMENTED     AUG 11,2025
+          v1.3.0        IMPLEMENTED     AUG 06,2025
 
 PRELUDE
  This update (obsproc v1.2.6, bufr-dump v1.3.0, prepobs v1.1.2) 
@@ -208,6 +126,8 @@ SOURCE CHANGES
 
  sorc/bufr_dupupr.fd/dupupr.f
  Added gracious exit if no subsets/records are found
+ nint changed to kidnnt to improve runtime / error correction
+ NTAB initilization shifted earlier to alleviate conditional errors in print statements
 
  sorc/bufr_edtbfr.fd/edtbfr.f
  Added missing entry in CTYPE initialization
