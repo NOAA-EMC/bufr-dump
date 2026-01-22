@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 [ $# -lt 3 -a "$1" != env ] && { cat <<'####'; exit 99; }
 
 ####  UNIX Script Documentation Block
@@ -1374,8 +1374,9 @@ eval DTIM_latest=\$DTIM_latest_${NAME}
 #  Otherwise, loop will process each subtype serially.
 #------------------------------------------------------------------------------
  
-typeset -Z2 pos
-pos=00
+#typeset -Z2 pos
+#pos=00
+pos=$(printf "%02d" 00)
 for mtst in $MTST
 do
 
@@ -1687,7 +1688,7 @@ NODE=`expr $NODE + 1`
 #  -------------------------------------------------------
  
 cat<<EOFthread>$thread
-#!/bin/ksh
+#!/bin/bash
 set -e
 [ $LOUD = on ] && set -x
  
@@ -2223,7 +2224,7 @@ NOT PERFORMED (turned off by user)"
 
 fi # DUPC && DUPC_TAC == on
 
- [ "$LOUD" -ne "on" ] && set +x
+ [ "$LOUD" != "on" ] && set +x
  } >>$DATA/$NAME.out 2>&1
 
 if [ $dupair_run = yes ]; then
