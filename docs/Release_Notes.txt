@@ -2,9 +2,10 @@ bufr-dump v1.3.1        RELEASED        NOV 10,2025
           v1.3.1        IMPLEMENTED     ??? ??,2026 (before RRFS model)
 
 PRELUDE
- This update (obsproc v1.2.8, bufr-dump v1.3.1, prepobs v1.1.3)
+ This update (bufr-dump v1.3.1)
  -simplifies compiling the code in Debug mode
  -cleans the code from development/troubleshooting code and comments (i.e. IG,ILIANA)
+ -replaced "rm" with "rm -f" in a couple of scripts
 
 FILE CHANGES
  M docs/Release_Notes.txt
@@ -58,7 +59,7 @@ VERSIONS CHANGES
  Updated to this release's version
 
 PRE-IMPLEMENTATION TESTING REQUIREMENTS
- obsproc v1.2.8 needs modules bufr-dump v1.3.1 and prepobs v1.1.3 in order to run properly
+ obsproc v1.2.8 needs modules bufr-dump v1.3.1 and prepobs v1.1.1 in order to run properly
  See docs/README.md for build instructions
  See versions/build.ver and versions/run.ver for libaries
  How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh 
