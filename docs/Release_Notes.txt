@@ -1,5 +1,5 @@
 bufr-dump v1.3.1        RELEASED        NOV 10,2025
-          v1.3.1        IMPLEMENTED     ??? ??,2026 (before RRFS model)
+          v1.3.1        IMPLEMENTED     FEB 09,2026 
 
 PRELUDE
  This update (bufr-dump v1.3.1)
