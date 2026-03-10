@@ -595,7 +595,7 @@ C      print *, 'SUBSET IS ', SUBSET
          DEXY = 0.05
          DSEC = 50
 C         print *, '--> BUFR_DUPSAT:  GPS RO is relaxed due to SPIRE :'
-C         print *, ' ILIANA DEXY=0.05, DSEC=50'
+C         print *, '--> DEXY=0.05, DSEC=50'
       ENDIF
 
       IF(BDATE.NE.99999999.00_8) THEN

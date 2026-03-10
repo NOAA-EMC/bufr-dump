@@ -65,7 +65,7 @@ name=$1
 
 mkdir -p $DATA/check_tanks_${name}
 cd $DATA/check_tanks_${name}
-rm *
+rm -f *
 
 TANK=${TANK:-${DCOMROOT:?}/prod}
 

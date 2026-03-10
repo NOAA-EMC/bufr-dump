@@ -169,7 +169,7 @@ C$$$
       INTEGER,ALLOCATABLE :: IWORK(:)
       INTEGER,ALLOCATABLE :: IORD(:)
       INTEGER,ALLOCATABLE :: MDUP(:)
- 
+
       COMMON /UNITS/ LUBFI,LUBFJ
       COMMON /VERSION_FLAGS/ IBORG,IHBLCS
       COMMON /BUFRLIB_MISSING/BMISS
@@ -188,7 +188,9 @@ C$$$
       REAL(8)      ADATE,BDATE,CDATE,DDATE,RDATE,UFBTAB_8,RPID_8
       REAL(8)      RPID_IREC_8,RPID_JREC_8
       REAL(8)      BMISS,GETBMISS
- 
+
+      INTEGER      NTAB
+
       EQUIVALENCE  (RPID_8,CRPID)
       EQUIVALENCE  (RPID_IREC_8,CRPID_IREC),(RPID_JREC_8,CRPID_JREC)
  
@@ -225,7 +227,7 @@ C  ----------------------------------------------------------
 
 C  SET THE COUNTERS TO INITIAL VALUES
 C  ----------------------------------
- 
+      NTAB  = 0
       NREP  = 0
       NDUP  = 0
       ITAB  = 0

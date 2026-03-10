@@ -25,3 +25,8 @@ There is also the option to build and install in your local clone space but inst
 ```bash
 MODULEFILE_INSTALL_PREFIX=/path/you/wish/to/install/bufr-dump/module ./ush/build.sh
 ```
+
+To build in Debug mode:
+```bash
+BUILD_TYPE=Debug ./ush/build.sh
+```

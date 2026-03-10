@@ -1,5 +1,89 @@
+bufr-dump v1.3.1        RELEASED        NOV 10,2025
+          v1.3.1        IMPLEMENTED     MARCH 02,2026 
+
+PRELUDE
+ This update (bufr-dump v1.3.1)
+ -simplifies compiling the code in Debug mode
+ -cleans the code from development/troubleshooting code and comments (i.e. IG,ILIANA)
+ -replaced "rm" with "rm -f" in a couple of scripts
+
+FILE CHANGES
+ M docs/Release_Notes.txt
+ M sorc/bufr_dupcor.fd/dupcor.f
+ M sorc/bufr_dupmar.fd/dupmar.f
+ M sorc/bufr_dupmrg.fd/dupmrg.f
+ M sorc/bufr_dupsat.fd/dupsat.f
+ M sorc/bufr_dupupr.fd/dupupr.f
+ M ush/bufr_dump_obs.sh
+ M ush/build.sh
+ M ush/dumpjb
+ M versions/build.ver
+ M versions/VERSION
+ (M-modified; A-added; D-deleted)
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+SOURCE CHANGES
+ sorc/bufr_dupcor.fd/dupcor.f
+ code cleaned from development/troubleshooting code and comments
+
+ sorc/bufr_dupmar.fd/dupmar.f
+ code cleaned from development/troubleshooting code and comments
+
+ sorc/bufr_dupmrg.fd/dupmrg.f
+ variable NTAB has been defined to alleviate debug run
+
+ sorc/bufr_dupsat.fd/dupsat.f
+ code cleaned from development/troubleshooting code and comments
+
+ sorc/bufr_dupupr.fd/dupupr.f
+ code cleaned from development/troubleshooting code and comments
+
+USH
+ ush/bufr_dump_obs.sh
+ code cleaned from development/troubleshooting code and comments
+
+ ush/build.sh
+ simplified the Debug mode build: BUILD_TYPE=Debug ./ush/build.sh
+
+ ush/dumpjb
+ code cleaned from development/troubleshooting code and comments
+
+VERSIONS CHANGES
+ versions/build.ver
+ updated version number of module PrgEnv_intel_ver from 8.2.0 to 8.3.3
+
+ versions/VERSION
+ Updated to this release's version
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+ obsproc v1.2.8 needs modules bufr-dump v1.3.1 and prepobs v1.1.1 in order to run properly
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+ How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh 
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
+
+SPECIAL INSTRUCTIONS
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
+
+ NOTE that obsproc/bufr-dump/prepobs new versions need to be propagated to
+     i) GFS global workflow (rahul.mahajan@noaa.gov@noaa.gov)
+     ii) SDM and thanks (kelly.kempisty@noaa.gov )
+     iii) EVS (alicia.bentley@noaa.gov@noaa.gov)
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.0        RELEASED        OCT 04,2024
-          v1.3.0        IMPLEMENTED     AUG 11,2025 (tbc)
+          v1.3.0        IMPLEMENTED     AUG 06,2025
 
 PRELUDE
  This update (obsproc v1.2.6, bufr-dump v1.3.0, prepobs v1.1.2) 
@@ -43,6 +127,8 @@ SOURCE CHANGES
 
  sorc/bufr_dupupr.fd/dupupr.f
  Added gracious exit if no subsets/records are found
+ nint changed to kidnnt to improve runtime / error correction
+ NTAB initilization shifted earlier to alleviate conditional errors in print statements
 
  sorc/bufr_edtbfr.fd/edtbfr.f
  Added missing entry in CTYPE initialization

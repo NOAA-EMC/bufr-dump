@@ -903,7 +903,7 @@ chr=`expr $icendat % 100`     # use center date w/ fractional hours removed
 #       are missing the return code of "11" is reduced to "4" (see "for" loop
 #       below)
 
-rm pattern
+rm -f pattern
 
 # Mobil land raob, drops, wind profilers orig. from PILOT (pibal) bulletins,
 #  reccos, AFWA ACARS, TAMDAR (all types), INSAT satwnds and Georgia & Florida
@@ -1552,7 +1552,7 @@ do
    [ "$1" = 'null' ]  &&  break
      
    cat $DATA/${n}.out >> outout
-   rm  $DATA/${n}.out
+   rm -f $DATA/${n}.out
    if [ -s $DATA/${n}.${FORM} ];then
 ######cp  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
       #mv  $DATA/${n}.${FORM} ${COMSP}${n}.${tmmark}.bufr_d
@@ -3104,8 +3104,7 @@ cat <<\EOFblank > blank
 EOFblank
 
    > updated_counts.out
-   rm status2.out
-   #tr -cd '[:print:]\n\r'  < $pgmout_this > $pgmout_this #IG
+   rm -f status2.out
    grep --text -e "Dumping [0-2]" -e "Missing [0-2]" $pgmout_this | cut -f2- -d" " \
     > cutLv.allout
    grep --text "^.......  HAS" $pgmout_this | cut -f2- -d" " > cutRv.allout
@@ -3179,7 +3178,7 @@ COUNT TO 9999999"
       fi
    done
 
-   rm cutLv.allout cutRv.allout  paste.part1 paste.part2 blank \
+   rm -f cutLv.allout cutRv.allout  paste.part1 paste.part2 blank \
       temp1 temp2 counts.out cutLv.allout.temp1 cutRv.allout.temp1
 fi
 

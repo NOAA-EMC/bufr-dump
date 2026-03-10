@@ -358,8 +358,7 @@ C  Override current BUFRLIB maximum number of data values in an
 C   uncompressed BUFR subset (80000) (due to hi-vert res raobs)
 C -------------------------------------------------------------
 
-C IG Try to fix WRCMPS ABORT 
-       CALL ISETPRM ( 'MXCDV', 5000 ) 
+      CALL ISETPRM ( 'MXCDV', 5000 ) ! fix WRCMPS abort 
 
       IRET=ISETPRM('MAXSS',300000 )  ! must use DA version of BUFRLIB
       IF(IRET.EQ.0)  THEN
@@ -445,7 +444,7 @@ C  ------------------------------------------------------------------
       ENDIF
 
       CALL OPENBF(LUBFI,'IN',LUBFI)
-      CALL MAXOUT(50000) !IG Try to fix CPYUPD ABORT
+      CALL MAXOUT(50000) ! fix CPYUPD ABORT
       aircft = .false.
       iflg_acars_latlon_sf = 0
       if(ireadmg(lubfi,subset,idate).ne.0) then
@@ -599,10 +598,10 @@ C  ---------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
-      CALL MAXOUT(50000) !IG Try to fix CPYUPD ABORT
+      CALL MAXOUT(50000) ! fix CPYUPD ABORT
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
-      CALL MAXOUT(50000) !IG Try to fix CPYUPD ABORT
+      CALL MAXOUT(50000) ! fix CPYUPD ABORT
 
       IF(MXTB.EQ.0) THEN
          PRINT *
@@ -961,9 +960,9 @@ C  -----------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       OPEN(LUBFJ,FILE=FILO(1:NBYTES_FILO),FORM='UNFORMATTED')
       CALL OPENBF(LUBFI,'IN ',LUBFI)
-      CALL MAXOUT(50000) !IG Try to fix CPYUPD ABORT
+      CALL MAXOUT(50000) ! fix CPYUPD ABORT
       CALL OPENBF(LUBFJ,'OUT',LUBFI)
-      CALL MAXOUT(50000) !IG Try to fix CPYUPD ABORT
+      CALL MAXOUT(50000) ! fix CPYUPD ABORT
       IF(SUBSET.EQ.'NC031001'.OR.SUBSET.EQ.'NC031002'.OR.
      $   SUBSET.EQ.'NC031003') CALL MAXOUT(50000)
 
