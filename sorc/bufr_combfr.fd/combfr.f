@@ -212,7 +212,19 @@ C  first input file that has an internal table and use this table)
 C  ------------------------------------------------------------------
 
       DO N=1,NFIL
-         CALL CLOSBF(LUNIN)
+CC         test fix 1
+C          if(N>1) call closbf(lunin)
+
+CC         test fix 2
+           if(N==1) then
+            call openbf(00,'FIRST',00)
+            call status(lunin,lun,il,im)
+            if(il/=0) call closbf(lunin)
+           else
+            call closbf(lunin)
+           endif      
+
+C         CALL CLOSBF(LUNIN)
          OPEN(LUNIN,FILE=TRIM(FILI(N)),FORM='UNFORMATTED')
          CALL OPENBF(LUNIN,'IN ',LUNIN)
          IF(IREADMG(LUNIN,SUBSET,IDATE)==0) THEN
