@@ -1,5 +1,5 @@
 bufr-dump v1.3.2        RELEASED        ?? ??,2026
-          v1.3.1        IMPLEMENTED     ?? ??,2026 
+          v1.3.2        IMPLEMENTED     ?? ??,2026 
 
 PRELUDE
  This update for bufr 12.1 to use bufr/12.1, so that it can accommodate supplemental
@@ -9,6 +9,7 @@ PRELUDE
 FILE CHANGES
  M docs/Release_Notes.txt
  M versions/build.ver
+ M versions/VERSION
 
 DOCS CHANGES
  docs/Release_Notes.txt
@@ -17,6 +18,9 @@ DOCS CHANGES
 VERSIONS CHANGES
  versions/build.ver
  update bufr 11.7.0 to bufr 12.1.0
+ 
+ versions/VERSION
+ Updated to this release's version
 
 PRE-IMPLEMENTATION TESTING 
  obsproc v1.3.0 needs modules bufr-dump v1.3.2 and prepobs v1.1.1 in order to run properly
@@ -28,7 +32,7 @@ PRE-IMPLEMENTATION TESTING
  for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
 
 DISCLOSURE
- Tested on GLOBAP and RAP network
+ Tested on GLOBAL and RAP network
 
 DISSEMINATION INFORMATION
  No changes to dissemination on WCOSS2
