@@ -1,3 +1,50 @@
+bufr-dump v1.3.2        RELEASED        ?? ??,2026
+          v1.3.1        IMPLEMENTED     ?? ??,2026 
+
+PRELUDE
+ This update for bufr 12.1 to use bufr/12.1, so that it can accommodate supplemental
+ wave components mnemonics in tank b001/xx102. 
+ The supplemental mnemonics are not available for all subsets
+
+FILE CHANGES
+ M docs/Release_Notes.txt
+ M versions/build.ver
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+VERSIONS CHANGES
+ versions/build.ver
+ update bufr 11.7.0 to bufr 12.1.0
+
+PRE-IMPLEMENTATION TESTING 
+ obsproc v1.3.0 needs modules bufr-dump v1.3.2 and prepobs v1.1.1 in order to run properly
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+ How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
+
+DISCLOSURE
+ Tested on GLOBAP and RAP network
+
+DISSEMINATION INFORMATION
+ No changes to dissemination on WCOSS2
+
+SPECIAL INSTRUCTIONS
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.1        RELEASED        NOV 10,2025
           v1.3.1        IMPLEMENTED     MARCH 02,2026 
 
@@ -53,7 +100,7 @@ USH
 
 VERSIONS CHANGES
  versions/build.ver
- updated version number of module PrgEnv_intel_ver from 8.2.0 to 8.3.3
+ 1Gupdated version number of module PrgEnv_intel_ver from 8.2.0 to 8.3.3
 
  versions/VERSION
  Updated to this release's version
