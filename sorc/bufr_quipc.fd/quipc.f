@@ -418,10 +418,10 @@ C  -------------------------------------------------------------------
          PRINT'(/"#####THE QUIPS FLAG FILE IN UNIT",I3," DOESN''T ",
      .    "CONTAIN ANY TIME-RELEVANT RECORD ENTRIES - QUIPS Q.C. FLAGS"/
      .    5X,"NOT APPLIED TO DUMP FILE(S)"/)', LUEDT
-C        CALL EXECUTE_COMMAND_LINE ('[ -n "$NET" ]',EXITSTAT=JRET)
+C        CALL EXECUTE_COMMAND_LINE ('[ -n "$mNET" ]',EXITSTAT=JRET)
 C        IF(JRET.EQ.0)  THEN
 C           CALL EXECUTE_COMMAND_LINE
-C    .        ('[ "$NET" = gfs -o "$NET" = gdas ]',EXITSTAT=KRET)
+C    .        ('[ "$mNET" = gfs -o "$mNET" = gdas ]',EXITSTAT=KRET)
 C           IF(KRET.EQ.0)  THEN
 C              CALL EXECUTE_COMMAND_LINE ('[ -n "$jlogfile" ] && '//
 C    .          '$DATA/postmsg'//

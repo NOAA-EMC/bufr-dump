@@ -129,7 +129,7 @@ C     ENTRY - IF FOUND (I.E, NOT "-------------------" OR
 C     "                   "), THEN AN ADDITIONAL REQUIREMENT FOR A
 C     MATCH IS THAT THE REPORT EITHER BE FROM ONE OF UP TO FOUR
 C     NETWORKS LISTED IN COLUMNS 110-128 (WHERE THE REPORT`S NETWORK IS
-C     DEFINED BY THE ENVIRONMENT VARIABLE "NET" SET IN THE PARENT
+C     DEFINED BY THE ENVIRONMENT VARIABLE "mNET" SET IN THE PARENT
 C     SCRIPT) OR, IF COLUMN 110 IS SET TO "!", THAT THE REPORT NOT BE
 C     FROM THE SINGLE NETWORK LISTED IN COLUMNS 111-114; THE OPTION TO
 C     SPECIFY A RANGE OF PRESSURES OVER WHICH TO APPLY QUALITY MARKERS
@@ -560,7 +560,7 @@ C        110-128
 C            If 110 is "!":
 C              111-128   Network (only 1) for NOT considering reports
 C                         (based on first four characters in exported
-C                         value for "NET" in parent script, left
+C                         value for "mNET" in parent script, left
 C                         justified) - ALL networks except this one
 C                         will be considered for this entry
 C                         "------------------" - No networks entered
@@ -590,14 +590,14 @@ C                            characters) with all unfilled columns to
 C                            the right (i.e., 115-128) remaining blank
 C                          The maximum number of networks that can be
 C                            entered here is one
-C                        NOTE: If NET is not set or exported in the
+C                        NOTE: If mNET is not set or exported in the
 C                              parent script, then all networks are
 C                              considered regardless of the network
 C                              listed in columns 111-114
 C            Otherwise if 110 is NOT "!":
 C              110-128   Networks (up to 4) for considering reports
 C                         (based on first four characters in exported
-C                         value for "NET" in parent script, left
+C                         value for "mNET" in parent script, left
 C                         justified) - any networks not in this list
 C                         will NOT be considered for this entry
 C                         "-------------------" - No networks entered
@@ -656,7 +656,7 @@ C                            four networks will be considered for this
 C                            entry)
 C                          The maximum number of networks that can be
 C                            entered here is four
-C                        NOTE: If NET is not set or exported in the
+C                        NOTE: If mNET is not set or exported in the
 C                              parent script, then all networks are
 C                              considered regardless of the networks
 C                              listed in columns 110-128
@@ -696,7 +696,7 @@ C$$$
       CHARACTER*8   STNID,SUBSET,MSGTYP,STNID_TEST,CARDS8,CARDS8_TRUN,
      .              STNID_TRUN,CBUHD,CBORG
       CHARACTER*8   STNID_MATCH(MEDT,ISTNID_MATCH)
-      CHARACTER*4   NET
+      CHARACTER*4   mNET
       CHARACTER*3   CTYP(0:6),CTYP1,CITP
 
       DIMENSION    KTOT(MEDT)
@@ -920,12 +920,12 @@ C  ----------------------------------------------------------
       print'(" BUFRLIB value for missing is: ",G0)', bmiss
       print'(1X)'
 
-      NET = '    '
-      CALL GETENV('NET',NET)
+      mNET = '    '
+      CALL GETENV('mNET',mNET)
 
-      CALL CAPIT(NET)
+      CALL CAPIT(mNET)
 
-      IF(NET.NE.'    ')  PRINT'("    -- NETWORK = ''",A4,"''"/)', NET
+      IF(mNET.NE.'    ')  PRINT'("    -- NETWORK = ''",A4,"''"/)', mNET
 
 C     HARDWIRED PARAMETERS:
 C     DEYT  = 0.25 FOR TYPES REPORTING LOW-ACCURACY LAT (0.01)
@@ -984,9 +984,9 @@ C  ------------------------------------
      . 3X,'(4 letters and 2 numbers) and CCCC is the bulletin ',
      . 'originator (4 characters)}, INSTRUMENT TYPE (FOR ',
      . 'RADIOSONDES/DROPSONDES'/3X,'ONLY), AND NETWORK (based on ',
-     . 'environment variable "NET" set in the parent script) MATCH AN ',
-     . 'ENTRY IN SDMEDIT FLAG FILE (SEE **),'/3X,'THEN THE REPORT WILL',
-     . ' BE CONSIDERED FOR Q.C. EDITING IF ALL OF THE FOLLOWING ',
+     . 'environment variable "mNET" set in the parent script) MATCH ',
+     . 'AN ENTRY IN SDMEDIT FLAG FILE (SEE **),'/3X,'THEN THE REPORT ',
+     . 'WILL BE CONSIDERED FOR Q.C. EDITING IF ALL OF THE FOLLOWING ',
      . 'CONDITIONS ARE MET:'/7X,'1) REPORT LAT IS WITHIN',F5.2,
      . ' DEGREES OF LAT IN FLAG FILE ENTRY FOR TYPES REPORTING LOW-',
      . 'ACCURACY LAT -- or --'/10X,'REPORT LAT IS WITHIN',F5.2,
@@ -1045,7 +1045,7 @@ C  ------------------------------------
      . '"                   " "(ALL BLANKS) IN THE FLAG FILE ENTRY, ',
      . 'THEN'/8X,'IT IS ASSUMED TO MATCH THE REPORT''S NETWORK, ',
      . 'WHATEVER THAT MIGHT BE.  IF THE PARENT SCRIPT DOES NOT SET ',
-     . 'ENVIRONMENT'/8X,'VARIABLE "NET", THEN IT IS ASSUMED TO MATCH ',
+     . 'ENVIRONMENT'/8X,'VARIABLE "mNET", THEN IT IS ASSUMED TO MATCH ',
      . 'THE FLAG FILE ENTRY REGARDLESS OF WHAT THE FLAG FILE ENTRY IS ',
      . 'FOR NETWORKS(S).'//3X,'%% - IF ID IN FLAG FILE ENTRY CONTAINS ',
      . 'ONLY A WILD CARD CHARACTER "*", THEN ALL ID''S WILL MATCH IT ',
@@ -1782,22 +1782,22 @@ C  --------------------------------------------------------------
 
                IMATCH_NET = 0
                IF(CARDS(ITYP,M)(110:128).NE.'-------------------' .AND.
-     .            CARDS(ITYP,M)(110:128).NE.'                   ') THEN
-                  IF(NET.NE.'    ') THEN
-                     IF(CARDS(ITYP,M)(110:110).EQ.'!') THEN
-                        IF(CARDS(ITYP,M)(111:114).NE.NET) IMATCH_NET = 2
-                     ELSE
-                        DO INET = 1,4
-                           ISTART = 105 + (INET * 5)
-                           IF(CARDS(ITYP,M)(ISTART:ISTART+3).EQ.NET)THEN
-                              IMATCH_NET = 1
-                              EXIT
-                           ENDIF
-                        ENDDO
-                     ENDIF
-                  ELSE
+     .           CARDS(ITYP,M)(110:128).NE.'                   ') THEN
+                 IF(mNET.NE.'    ') THEN
+                   IF(CARDS(ITYP,M)(110:110).EQ.'!') THEN
+                     IF(CARDS(ITYP,M)(111:114).NE.mNET) IMATCH_NET = 2
+                   ELSE
+                     DO INET = 1,4
+                        ISTART = 105 + (INET * 5)
+                        IF(CARDS(ITYP,M)(ISTART:ISTART+3).EQ.mNET)THEN
+                           IMATCH_NET = 1
+                           EXIT
+                        ENDIF
+                     ENDDO
+                   ENDIF
+                 ELSE
                      IMATCH_NET = 3
-                  ENDIF
+                 ENDIF
                ELSE
                   IMATCH_NET = 4
                ENDIF
