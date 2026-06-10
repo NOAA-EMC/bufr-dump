@@ -262,13 +262,13 @@
 #                          outputs for individual runs into $DATA directory.
 #                          This allows this script to run in simultaneous
 #                          background jobs.)
-#     NET         - string indicating system network (i.e., "arc", "gfs",
+#     mNET      - string indicating system network (i.e., "arc", "gfs",
 #                   "nam", "gdas", "rap" (replacing "ruc"), "rucs", "dump",
 #                   "rtma") --
 #                   points to proper data card file for programs executed here
 #                   and to echo in dump status file
-#                   NOTE: NET is changed to gdas in the parent Job script for
-#                         the gdas RUN (was gfs - NET remains gfs for gfs RUN)
+#                   NOTE: mNET is changed to gdas in the parent Job script for
+#                         the gdas RUN (was gfs - mNET remains gfs for gfs RUN)
 #     COMSP       - string indicating the final directory/filename path to
 #                   output data destination
 #                   (e.g., "$COMROOT/nam/prod/ndas.20160428/ndas.t12z.")
@@ -447,7 +447,7 @@
 #                   Default is "$EXECPREP/prepobs_prepssmi"
 #     PMIC        - string indicating data card path for prepobs_prepssmi
 #                   program
-#                   Default is "$PARMPREP/prepobs_prepssmi.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_prepssmi.${mNET}.parm"
 #     PMIT        - string indicating mnemonic bufrtable file path for
 #                   prepobs_prepssmi program (this is a partial table, ush
 #                   prepobs_prepssmi.sh generates the complete table based on
@@ -512,7 +512,7 @@
 #                   Default is "$EXECWAVE/wave_dcodquikscat"
 #     DQKC        - string indicating data card path for wave_dcodquikscat
 #                   program
-#                   Default is "$PARMWAVE/wave_dcodquikscat.${NET}.parm"
+#                   Default is "$PARMWAVE/wave_dcodquikscat.${mNET}.parm"
 #                   {If $DQKC not found, reverts to using internal "herefile"}
 #     DQKT        - string indicating mnemonic bufrtable file path for
 #                   wave_dcodquikscat program
@@ -545,7 +545,7 @@
 #                   Default is "$EXECWAVE/wave_dcodquikscat"
 #     DASC        - string indicating data card path for wave_dcodquikscat
 #                   program
-#                   Default is "$PARMWAVE/wave_dcodascat.${NET}.parm"
+#                   Default is "$PARMWAVE/wave_dcodascat.${mNET}.parm"
 #                   {If $DASC not found, reverts to using internal "herefile"}
 #     DAST        - string indicating mnemonic bufrtable file path for
 #                   wave_dcodquikscat program
@@ -572,7 +572,7 @@
 #                   Default is "$EXECbufr/bufr_supertmi"
 #     DTMC        - string indicating data card path for bufr_supertmi
 #                   program
-#                   Default is "$PARMbufr/bufr_supertmi.${NET}.parm"
+#                   Default is "$PARMbufr/bufr_supertmi.${mNET}.parm"
 #                   {If $DTMC not found, reverts to using internal "herefile"}
 #     DTMT        - string indicating mnemonic bufrtable file path for
 #                   bufr_supertmi program
@@ -596,7 +596,7 @@
 #                   Default is "$EXECbufr/bufr_dcodwindsat"
 #     DWSC        - string indicating data card path for bufr_dcodwindsat
 #                   program
-#                   Default is "$PARMbufr/bufr_dcodwindsat.${NET}.parm"
+#                   Default is "$PARMbufr/bufr_dcodwindsat.${mNET}.parm"
 #                   {If $DWSC not found, reverts to using internal "herefile"}
 #     DWST        - string indicating mnemonic bufrtable file path for
 #                   bufr_dcodwindsat program
@@ -1655,7 +1655,7 @@ do
 
          PMIT=${PMIT:-$FIXPREP/prepobs_prepssmi.bufrtable}
          PMIX=${PMIX:-$EXECPREP/prepobs_prepssmi}
-         PMIC=${PMIC:-$PARMPREP/prepobs_prepssmi.${NET}.parm}
+         PMIC=${PMIC:-$PARMPREP/prepobs_prepssmi.${mNET}.parm}
          [ -s $PMIC ]  ||  break 2
          pmic=$PMIC
 
@@ -2369,7 +2369,7 @@ qkscat dump) due to above PGM FAIL --> non-fatal"
 
             DQKT=${DQKT:-$FIXWAVE/wave_bufrtab.quikscat}
             DQKX=${DQKX:-$EXECWAVE/wave_dcodquikscat}
-            DQKC=${DQKC:-$PARMWAVE/wave_dcodquikscat.${NET}.parm}
+            DQKC=${DQKC:-$PARMWAVE/wave_dcodquikscat.${mNET}.parm}
 
             LANDC_DQK=${LANDC_DQK:-$FIXWAVE/wave_landchxh}
 
@@ -2565,7 +2565,7 @@ dump) due to above PGM FAIL --> non-fatal"
 
             DAST=${DAST:-$FIXWAVE/wave_bufrtab.ascat}
             DASX=${DASX:-$EXECWAVE/wave_dcodquikscat}
-            DASC=${DASC:-$PARMWAVE/wave_dcodascat.${NET}.parm}
+            DASC=${DASC:-$PARMWAVE/wave_dcodascat.${mNET}.parm}
 
             LANDC_DAS=${LANDC_DAS:-$FIXWAVE/wave_landchxh}
 
@@ -2761,7 +2761,7 @@ status1.out
 
             DTMT=${DTMT:-$FIXbufr/bufr_bufrtab.sptrmm}
             DTMX=${DTMX:-$EXECbufr/bufr_supertmi}
-            DTMC=${DTMC:-$PARMbufr/bufr_supertmi.${NET}.parm}
+            DTMC=${DTMC:-$PARMbufr/bufr_supertmi.${mNET}.parm}
 
             set +x
             echo
@@ -2943,7 +2943,7 @@ dump) due to above PGM FAIL --> non-fatal"
 
             DWST=${DWST:-$FIXbufr/bufr_bufrtab.windsat}
             DWSX=${DWSX:-$EXECbufr/bufr_dcodwindsat}
-            DWSC=${DWSC:-$PARMbufr/bufr_dcodwindsat.${NET}.parm}
+            DWSC=${DWSC:-$PARMbufr/bufr_dcodwindsat.${mNET}.parm}
 
             LANDC_DWS=${LANDC_DWS:-$FIXbufr/wave_landchxh}
 
@@ -3235,7 +3235,7 @@ elif [[ $job = *ruc2a_dump*_?? ]];then
 elif [[ $job = *rtma_ru_dump* ]];then
    run=rtma_ru
 else
-   run=$NET
+   run=$mNET
 fi
 
 if [ "$run" != '???' ]; then
