@@ -1,3 +1,132 @@
+bufr-dump v1.3.3        RELEASED        JUN 22,2026
+          v1.3.3        IMPLEMENTED     ??? ??,2026(TBD by SPA)
+
+PRELUDE
+ This update (bufr-dump v1.3.3)
+ -introduces dumps msro, msmws, amsr
+ -turns on processing of uprair stations with WMO block 84 (Peru)
+ -replaces variable NET with mNET, so that obsNET is replaces with NET (in obsproc)
+
+FILE CHANGES
+ M docs/Release_Notes.txt
+ M fix/bufr_dumplist
+ M sorc/bufr_combfr.fd/combfr.f
+ M sorc/bufr_dupupr.fd/dupupr.f
+ M sorc/bufr_edtbfr.fd/edtbfr.f
+ M sorc/bufr_quipc.fd/quipc.f
+ M ush/bufr_dump_obs.sh
+ M versions/build.ver
+ M versions/VERSION
+ (M-modified; A-added; D-deleted)
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+FIX CHANGES
+ fix/bufr_dumplist
+ Introduce dumps msro(b003/xx012,Metop-SG RO),msmws(b021/xx243,Metop-SG MWS),
+ and amsr(b021/xx247AMSR2/3 GSI14ch rads) in Section 3 (i.e. dump and monitor in RTDM)
+
+SOURCE CHANGES
+ sorc/bufr_combfr.fd/combfr.f
+ Resolve the unnecessary CLOSBF before a file is opened
+ 
+ sorc/bufr_dupupr.fd/dupupr.f
+ Turn on processing uprair stations with WMO block 84
+
+ sorc/bufr_edtbfr.fd/edtbfr.f
+ replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
+
+ sorc/bufr_quipc.fd/quipc.f
+ replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
+
+USH
+ ush/bufr_dump_obs.sh
+ replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
+
+VERSIONS CHANGES
+ versions/build.ver
+ update GFS version gfs_ver=v17.0 ONLY when GSFv17 is implemented
+
+ versions/VERSION
+ Updated to this release's version v1.3.3
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+ obsproc v1.3.0 needs modules bufr-dump v1.3.3 and prepobs v1.1.2 in order to run properly
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+ How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
+
+SPECIAL INSTRUCTIONS
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
+
+ NOTE that obsproc/bufr-dump/prepobs new versions need to be propagated to
+     i) GFS global workflow (david.huber@noaa.gov or russ.treadon@noaa.gov)
+     ii) SDM and thanks (kelly.kempisty@noaa.gov )
+     iii) EVS (alicia.bentley@noaa.gov@noaa.gov)
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+bufr-dump v1.3.2        RELEASED       APR 10,2026
+          v1.3.2        IMPLEMENTED    APR 20,2026
+
+PRELUDE
+ This updates bufr-dump to use bufr/12.2.0, so that it can accommodate supplemental
+ wave components mnemonics in tank b001/xx102.
+ The supplemental mnemonics are not available for all subsets
+
+FILE CHANGES
+ M docs/Release_Notes.txt
+ M versions/build.ver
+ M versions/VERSION
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+VERSIONS CHANGES
+ versions/build.ver
+ update bufr 11.7.0 to bufr 12.2.0
+
+ versions/VERSION
+ Updated to this release's version
+
+PRE-IMPLEMENTATION TESTING
+ obsproc v1.2.9 needs modules bufr_dump v1.3.2 and prepobs v1.1.1 in order to run properly
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+ How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh
+
+ Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
+ for the following networkname values: GLOBAL, NAM, RAP, RRFS, URMA, RTMA, CDAS
+
+DISCLOSURE
+ Tested on GLOBAL and RAP network
+
+DISSEMINATION INFORMATION
+ No changes to dissemination on WCOSS2
+
+SPECIAL INSTRUCTIONS
+ Make sure that the following binary fix files (from the old VLab repo) are downloaded:
+    nam_expdomain_halfdeg_imask.gbl
+    nam_expdomain_guam_halfdeg_imask.gbl
+    wave_landchxh
+ These files are currently hosted on the EMC FTP server at:
+ https://ftp.emc.ncep.noaa.gov/static_files/public/obsproc/bufr-dump-fix-HASH.tgz
+ They can be downloaded manually and into the cloned
+ repository by executing: ./ush/download_fix.sh
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 bufr-dump v1.3.1        RELEASED        NOV 10,2025
           v1.3.1        IMPLEMENTED     FEB 09,2026 
 
