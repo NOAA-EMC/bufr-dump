@@ -50,8 +50,8 @@ _002       mgt 002001 002002 002003 002004 002005 002006 002007 002008 002009 00
 
    --> Vertical soundings (satellite) -- TYPE 003
        ------------------------------------------
-_vsnds     nem 003001 003002 003003 003010 003101 003102 003104
-_003       mgt 003001 003002 003003 003010 003101 003102 003104
+_vsnds     nem 003001 003002 003003 003010 003012 003101 003102 003104
+_003       mgt 003001 003002 003003 003010 003012 003101 003102 003104
 
    --> Single level upper-air data (other than satellite) -- TYPE 004
        --------------------------------------------------------------
@@ -85,8 +85,8 @@ _012       mgt 012001 012002 012003 012004 012005 012006 012008 012009 012010 01
 
    --> Radiances (satellite measured) -- TYPE 021
        ------------------------------------------
-_radnc     nem 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
-_021       mgt 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021246 021248 021249 021250 021254 021255
+_radnc     nem 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021243 021246 021247 021248 021249 021250 021254 021255
+_021       mgt 021021 021022 021023 021024 021025 021027 021028 021033 021034 021035 021036 021037 021038 021039 021041 021042 021043 021044 021045 021046 021051 021052 021053 021054 021123 021201 021202 021203 021204 021205 021206 021212 021213 021223 021239 021240 021241 021242 021243 021246 021247 021248 021249 021250 021254 021255
 
    --> Oceanographic data -- TYPE 031
        ------------------------------
@@ -321,6 +321,7 @@ _geost     nem 003001  #> GOES/NESDIS (5x5 f-o-v) soundings/radiances      | grn
 _geosth    nem 003002  #> GOES/NESDIS hi-resol. (1x1 f-o-v) cloud data     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     | YEL |
 _geost1    nem 003003  #> GOES/NESDIS hi-resol. (1x1 f-o-v) sndgs/radiances|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY|     |     |
 _gpsro     nem 003010  #> GPS radio occultation data                       |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
+_msro      nem 003012  #> Metop-SG A1 Radio Occultation data               |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _tovs      nem 003101  #> POES/NESDIS - processed TOVS soundings/radiances | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _rtovs     nem 003102  #> POES/NESDIS - processed RTOVS soundings/radiances| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _atovs     nem 003104  #> POES/NESDIS - processed ATOVS soundings/radiances| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
@@ -563,7 +564,9 @@ _iasidb    nem 021239  #> METOP 1-2 IASI 1C radiances-direct broadcast SSEC| grn
 _modair    nem 021240  #> MODIS/AIRS radiance/reflectance data (colocated) | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _mtiasi    nem 021241  #> METOP 1-2 IASI 1C radiance data (varbl. channels)|     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _saphir    nem 021242  #> Megha-Tropiques SAPHIR L1A2 brightness temps     | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_msmws     nem 021243  #> Metop-SG A1 MWS brightness temperatures          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _gmi1cr    nem 021246  #> GPM GMI Level 1C-R brightness temperatures       | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
+_amsr      nem 021247  #> AMSR2/3 GSI 14ch 1B brightness temperatures      | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _amsr2     nem 021248  #> GCOM-W AMSR2 1B brightness temperatures          | grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |
 _airsev    nem 021249  #> AQUA AIRS/AMSU-A/HSB brightness temps- every FOV |     50   50 YYYY|     50   50 YYYY|     50   50 YYYY| YEL |     |
 _airs      nem 021250  #> AQUA AIRS/AMSU-A/HSB brightness temps- center FOV| grn 50   50 YYYY| grn 50   50 YYYY| grn 50   50 YYYY|     |     |

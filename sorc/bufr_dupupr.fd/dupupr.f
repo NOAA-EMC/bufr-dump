@@ -54,7 +54,8 @@ C                allowing preservation of profile data record.  The
 C                capability to formally fill RPID with valid WGOSLID for
 C                prepobs is added, but commented out; it is available
 C                for any future use (may need character variable).
-C
+C 2026-06-11  I. Genkova
+C              - Turned on stations with WMO block 84      
 C     
 C USAGE:
 C   INPUT FILES:
@@ -165,7 +166,7 @@ C           -----------------------------------------------------------
 
 C -> BLK #: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99
 C           -----------------------------------------------------------
-     .       0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0/
+     .       0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0/
 
 
 C-----------------------------------------------------------------------
