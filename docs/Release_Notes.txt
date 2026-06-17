@@ -5,7 +5,7 @@ PRELUDE
  This update (bufr-dump v1.3.3)
  -introduces dumps msro, msmws, amsr
  -turns on processing of uprair stations with WMO block 84 (Peru)
- -replaces variable NET with mNET, so that obsNET is replaces with NET (in obsproc)
+ -replaces variable NET with mNET, so that obsNET could be replaced with NET (in obsproc)
 
 FILE CHANGES
  M docs/Release_Notes.txt
@@ -25,8 +25,8 @@ DOCS CHANGES
 
 FIX CHANGES
  fix/bufr_dumplist
- Introduce dumps msro(b003/xx012,Metop-SG RO),msmws(b021/xx243,Metop-SG MWS),
- and amsr(b021/xx247AMSR2/3 GSI14ch rads) in Section 3 (i.e. dump and monitor in RTDM)
+ Introduce dumps msro(b003/xx012, Metop-SG RO), msmws(b021/xx243, Metop-SG MWS),
+ and amsr(b021/xx247, AMSR2/3 GSI14ch rads) in Section 3 (i.e. dump and monitor in RTDM)
 
 SOURCE CHANGES
  sorc/bufr_combfr.fd/combfr.f
@@ -55,7 +55,7 @@ VERSIONS CHANGES
 PRE-IMPLEMENTATION TESTING REQUIREMENTS
  obsproc v1.3.0 needs modules bufr-dump v1.3.3 and prepobs v1.1.2 in order to run properly
  See docs/README.md for build instructions
- See versions/build.ver and versions/run.ver for libaries
+ See versions/build.ver and versions/run.ver for libraries
  How to build in Debug mode: BUILD_TYPE=Debug ./ush/build.sh
 
  Run jobs/JOBSPROC_networkname_DUMP and jobs/JOBSPROC_networkname_DUMP_POST
