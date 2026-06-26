@@ -842,6 +842,9 @@ cycle=${cycle:-t??z}
 
 icendat=${cendat%.*}         # truncate any fractional hour from center date
 
+#Backward Compatability for the continued use of $NET when $NET != obsproc
+if [[ "$NET" != "obsproc" ]]; then mNET="$NET"; fi
+
 set +x
 echo
 echo "cendat = " $cendat
