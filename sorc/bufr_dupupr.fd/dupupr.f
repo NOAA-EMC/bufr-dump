@@ -431,6 +431,7 @@ C  ---------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       CALL OPENBF(0,'QUIET',1) ! will generate diagnostic print if an
                                ! embedded BUFR table is read
+      call setpart(.true.)
       CALL UFBTAB(-LUBFI,UFBTAB_8,1,1,MXTB,' ')
       CALL OPENBF(0,'QUIET',0) ! return to default wrt degree of print
 
@@ -487,6 +488,7 @@ C      print * ,'In the first slow down'
             EXIT
          ENDIF
          OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+         call setpart(.true.)
          CALL UFBTAB(LUBFI,TAB_8,MXTS,MXTB,NTAB,TSTRH)
 CH       CALL UFBTAB(LUBFI,WGIDL,1,MXTB,NTAB,'WGOSLID')
          IF(IBFMS(TAB_8(1,ITIMES)).EQ.1) THEN    ! data missing
@@ -521,6 +523,7 @@ C      ENDIF ! Timing TEST 1 - end
       IF(0.EQ.1) THEN ! Timing TEST 2 - start (turn off CORN rewrite)
 C      print * ,'In the second slow down'
               OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+      call setpart(.true.)
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
 
 
