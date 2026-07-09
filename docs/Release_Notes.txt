@@ -39,7 +39,7 @@ SOURCE CHANGES
  replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
 
  sorc/bufr_quipc.fd/quipc.f
- replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
+ removed an obsolete commented out block
 
 USH
  ush/bufr_dump_obs.sh
