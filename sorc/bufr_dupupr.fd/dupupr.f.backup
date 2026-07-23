@@ -635,16 +635,14 @@ c greater than 10e7) "missing" values are encountered.
      .      .LE.NINT(DEXY*10000.)
      .     .AND. KIDNNT(DABS(TAB_8(2,IREC)-TAB_8(2,JREC))*10000.) 
      .      .LE.NINT(DEXY*10000.)
-c     .     .AND. KIDNNT(DABS(TAB_8(3,IREC)-TAB_8(3,JREC))*100.) 
-c     .      .LE.NINT(DMON*100.)
-c     .     .AND. KIDNNT(DABS(TAB_8(4,IREC)-TAB_8(4,JREC))*100.) 
-c     .      .LE.NINT(DDAY*100.)
-c     .     .AND. KIDNNT(DABS(TAB_8(5,IREC)-TAB_8(5,JREC))*100.) 
-c     .      .LE.NINT(DOUR*100.)
-c     .     .AND. KIDNNT(DABS(TAB_8(6,IREC)-TAB_8(6,JREC))*100.) 
-c     .      .LE.NINT(DMIN*100.)
-     .     .AND.
-     .      OBSTIM(IREC).EQ.OBSTIM(JREC) 
+     .     .AND. KIDNNT(DABS(TAB_8(3,IREC)-TAB_8(3,JREC))*100.) 
+     .      .LE.NINT(DMON*100.)
+     .     .AND. KIDNNT(DABS(TAB_8(4,IREC)-TAB_8(4,JREC))*100.) 
+     .      .LE.NINT(DDAY*100.)
+     .     .AND. KIDNNT(DABS(TAB_8(5,IREC)-TAB_8(5,JREC))*100.) 
+     .      .LE.NINT(DOUR*100.)
+     .     .AND. KIDNNT(DABS(TAB_8(6,IREC)-TAB_8(6,JREC))*100.) 
+     .      .LE.NINT(DMIN*100.)
      .     .AND.
      .      CAB8_IREC.EQ.CAB8_JREC
          IF(DUPES) THEN
