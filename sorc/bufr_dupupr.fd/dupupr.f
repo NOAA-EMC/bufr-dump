@@ -490,7 +490,23 @@ C      print * ,'In the first slow down'
          OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
          call setpart(.true.)
          CALL UFBTAB(LUBFI,TAB_8,MXTS,MXTB,NTAB,TSTRH)
-CH       CALL UFBTAB(LUBFI,WGIDL,1,MXTB,NTAB,'WGOSLID')
+
+      FIRST_VALID = 0
+      DO ITIMES = 1, NTAB
+         IF (IBFMS(TAB_8(1,ITIMES)) .NE. 1) THEN
+            FIRST_VALID = ITIMES
+            EXIT
+         ENDIF
+      ENDDO
+
+      IF (FIRST_VALID .EQ. 0) THEN
+         PRINT 1859
+      ELSEIF (FIRST_VALID .GT. 25) THEN
+         PRINT 1858
+      ELSEIF (FIRST_VALID .GT. 1) THEN
+         PRINT 1860, FIRST_VALID-1
+      ENDIF
+
          IF(IBFMS(TAB_8(1,ITIMES)).EQ.1) THEN    ! data missing
           ! lat missing for this rpt, try lat for next rpt
 cpppppppppp
@@ -558,14 +574,13 @@ C  ----------------------------------------------------------------
 
       call cpu_time(TT10)
 
-      print * ,'==>Run the MINIMUM (6 out of 13) ORDERS()' 
+      print * ,'==>Run the full ORDERS() key sequence' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      !Save time - skip unnecessary sorting by receipt time 
-      !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-      !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-      !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-      !CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-      !CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
+      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
+      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
+      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
+      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
+      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
       CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
