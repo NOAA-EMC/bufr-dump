@@ -491,21 +491,21 @@ C      print * ,'In the first slow down'
          call setpart(.true.)
          CALL UFBTAB(LUBFI,TAB_8,MXTS,MXTB,NTAB,TSTRH)
 
-      FIRST_VALID = 0
-      DO ITIMES = 1, NTAB
-         IF (IBFMS(TAB_8(1,ITIMES)) .NE. 1) THEN
-            FIRST_VALID = ITIMES
-            EXIT
-         ENDIF
-      ENDDO
-
-      IF (FIRST_VALID .EQ. 0) THEN
-         PRINT 1859
-      ELSEIF (FIRST_VALID .GT. 25) THEN
-         PRINT 1858
-      ELSEIF (FIRST_VALID .GT. 1) THEN
-         PRINT 1860, FIRST_VALID-1
-      ENDIF
+c      FIRST_VALID = 0
+c      DO ITIMES = 1, NTAB
+c         IF (IBFMS(TAB_8(1,ITIMES)) .NE. 1) THEN
+c            FIRST_VALID = ITIMES
+c            EXIT
+c         ENDIF
+c      ENDDO
+c
+c      IF (FIRST_VALID .EQ. 0) THEN
+c         PRINT 1859
+c      ELSEIF (FIRST_VALID .GT. 25) THEN
+c         PRINT 1858
+c      ELSEIF (FIRST_VALID .GT. 1) THEN
+c         PRINT 1860, FIRST_VALID-1
+c      ENDIF
 
          IF(IBFMS(TAB_8(1,ITIMES)).EQ.1) THEN    ! data missing
           ! lat missing for this rpt, try lat for next rpt
