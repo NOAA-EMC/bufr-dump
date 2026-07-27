@@ -100,16 +100,22 @@ C$$$
       PROGRAM BUFR_DUPUPR
  
       PARAMETER (MXTS=8)
+      PARAMETER (MXLEV=5000)
 
       REAL(8),ALLOCATABLE :: TAB_8(:,:)
       REAL(8),ALLOCATABLE :: RAB_8(:,:)
+      REAL(8),ALLOCATABLE :: PFIRST(:)
+      REAL(8),ALLOCATABLE :: PLAST(:)
+      REAL(8),ALLOCATABLE :: PMIN_SUB(:)
 CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       INTEGER,ALLOCATABLE :: IWORK(:)
       INTEGER,ALLOCATABLE :: IORD(:)
       INTEGER,ALLOCATABLE :: JDUP(:)
+      INTEGER,ALLOCATABLE :: NLEV_SUB(:)
 
       REAL(8)       BMISS, GETBMISS
       real(8)       RPID_8
+      REAL(8)       PRES_BUF(MXLEV)
       character*8   CRPID
       equivalence (crpid,rpid_8)
 
@@ -455,12 +461,20 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       ALLOCATE(IORD(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(JDUP(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(OBSTIM(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
+      ALLOCATE(PFIRST(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
+      ALLOCATE(PLAST(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
+      ALLOCATE(PMIN_SUB(MXTB)  ,STAT=I);IF(I.NE.0) GOTO 901
+      ALLOCATE(NLEV_SUB(MXTB)  ,STAT=I);IF(I.NE.0) GOTO 901
 
-      TAB_8  = BMISS
-      RAB_8  = BMISS
-      WGIDL  = BMISS
-      JDUP   = 0
-      IORD   = 0
+      TAB_8    = BMISS
+      RAB_8    = BMISS
+      WGIDL    = BMISS
+      PFIRST   = BMISS
+      PLAST    = BMISS
+      PMIN_SUB = BMISS
+      NLEV_SUB = 0
+      JDUP     = 0
+      IORD     = 0
 
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
 
@@ -525,6 +539,41 @@ C      ENDIF ! Timing TEST 1 - end
 
       call cpu_time(TT8)
 
+C  READ FIRST AND LAST PRESSURE LEVELS (PRLC) FOR EACH SUBSET
+C  -----------------------------------------------------------
+      OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+      call setpart(.true.)
+      CALL OPENBF(LUBFI,'IN',LUBFI)
+      N = 0
+      DO WHILE(IREADMG(LUBFI,SUBSET,IDATE).EQ.0)
+         DO WHILE(IREADSB(LUBFI).EQ.0)
+            N = N + 1
+            IF(N.GT.NTAB) THEN
+               PRINT *, '#####BUFR_DUPUPR - PFIRST/PLAST INDEX > NTAB'
+               CALL W3TAGE('BUFR_DUPUPR')
+               CALL ERREXIT(99)
+            ENDIF
+            CALL UFBINT(LUBFI,PRES_BUF,1,MXLEV,NLEVP,'PRLC')
+            NLEV_SUB(N) = NLEVP
+            IF(NLEVP.GT.0) THEN
+               IF(IBFMS(PRES_BUF(1)).EQ.0)
+     .            PFIRST(N) = PRES_BUF(1)
+               IF(IBFMS(PRES_BUF(NLEVP)).EQ.0)
+     .            PLAST(N)  = PRES_BUF(NLEVP)
+C              Find minimum pressure level (= highest altitude = best coverage)
+               PMIN = 9999999._8
+               DO KK=1,NLEVP
+                  IF(IBFMS(PRES_BUF(KK)).EQ.0 .AND.
+     .               PRES_BUF(KK) .LT. PMIN) THEN
+                     PMIN = PRES_BUF(KK)
+                  ENDIF
+               ENDDO
+               IF(PMIN .LT. 9999999._8) PMIN_SUB(N) = PMIN
+            ENDIF
+         ENDDO
+      ENDDO
+      CALL CLOSBF(LUBFI)
+
       IF(0.EQ.1) THEN ! Timing TEST 2 - start (turn off CORN rewrite)
 C      print * ,'In the second slow down'
               OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
@@ -575,20 +624,22 @@ cdm SET obstime variable combining day, hour and minu
       call cpu_time(TT9)
 
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
-C   REPORT ID, OBS TIME, RECEIPT TIME, CORRECTION INDICATOR
+C   REPORT ID, OBS TIME, PRESSURE COVERAGE, CORRECTION STATUS, NUM LEVELS
+C   Priority (least to most significant):
+C   1. Correction status (CORN) — prefer corrected, but not over pressure coverage
+C   2. Number of levels (NLEV_SUB) — more levels better (secondary to coverage)
+C   3. Pressure coverage (PMIN_SUB) — lowest pressure (highest altitude) is best
+C   4. Observation time, Report ID, Location — for grouping
+C   Receipt time is NOT included in sort; use only as final tiebreaker if needed.
 C  ----------------------------------------------------------------
 
       call cpu_time(TT10)
 
-      print * ,'==>Run the MINIMUM (6 out of 13) ORDERS()' 
-      CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      !Save time - skip unnecessary sorting by receipt time 
-      !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-      !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-      !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-      !CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-      !CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
-      CALL ORDERS(1,IWORK,OBSTIM(1),IORD,NTAB,1,8,2)       ! obs time
+      print * ,'==>Run ORDERS() with priority: coverage > correction > levels' 
+      CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction (least signif)
+      CALL ORDERS(12,IWORK,NLEV_SUB(1),IORD,NTAB,1,4,2)    ! num levels
+      CALL ORDERS(12,IWORK,PMIN_SUB(1),IORD,NTAB,1,8,2)    ! min pressure (lower=better)
+      CALL ORDERS(1,IWORK,OBSTIM(1),IORD,NTAB,1,8,2)        ! obs time
       !CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       !CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
       !CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
@@ -631,6 +682,7 @@ cpppp
 c Need to use the KIDNNT() intrinsic function here, with 8byte integer
 c output, in order to deal w/ the case when potentially large (ie,
 c greater than 10e7) "missing" values are encountered.
+c Duplicates require: same location, ID, time, both nonempty, compatible coverage
          DUPES = KIDNNT(DABS(TAB_8(1,IREC)-TAB_8(1,JREC))*10000.) 
      .      .LE.NINT(DEXY*10000.)
      .     .AND. KIDNNT(DABS(TAB_8(2,IREC)-TAB_8(2,JREC))*10000.) 
@@ -647,6 +699,11 @@ c     .      .LE.NINT(DMIN*100.)
      .      OBSTIM(IREC).EQ.OBSTIM(JREC) 
      .     .AND.
      .      CAB8_IREC.EQ.CAB8_JREC
+     .     .AND. NLEV_SUB(IREC).GT.0
+     .     .AND. NLEV_SUB(JREC).GT.0
+     .     .AND.
+     .      (IBFMS(PMIN_SUB(IREC)).NE.0 .OR. IBFMS(PMIN_SUB(JREC)).NE.0
+     .      .OR. PMIN_SUB(IREC).EQ.PMIN_SUB(JREC))
          IF(DUPES) THEN
             JDUP(IREC) = 2
 cpppppppppp
