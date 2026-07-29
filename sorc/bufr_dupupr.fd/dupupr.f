@@ -663,11 +663,13 @@ C  ----------------------------------------------------------------
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
       PRINT *, '===> SORTING COMPLETE'
-      PRINT *, 'DEBUG: After sorting - first 5 profiles:'
-      DO K=1,MIN(5,NTAB)
+      PRINT *, 'DEBUG: After sorting - first 100 profiles:'
+      DO K=1,MIN(100,NTAB)
          N = IORD(K)
-         PRINT 1853, K, N, NLEV_SUB(N), PMIN_SUB(N)
- 1853    FORMAT('  Position',I5,': Rec',I5,': NLEV=',I5,' PMIN=',F8.1)
+         TAB8_IREC_8 = TAB_8(8,N)
+         PRINT 1853, K, N, CAB8_IREC, NLEV_SUB(N), PMIN_SUB(N)
+ 1853    FORMAT('  Pos',I5,': Rec',I5,': ID=',A8,' NLEV=',I5,
+     .          ' PMIN=',F8.1)
       ENDDO
 
       call cpu_time(TT11)
