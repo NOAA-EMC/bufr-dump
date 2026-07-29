@@ -663,11 +663,13 @@ C  ----------------------------------------------------------------
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
       PRINT *, '===> SORTING COMPLETE'
-      PRINT *, 'DEBUG: After sorting - first 100 profiles:'
-      DO K=1,MIN(100,NTAB)
+      PRINT *, 'DEBUG: After sorting - WMO block 70 profiles:'
+      DO K=1,NTAB
          N = IORD(K)
          TAB8_IREC_8 = TAB_8(8,N)
-         PRINT 1853, K, N, CAB8_IREC, NLEV_SUB(N), PMIN_SUB(N)
+         IF(CAB8_IREC(1:2).EQ.'70') THEN
+            PRINT 1853, K, N, CAB8_IREC, NLEV_SUB(N), PMIN_SUB(N)
+         ENDIF
  1853    FORMAT('  Pos',I5,': Rec',I5,': ID=',A8,' NLEV=',I5,
      .          ' PMIN=',F8.1)
       ENDDO
