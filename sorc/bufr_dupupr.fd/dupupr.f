@@ -574,7 +574,7 @@ C              Find minimum pressure level (= highest altitude = best coverage)
      .                ' PFIRST=',F10.1,' PLAST=',F10.1,' PMIN=',F10.1)
             ELSE
                PRINT 1851, N
- 1851          FORMAT('DEBUG: Subset',I5,'' has NLEVP=0'')
+ 1851          FORMAT('DEBUG: Subset',I5,' empty profile')
             ENDIF
          ENDDO
       ENDDO
@@ -708,10 +708,10 @@ c greater than 10e7) "missing" values are encountered.
 c Duplicates require: same location, ID, time, both nonempty, compatible
          IF(K.LE.3) THEN
             PRINT 1854, K, IREC, JREC, NLEV_SUB(IREC), NLEV_SUB(JREC)
-            PRINT 1854a, PMIN_SUB(IREC), PMIN_SUB(JREC)
+            PRINT 1856, PMIN_SUB(IREC), PMIN_SUB(JREC)
  1854       FORMAT('DEBUG DUP-CHK K=',I5,' IREC=',I5,' JREC=',I5,
      .             ' NLEV_I=',I5,' NLEV_J=',I5)
- 1854a      FORMAT('              PMIN_I=',F10.1,' PMIN_J=',F10.1)
+ 1856       FORMAT('              PMIN_I=',F10.1,' PMIN_J=',F10.1)
          ENDIF
          DUPES = KIDNNT(DABS(TAB_8(1,IREC)-TAB_8(1,JREC))*10000.) 
      .      .LE.NINT(DEXY*10000.)
