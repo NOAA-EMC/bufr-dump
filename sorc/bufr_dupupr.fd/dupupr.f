@@ -569,10 +569,17 @@ C              Find minimum pressure level (= highest altitude = best coverage)
                   ENDIF
                ENDDO
                IF(PMIN .LT. 9999999._8) PMIN_SUB(N) = PMIN
+               PRINT 1850, N, NLEVP, PFIRST(N), PLAST(N), PMIN_SUB(N)
+ 1850          FORMAT('DEBUG PRESSURE READ: Subset ',I5,' NLEVP=',I5,
+     .                ' PFIRST=',F10.1,' PLAST=',F10.1,' PMIN=',F10.1)
+            ELSE
+               PRINT 1851, N
+ 1851          FORMAT('DEBUG: Subset ',I5,' has NLEVP=0 (empty profile)')
             ENDIF
          ENDDO
       ENDDO
       CALL CLOSBF(LUBFI)
+      PRINT *, '===> PRESSURE READING COMPLETE - printed ',N,' profiles'
 
       IF(0.EQ.1) THEN ! Timing TEST 2 - start (turn off CORN rewrite)
 C      print * ,'In the second slow down'
@@ -636,9 +643,17 @@ C  ----------------------------------------------------------------
       call cpu_time(TT10)
 
       print * ,'==>Run ORDERS() with priority: coverage > correction > levels' 
+      PRINT *, 'DEBUG: Before sorting - first 5 profiles:'
+      DO N=1,MIN(5,NTAB)
+         PRINT 1852, N, NLEV_SUB(N), PMIN_SUB(N)
+ 1852    FORMAT('  Profile ',I5,': NLEV=',I5,' PMIN=',F10.1)
+      ENDDO
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction (least signif)
+      PRINT *, 'DEBUG: After ORDERS on CORN'
       CALL ORDERS(12,IWORK,NLEV_SUB(1),IORD,NTAB,1,4,2)    ! num levels
+      PRINT *, 'DEBUG: After ORDERS on NLEV_SUB'
       CALL ORDERS(12,IWORK,PMIN_SUB(1),IORD,NTAB,1,8,2)    ! min pressure (lower=better)
+      PRINT *, 'DEBUG: After ORDERS on PMIN_SUB'
       CALL ORDERS(1,IWORK,OBSTIM(1),IORD,NTAB,1,8,2)        ! obs time
       !CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       !CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
@@ -647,12 +662,20 @@ C  ----------------------------------------------------------------
       CALL ORDERS(10,IWORK,TAB_8(8,1),IORD,NTAB,MXTS,8,2) ! report id
       CALL ORDERS(12,IWORK,TAB_8(2,1),IORD,NTAB,MXTS,8,2) ! longitude
       CALL ORDERS(12,IWORK,TAB_8(1,1),IORD,NTAB,MXTS,8,2) ! latitude
+      PRINT *, '===> SORTING COMPLETE'
+      PRINT *, 'DEBUG: After sorting - first 5 profiles in sorted order:'
+      DO K=1,MIN(5,NTAB)
+         N = IORD(K)
+         PRINT 1853, K, N, NLEV_SUB(N), PMIN_SUB(N)
+ 1853    FORMAT('  Position ',I5,': Record ',I5,': NLEV=',I5,' PMIN=',F10.1)
+      ENDDO
 
       call cpu_time(TT11)
 
 C  GO THROUGH THE REPORTS IN ORDER, MARKING DUPLICATES AND CORRECTIONS
 C  -------------------------------------------------------------------
  
+      PRINT *, '===> BEGINNING DUPLICATE CHECK LOOP'
       DO K=1,NTAB-1
          IREC = IORD(K)
          JREC = IORD(K+1)
@@ -683,6 +706,13 @@ c Need to use the KIDNNT() intrinsic function here, with 8byte integer
 c output, in order to deal w/ the case when potentially large (ie,
 c greater than 10e7) "missing" values are encountered.
 c Duplicates require: same location, ID, time, both nonempty, compatible coverage
+         IF(K.LE.3) THEN
+            PRINT 1854, K, IREC, JREC, NLEV_SUB(IREC), NLEV_SUB(JREC),
+     .                  PMIN_SUB(IREC), PMIN_SUB(JREC)
+ 1854       FORMAT('DEBUG DUP-CHK K=',I5,' IREC=',I5,' JREC=',I5,
+     .             ' NLEV_I=',I5,' NLEV_J=',I5,' PMIN_I=',F10.1,
+     .             ' PMIN_J=',F10.1)
+         ENDIF
          DUPES = KIDNNT(DABS(TAB_8(1,IREC)-TAB_8(1,JREC))*10000.) 
      .      .LE.NINT(DEXY*10000.)
      .     .AND. KIDNNT(DABS(TAB_8(2,IREC)-TAB_8(2,JREC))*10000.) 
@@ -704,6 +734,14 @@ c     .      .LE.NINT(DMIN*100.)
      .     .AND.
      .      (IBFMS(PMIN_SUB(IREC)).NE.0 .OR. IBFMS(PMIN_SUB(JREC)).NE.0
      .      .OR. PMIN_SUB(IREC).EQ.PMIN_SUB(JREC))
+         IF(K.LE.3) THEN
+            IF(DUPES) THEN
+               PRINT 1855, K, 'TRUE (DUPLICATE)'
+            ELSE
+               PRINT 1855, K, 'FALSE (NOT DUPLICATE)'
+            ENDIF
+ 1855       FORMAT('DEBUG DUP-RESULT K=',I5,': DUPES = ',A)
+         ENDIF
          IF(DUPES) THEN
             JDUP(IREC) = 2
 cpppppppppp
