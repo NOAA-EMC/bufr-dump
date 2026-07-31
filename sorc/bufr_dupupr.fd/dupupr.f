@@ -149,6 +149,7 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       REAL(8)     TT1,TT2,TT3,TT4,TT5,TT6,TT7,TT8,TT9,TT10,TT11,TT12
         
       INTEGER(KIND=8), ALLOCATABLE :: OBSTIM(:)
+      INTEGER(KIND=8), ALLOCATABLE :: RCPTIM(:)
 
 
 C IBLK_NUM determines which WMO block numbers will be accepted for
@@ -461,6 +462,7 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       ALLOCATE(IORD(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(JDUP(MXTB)      ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(OBSTIM(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
+      ALLOCATE(RCPTIM(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(PFIRST(MXTB)    ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(PLAST(MXTB)     ,STAT=I);IF(I.NE.0) GOTO 901
       ALLOCATE(PMIN_SUB(MXTB)  ,STAT=I);IF(I.NE.0) GOTO 901
@@ -475,6 +477,8 @@ CH    ALLOCATE(WGIDL(MXTB)     ,STAT=I)
       NLEV_SUB = 0
       JDUP     = 0
       IORD     = 0
+      OBSTIM   = 0_8
+      RCPTIM   = 0_8
 
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
 
@@ -581,9 +585,7 @@ C              Find minimum pressure level (= highest altitude = best coverage)
       CALL CLOSBF(LUBFI)
       PRINT *, '===> PRESSURE READING COMPLETE - printed ',N,' profiles'
 
-      IF(0.EQ.1) THEN ! Timing TEST 2 - start (turn off CORN rewrite)
-C      print * ,'In the second slow down'
-              OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
+      OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
       call setpart(.true.)
       CALL UFBTAB(LUBFI,RAB_8,MXTS,MXTB,NTAB,RSTR)
 
@@ -607,7 +609,7 @@ c         IF ((WGIDL(N).GE.100).AND.(WGIDL(N).LE.99998))
 c    +       TAB_8(8,N) = WGIDL(N)
 c        ENDIF
 c       ENDIF
-cdm SET obstime variable combining day, hour and minu
+C  Build OBSTIM as one sortable number: MMDDHHMM
         IF (IBFMS(TAB_8(3,N)).EQ.1 .OR.
      .      IBFMS(TAB_8(4,N)).EQ.1 .OR.
      .      IBFMS(TAB_8(5,N)).EQ.1 .OR.
@@ -624,25 +626,42 @@ cdm SET obstime variable combining day, hour and minu
      .        INT(TAB_8(6,N),KIND=8)
 
         ENDIF
-      ENDDO
 
-      ENDIF !  Timing TEST 2 - end (turn off CORN rewrite,def OBSTIM)
+C  Build RCPTIM as one sortable number: YYYYMMDDHHMM
+        IF (IBFMS(RAB_8(1,N)).EQ.1 .OR.
+     .      IBFMS(RAB_8(2,N)).EQ.1 .OR.
+     .      IBFMS(RAB_8(3,N)).EQ.1 .OR.
+     .      IBFMS(RAB_8(4,N)).EQ.1 .OR.
+     .      IBFMS(RAB_8(5,N)).EQ.1) THEN
+
+           RCPTIM(N) = 0_8
+
+        ELSE
+
+           RCPTIM(N) =
+     .        INT(RAB_8(1,N),KIND=8) * 100000000_8 +
+     .        INT(RAB_8(2,N),KIND=8) *   1000000_8 +
+     .        INT(RAB_8(3,N),KIND=8) *     10000_8 +
+     .        INT(RAB_8(4,N),KIND=8) *       100_8 +
+     .        INT(RAB_8(5,N),KIND=8)
+
+        ENDIF
+      ENDDO
 
       call cpu_time(TT9)
 
 C  GET A SORTED INDEX OF THE REPORTS KEYED IN THIS ORDER: LAT, LON,
-C   REPORT ID, OBS TIME, PRESSURE COVERAGE, CORRECTION STATUS, NUM LEVELS
+C   REPORT ID, OBS TIME, RCPT TIME, CORRECTION STATUS
 C   Priority (least to most significant):
-C   1. Correction status (CORN) — prefer corrected, but not over pressure coverage
-C   2. Number of levels (NLEV_SUB) — more levels better (secondary to coverage)
-C   3. Pressure coverage (PMIN_SUB) — lowest pressure (highest altitude) is best
-C   4. Observation time, Report ID, Location — for grouping
-C   Receipt time is NOT included in sort; use only as final tiebreaker if needed.
+C   1. Correction status (CORN)
+C   2. Receipt time (RCPTIM)
+C   3. Observation time (OBSTIM)
+C   4. Report ID, then location
 C  ----------------------------------------------------------------
 
       call cpu_time(TT10)
 
-      PRINT *, '==>Run ORDERS: coverage > correction > levels' 
+      PRINT *, '==>Run ORDERS: correction -> rcpt -> obs -> id/loc'
       PRINT *, 'DEBUG: Before sorting - first 5 profiles:'
       DO N=1,MIN(5,NTAB)
          PRINT 1852, N, NLEV_SUB(N), PMIN_SUB(N)
@@ -650,10 +669,12 @@ C  ----------------------------------------------------------------
       ENDDO
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction (least signif)
       PRINT *, 'DEBUG: After ORDERS on CORN'
-      CALL ORDERS(12,IWORK,NLEV_SUB(1),IORD,NTAB,1,4,2)    ! num levels
-      PRINT *, 'DEBUG: After ORDERS on NLEV_SUB'
-      CALL ORDERS(12,IWORK,PMIN_SUB(1),IORD,NTAB,1,8,2)    ! min pressure (lower=better)
-      PRINT *, 'DEBUG: After ORDERS on PMIN_SUB'
+      CALL ORDERS( 1,IWORK,RCPTIM(1),IORD,NTAB,1,8,2)      ! rcpt time
+      PRINT *, 'DEBUG: After ORDERS on RCPTIM'
+C      CALL ORDERS(12,IWORK,NLEV_SUB(1),IORD,NTAB,1,4,2)    ! num levels
+C      PRINT *, 'DEBUG: After ORDERS on NLEV_SUB'
+C      CALL ORDERS(12,IWORK,PMIN_SUB(1),IORD,NTAB,1,8,2)    ! min pressure C      (lower=better)
+C      PRINT *, 'DEBUG: After ORDERS on PMIN_SUB'
       CALL ORDERS(1,IWORK,OBSTIM(1),IORD,NTAB,1,8,2)        ! obs time
       !CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       !CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
