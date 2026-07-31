@@ -487,7 +487,7 @@ C      IF(0.EQ.1) THEN ! Timing TEST 1 - start
 C  MAKE A TABLE OUT OF THE LATS, LONS, ID'S, OBS TIME COORDINATES AND
 C   RECEIPT TIME COORDINATES
 C  ------------------------------------------------------------------
-C      print * ,'In the first slow down' 
+      print * ,'In the first slow down' 
       DO ITIMES=1,MXTB ! Look thru up to 25 rpts to find a valid lat
          !IF(ITIMES.EQ.26.OR.ITIMES.EQ.MXTB) THEN
             !IF(ITIMES.EQ.26) THEN
@@ -542,7 +542,7 @@ cpppppppppp
 C      ENDIF ! Timing TEST 1 - end
 
       call cpu_time(TT8)
-
+      print * ,'In the second slow down
 C  READ FIRST AND LAST PRESSURE LEVELS (PRLC) FOR EACH SUBSET
 C  -----------------------------------------------------------
       OPEN(LUBFI,FILE=FILI(1:NBYTES_FILI),FORM='UNFORMATTED')
