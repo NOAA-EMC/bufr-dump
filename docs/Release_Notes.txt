@@ -34,6 +34,7 @@ SOURCE CHANGES
  
  sorc/bufr_dupupr.fd/dupupr.f
  Turn on processing uprair stations with WMO block 84
+ Restored all calls to ORDERS (back to D.Keyser original), added check for station id
 
  sorc/bufr_edtbfr.fd/edtbfr.f
  replace NET with mNET (i.e. gfs,gdas,cdas,rap,etc), so that obsNET can become NET (NCO request)
