@@ -578,12 +578,11 @@ C  ----------------------------------------------------------------
 
       print * ,'==>Run the MINIMUM (6 out of 13) ORDERS()' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      !Save time - skip unnecessary sorting by receipt time 
-      !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-      !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-      !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-      !CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-      !CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
+      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
+      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
+      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
+      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
+      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
       CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
