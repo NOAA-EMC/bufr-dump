@@ -54,7 +54,8 @@ C                allowing preservation of profile data record.  The
 C                capability to formally fill RPID with valid WGOSLID for
 C                prepobs is added, but commented out; it is available
 C                for any future use (may need character variable).
-C
+C 2026-06-11  I. Genkova
+C              - Turned on stations with WMO block 84      
 C     
 C USAGE:
 C   INPUT FILES:
@@ -123,7 +124,7 @@ CH    REAL(8),ALLOCATABLE :: WGIDL(:)
       REAL(8)       ADATE,BDATE,CDATE,DDATE,RDATE,UFBTAB_8
       REAL(8)       TAB8_IREC_8,TAB8_JREC_8
 
-      INTEGER      NTAB
+      INTEGER      NTAB,IOSTAT_RPID
 
       LOGICAL       DUPES
 
@@ -165,7 +166,7 @@ C           -----------------------------------------------------------
 
 C -> BLK #: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99
 C           -----------------------------------------------------------
-     .       0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0/
+     .       0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0/
 
 
 C-----------------------------------------------------------------------
@@ -375,18 +376,39 @@ C             (if valid - see below) to preserve the data record.
             ENDIF
             kount = kount + 1
             if(SUBSET(3:8) == "002101") then
-            read(CRPID(1:2),'(I2)') ithis_blk_num
-            if(ithis_blk_num.lt.00.or.ithis_blk_num.gt.99) then
-               PRINT *, '#####BUFR_DUPUPR - REPORT HAS INVALID WMO ',
-     .                  'BLOCK NUMBER (',ithis_blk_num,')'
-               CALL W3TAGE('BUFR_DUPUPR')
-               CALL ERREXIT(99)
-            endif
-            if(IBLK_NUM(ithis_blk_num).ne.1) then
-               ktossed = ktossed + 1
-               cycle
-            endif
-            endif
+C            read(CRPID(1:2),'(I2)') ithis_blk_num
+                IF(VERIFY(CRPID(1:5),'0123456789').NE.0) THEN
+                   PRINT *, '#####BUFR_DUPUPR - SKIPPING REPORT WITH ',
+     .                      'NONNUMERIC RPID: [',CRPID,']'
+                   KTOSSED = KTOSSED + 1
+                   CYCLE
+                ENDIF
+C              Obtain the two-digit WMO block number.
+                READ(CRPID(1:2),'(I2)',IOSTAT=IOSTAT_RPID)
+     .               ITHIS_BLK_NUM
+
+                IF(IOSTAT_RPID.NE.0) THEN
+                   PRINT *, '#####BUFR_DUPUPR - SKIPPING REPORT WITH ',
+     .                      'INVALID RPID: [',CRPID,']'
+                   KTOSSED = KTOSSED + 1
+                   CYCLE
+                ENDIF
+
+                IF(ITHIS_BLK_NUM.LT.0.OR.
+     .             ITHIS_BLK_NUM.GT.99) THEN
+                   PRINT *, '#####BUFR_DUPUPR - SKIPPING INVALID WMO ',
+     .                      'BLOCK NUMBER: ',ITHIS_BLK_NUM
+                   KTOSSED = KTOSSED + 1
+                   CYCLE
+                ENDIF
+
+                IF(IBLK_NUM(ITHIS_BLK_NUM).NE.1) THEN
+                   KTOSSED = KTOSSED + 1
+                   CYCLE
+                ENDIF
+
+            ENDIF
+
             print *, 'retain accepted report with id: ',CRPID
             CALL OPENMB(LUBFJ,SUBSET,IDATE)
             CALL UFBCPY(LUBFI,LUBFJ)
@@ -556,12 +578,11 @@ C  ----------------------------------------------------------------
 
       print * ,'==>Run the MINIMUM (6 out of 13) ORDERS()' 
       CALL ORDERS( 2,IWORK,TAB_8(7,1),IORD,NTAB,MXTS,8,2) ! correction
-      !Save time - skip unnecessary sorting by receipt time 
-      !CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
-      !CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
-      !CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
-      !CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
-      !CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
+      CALL ORDERS(12,IWORK,RAB_8(5,1),IORD,NTAB,MXTS,8,2) ! rcpt minute
+      CALL ORDERS(12,IWORK,RAB_8(4,1),IORD,NTAB,MXTS,8,2) ! rcpt hour
+      CALL ORDERS(12,IWORK,RAB_8(3,1),IORD,NTAB,MXTS,8,2) ! rcpt day
+      CALL ORDERS(12,IWORK,RAB_8(2,1),IORD,NTAB,MXTS,8,2) ! rcpt month
+      CALL ORDERS(12,IWORK,RAB_8(1,1),IORD,NTAB,MXTS,8,2) ! rcpt year
       CALL ORDERS(12,IWORK,TAB_8(6,1),IORD,NTAB,MXTS,8,2) ! obs minute
       CALL ORDERS(12,IWORK,TAB_8(5,1),IORD,NTAB,MXTS,8,2) ! obs hour
       CALL ORDERS(12,IWORK,TAB_8(4,1),IORD,NTAB,MXTS,8,2) ! obs day
